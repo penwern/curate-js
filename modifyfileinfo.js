@@ -17,7 +17,7 @@ function getMetaTag(){
 
 function getMetaScan(){
   try{
-    let vscan = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["Virus Scan"]
+    let vscan = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan"]
     if (vscan == undefined){return 'File has not been scanned'}
     	else{return vscan}
     } catch(err){
