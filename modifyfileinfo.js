@@ -18,6 +18,10 @@ function getMetaTag(){
 function getMetaScan(){
   try{
     let vscan = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan"]
+    if (vscan == undefined){
+    	let vscan = 'File has not been scanned' 
+      return vscan
+      }
     return vscan 
     }catch(err){
     	let vscan = 'File has not been scanned'
