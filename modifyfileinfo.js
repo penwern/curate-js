@@ -85,7 +85,25 @@ function removeRows(){
   }
 }
 
-
+function addInfo(){
+  var pid = getMetaPid()
+  var scan = getMetaScan()
+  var tag = getMetaTag()
+  var mime = getMetaMime()
+  var status
+  var scan2 = 'File has not been scanned' //replace this with function to get second scan result
+  if (scan == 'File has not been scanned'){
+  	status = 'Risk'
+  }
+  if(scan.includes('passed') && scan2 == 'File has not been scanned'){
+  	status = 'Quarantined'
+  	}
+  if(scan.includes('passed') && scan2.includes('passed')){
+    status = 'Released'
+    }
+  if(status==undefined){status= 'Risk'}
+  addFileInfo(pid, scan, tag, mime, status)
+}
 
 var lastmutation = {}
 var attempts = 0
@@ -107,11 +125,7 @@ const observer = new MutationObserver((mutations, observer) => {
         parpath = parpath.replace('/ws-','')
         parpath = parpath.replace('/','')
        	nodepath = parpath + itempath
-      	var pid = getMetaPid()
-        var scan = getMetaScan()
-        var tag = getMetaTag()
-        var mime = getMetaMime()
-        addFileInfo(pid, scan, tag, mime)
+      	addInfo()
 		
         //lastmutation = mutations[recordno].target.id
       }
@@ -130,11 +144,7 @@ const observer = new MutationObserver((mutations, observer) => {
         parpath = parpath.replace('/ws-','')
         parpath = parpath.replace('/','')
        	nodepath = parpath + itempath
-      	var pid = getMetaPid()
-        var scan = getMetaScan()
-        var tag = getMetaTag()
-        var mime = getMetaMime()
-        addFileInfo(pid, scan, tag, mime)
+      	addInfo()
 
         lastmutation = mutations[recordno].target.id
         }
@@ -150,7 +160,7 @@ observer.observe(document, {
 
 
 
-function addFileInfo(pronomID, scanResult, etag, mimetype) {
+function addFileInfo(pronomID, scanResult, etag, mimetype, qstat) {
   let panels = document.querySelector("#info_panel > div > div > div").childElementCount;
   try{
   	//let panels = document.querySelector("#info_panel > div > div.scrollarea-content > div").childElementCount;
@@ -223,10 +233,40 @@ function addFileInfo(pronomID, scanResult, etag, mimetype) {
       newinfodivMime.appendChild(newinfolabelMime)
       newinfodivMime.appendChild(newinfovalueMime)
       
+      let newinfodivStatus = document.createElement("div")
+      newinfodivStatus.class = "infoPanelRow"
+      newinfodivStatus.style.padding = "0px 16px 6px"
+      let newinfolabelStatus = document.createElement("div");
+      newinfolabelStatus.class = "infoPanelLabel"
+      newinfolabelStatus.style.fontWeight = '415'
+      newinfolabelStatus.textContent = "Status"
+      let newinfovalueStatus = document.createElement("div");
+      newinfovalueStatus.class = "infoPanelValue"
+      newinfovalueStatus.textContent = qstat
+      newinfodivStatus.appendChild(newinfolabelStatus)
+      newinfodivStatus.appendChild(newinfovalueStatus)
+      
+      let sepDiv = document.createElement("HR")
+      let qInfo = document.createElement("div")
+      let bCap = document.createElement("div")
+      bCap.style.marginBottom = '5px'
+      qInfo.textContent = "Quarantine Info"
+      qInfo.style.color = 'rgb(77, 122, 143)'
+      qInfo.style.fontSize = '14px'
+      qInfo.style.fontWeight = '500'
+      qInfo.style.marginTop = "-8px"
+      qInfo.style.marginLeft = "15px"
+      qInfo.style.marginBottom = "10px"
+      
       newRows.appendChild(newinfodivMime)
       newRows.appendChild(newinfodivPronom)
-      newRows.appendChild(newinfodivScan)
       newRows.appendChild(newinfodivTag)
+      newRows.appendChild(sepDiv)
+      newRows.appendChild(qInfo)
+      newRows.appendChild(newinfodivStatus)
+      newRows.appendChild(newinfodivScan)
+      newRows.appendChild(bCap)
+      
       
 			if (!(container.textContent.includes('Pronom'))){
       	
