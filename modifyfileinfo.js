@@ -2,6 +2,28 @@ function reqListener () {
   console.log(this.responseText);
 }
 
+function getMetaMime(){
+	try{
+  	let mimestring = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata).mimestring
+    if (mimestring == undefined){
+    	try{
+      	let mimestring = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata).mime
+        if (mimestring == undefined){
+        	let mimestring = 'Unidentified'
+          return mimestring
+        }
+    		return mimestring
+        }catch(err){
+        	let mimestring = "NA"
+          return mimestring
+          }
+    }
+    return mimestring
+  } catch(err){
+  	let mimestring = "NA"
+    return mimestring
+  }
+}
 
 function getMetaTag(){
 	 try{
@@ -88,7 +110,8 @@ const observer = new MutationObserver((mutations, observer) => {
       	var pid = getMetaPid()
         var scan = getMetaScan()
         var tag = getMetaTag()
-        addFileInfo(pid, scan, tag)
+        var mime = getMetaMime()
+        addFileInfo(pid, scan, tag, mime)
 		
         //lastmutation = mutations[recordno].target.id
       }
@@ -110,7 +133,8 @@ const observer = new MutationObserver((mutations, observer) => {
       	var pid = getMetaPid()
         var scan = getMetaScan()
         var tag = getMetaTag()
-        addFileInfo(pid, scan, tag)
+        var mime = getMetaMime()
+        addFileInfo(pid, scan, tag, mime)
 
         lastmutation = mutations[recordno].target.id
         }
@@ -126,7 +150,7 @@ observer.observe(document, {
 
 
 
-function addFileInfo(pronomID, scanResult, etag) {
+function addFileInfo(pronomID, scanResult, etag, mimetype) {
   let panels = document.querySelector("#info_panel > div > div > div").childElementCount;
   try{
   	//let panels = document.querySelector("#info_panel > div > div.scrollarea-content > div").childElementCount;
@@ -151,7 +175,7 @@ function addFileInfo(pronomID, scanResult, etag) {
       newinfodivPronom.style.padding = "0px 16px 6px"
       let newinfolabelPronom = document.createElement("div");
       newinfolabelPronom.class = "infoPanelLabel"
-      newinfolabelPronom.style.fontWeight = '435'
+      newinfolabelPronom.style.fontWeight = '415'
       newinfolabelPronom.textContent = "Pronom ID"
       let newinfovaluePronom = document.createElement("div");
       newinfovaluePronom.class = "infoPanelValue"
@@ -164,7 +188,7 @@ function addFileInfo(pronomID, scanResult, etag) {
       newinfodivScan.style.padding = "0px 16px 6px"
       let newinfolabelScan = document.createElement("div");
       newinfolabelScan.class = "infoPanelLabel"
-      newinfolabelScan.style.fontWeight = '435'
+      newinfolabelScan.style.fontWeight = '415'
       newinfolabelScan.textContent = "First virus scan result"
       let newinfovalueScan = document.createElement("div");
       newinfovalueScan.class = "infoPanelValue"
@@ -178,7 +202,7 @@ function addFileInfo(pronomID, scanResult, etag) {
       newinfodivTag.style.padding = "0px 16px 6px"
       let newinfolabelTag = document.createElement("div");
       newinfolabelTag.class = "infoPanelLabel"
-      newinfolabelTag.style.fontWeight = '435'
+      newinfolabelTag.style.fontWeight = '415'
       newinfolabelTag.textContent = "Checksum"
       let newinfovalueTag = document.createElement("div");
       newinfovalueTag.class = "infoPanelValue"
@@ -186,6 +210,20 @@ function addFileInfo(pronomID, scanResult, etag) {
       newinfodivTag.appendChild(newinfolabelTag)
       newinfodivTag.appendChild(newinfovalueTag)
       
+      let newinfodivMime = document.createElement("div")
+      newinfodivMime.class = "infoPanelRow"
+      newinfodivMime.style.padding = "0px 16px 6px"
+      let newinfolabelMime = document.createElement("div");
+      newinfolabelMime.class = "infoPanelLabel"
+      newinfolabelMime.style.fontWeight = '415'
+      newinfolabelMime.textContent = "Mimetype"
+      let newinfovalueMime = document.createElement("div");
+      newinfovalueMime.class = "infoPanelValue"
+      newinfovalueMime.textContent = mimetype
+      newinfodivMime.appendChild(newinfolabelMime)
+      newinfodivMime.appendChild(newinfovalueMime)
+      
+      newRows.appendChild(newinfodivMime)
       newRows.appendChild(newinfodivPronom)
       newRows.appendChild(newinfodivScan)
       newRows.appendChild(newinfodivTag)
