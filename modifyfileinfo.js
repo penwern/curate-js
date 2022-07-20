@@ -18,15 +18,14 @@ function getMetaTag(){
 function getMetaScan(){
   try{
     let vscan = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan"]
-    if (vscan == undefined){return 'File has not been scanned'}
-    	else{return vscan}
-    } catch(err){
-      //console.log("no scan result")
-      let vscan = "File has not been scanned"
-      return vscan
-    }
-    
+    return vscan 
+    }catch(err){
+    	let vscan = 'File has not been scanned'
+    	return vscan
+    	}
+      //console.log("no scan result")  
 }
+
 function getMetaPid() {
 	try{
   	let pid = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata).files[0].matches[0].id
