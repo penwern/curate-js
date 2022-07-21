@@ -1,3 +1,7 @@
+function reqListener () {
+  console.log(this.responseText);
+}
+
 function getMetaMime(){
 	try{
   	let mimestring = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata).mimestring
@@ -100,6 +104,71 @@ function addInfo(){
   if(status==undefined){status= 'Risk'}
   addFileInfo(pid, scan, tag, mime, status)
 }
+
+
+
+
+var lastmutation = {}
+var attempts = 0
+const memer = new MutationObserver((mutations, memer) => {
+	console.log("memer: ", mutations)
+})
+const observer = new MutationObserver((mutations, observer) => {
+//console.log(mutations)
+var source
+	
+	for (var recordno in mutations){
+  		var recordselected = mutations[recordno].target.selected
+			var target = mutations[recordno].target.className
+      //console.log(target.class)
+      //console.log("curr: ", mutations[recordno].target.id)
+      //if (mutations[recordno].target.innerText.includes('File Info')){
+      	//console.log('FFFFFFF: ', mutations[recordno])
+        //}
+      try {if (target.includes('chevron-')){
+      	source = mutations[recordno].target.parentElement.parentElement.parentElement.parentElement.innerText
+        }
+        }catch(err){}
+      try {if (target.includes('chevron-down') && source == 'File Info'){
+      	//console.log(mutations[recordno])
+        
+      	removeRows()
+        lastmutation = mutations[recordno].target.id
+      }
+      
+      }catch(err){}
+      try {if (target.includes('chevron-up')&& source == 'File Info'){
+      	//console.log(mutations[recordno])
+      	var itempath = mutations[recordno].target.id 
+        var parpath = mutations[recordno].target.ownerDocument.location.pathname
+        parpath = parpath.replace('/ws-','')
+        parpath = parpath.replace('/','')
+       	nodepath = parpath + itempath
+      	addInfo()
+		
+        //lastmutation = mutations[recordno].target.id
+      }
+      }catch(err){}
+      let chevvy
+      try{ chevvy = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").lastChild.className
+      }catch(err){ chevvy='ok'; }
+      
+      //if (chevvy == ''){chevvy='mdi mdi-chevron-down'}
+    	//console.log(chevvy)
+      //console.log("clas: ", document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").lastChild.className)
+  		if (recordselected === true && lastmutation !== mutations[recordno].target.id && !chevvy.includes('chevron-down')
+){
+      	var itempath = mutations[recordno].target.id 
+        var parpath = mutations[recordno].target.ownerDocument.location.pathname
+        parpath = parpath.replace('/ws-','')
+        parpath = parpath.replace('/','')
+       	nodepath = parpath + itempath
+      	addInfo()
+
+        lastmutation = mutations[recordno].target.id
+        }
+      }
+});
 
 function addFileInfo(pronomID, scanResult, etag, mimetype, qstat) {
   let panels = document.querySelector("#info_panel > div > div > div").childElementCount;
@@ -228,88 +297,26 @@ function addFileInfo(pronomID, scanResult, etag, mimetype, qstat) {
  }
 }
 
-
-function handleSomeDiv(someDiv, mutations) { 
-		const chev = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div")
-    //console.log(chev.firstChild.className)
-    if (chev.firstChild.className.includes('chevron-up')){
-    	//console.log("div was handled");
-    	//console.log("memes: ", mutations[0].addedNodes[0].innerText)
-    	addInfo() 
-  } 
+document.onload = function(){
+	
 }
 
-
-var lastmutation = {}
-var attempts = 0
-
-const observer = new MutationObserver((mutations, observer) => {
-  //console.log(mutations)
-  var source
-  for (var recordno in mutations){
-    var recordselected = mutations[recordno].target.selected
-    var target = mutations[recordno].target.className
-    //console.log(target.class)
-    //console.log("curr: ", mutations[recordno].target.id)
-
-    if (target.includes('chevron-')){
-      source = mutations[recordno].target.parentElement.parentElement.parentElement.parentElement.innerText
-    }
-    try {if (target.includes('chevron-down') && source == 'File Info'){
-      //console.log(mutations[recordno])
-
-      removeRows()
-      lastmutation = mutations[recordno].target.id
-    }
-
-        }catch(err){}
-    try {if (target.includes('chevron-up')&& source == 'File Info'){
-      //console.log(mutations[recordno])
-      var itempath = mutations[recordno].target.id 
-      var parpath = mutations[recordno].target.ownerDocument.location.pathname
-      parpath = parpath.replace('/ws-','')
-      parpath = parpath.replace('/','')
-      nodepath = parpath + itempath
-      addInfo()
-
-      //lastmutation = mutations[recordno].target.id
-    }
-        }catch(err){}
-    let chevvy
-    try{ chevvy = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").lastChild.className
-       }catch(err){ chevvy='ok'; }
-
-    //if (chevvy == ''){chevvy='mdi mdi-chevron-down'}
-    //console.log(chevvy)
-    //console.log("clas: ", document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").lastChild.className)
-    if (recordselected === true && lastmutation !== mutations[recordno].target.id && !chevvy.includes('chevron-down')
-       ){
-      var itempath = mutations[recordno].target.id 
-      var parpath = mutations[recordno].target.ownerDocument.location.pathname
-      parpath = parpath.replace('/ws-','')
-      parpath = parpath.replace('/','')
-      nodepath = parpath + itempath
-      addInfo()
-
-      lastmutation = mutations[recordno].target.id
-    }
-  }
-});
-
-
+function handleSomeDiv(someDiv, mutations) { 
+    console.log("div was handled");
+    console.log("memes: ", mutations[0].addedNodes[0].innerText)
+    //if (mutations[0].addedNodes[0].innerText.includes('File Info'))
+    //addInfo()
+    //mutationInstance.disconnect();
+}
 
 const memserver = new MutationObserver(function (mutations, mutationInstance) {
-  const someDiv = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1)")
-  const chev = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div")
-  try {if (someDiv.innerText.includes('File Info')) {
-    if (mutations[0].addedNodes[0].innerText.includes('File Info')){
-      handleSomeDiv(someDiv, mutations);
-      //mutationInstance.disconnect();
-    } 
-  }
-      }catch(err){}
+    const someDiv = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1)")
+    try {if (someDiv.innerText.includes('File Info')) {
+        handleSomeDiv(someDiv, mutations);
+        //mutationInstance.disconnect();
+    }
+   }catch(err){}
 });
- 
 
 
 memserver.observe(document, {
