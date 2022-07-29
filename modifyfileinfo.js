@@ -38,18 +38,16 @@ function getMetaTag(){
 }
 
 function getMetaScan(){
-  try{
-    let vscan = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan"]
-    if (vscan == undefined){
-    	let vscan = 'File has not been scanned' 
-      return vscan
+		var vscan = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan"]
+    var vscan2 = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-second-virus-scan"]
+      //console.log("no scan result") 
+      var arr = [vscan, vscan2]
+      for (var a in arr){
+      	if(arr[a]==undefined){
+        	arr[a] = 'File has not been scanned'
+        }
       }
-    return vscan 
-    }catch(err){
-    	let vscan = 'File has not been scanned'
-    	return vscan
-    	}
-      //console.log("no scan result")  
+      return arr
 }
 
 function getMetaPid() {
@@ -87,22 +85,23 @@ function removeRows(){
 
 function addInfo(){
   var pid = getMetaPid()
-  var scan = getMetaScan()
+  var scanarr = getMetaScan()
+  var scan = scanarr[0]
+  var scan2 = scanarr[1]
   var tag = getMetaTag()
   var mime = getMetaMime()
   var status
-  var scan2 = 'File has not been scanned' //replace this with function to get second scan result
   if (scan == 'File has not been scanned'){
   	status = 'Risk'
   }
-  if(scan.includes('passed') && scan2 == 'File has not been scanned'){
+  if(scan.toLowerCase().includes('passed') && scan2 == 'File has not been scanned'){
   	status = 'Quarantined'
   	}
-  if(scan.includes('passed') && scan2.includes('passed')){
+  if(scan.toLowerCase().includes('passed') && scan2.toLowerCase().includes('passed')){
     status = 'Released'
     }
   if(status==undefined){status= 'Risk'}
-  addFileInfo(pid, scan, tag, mime, status)
+  addFileInfo(pid, scan,scan2, tag, mime, status)
 }
 
 
@@ -122,9 +121,6 @@ var source
 			var target = mutations[recordno].target.className
       //console.log(target.class)
       //console.log("curr: ", mutations[recordno].target.id)
-      //if (mutations[recordno].target.innerText.includes('File Info')){
-      	//console.log('FFFFFFF: ', mutations[recordno])
-        //}
       try {if (target.includes('chevron-')){
       	source = mutations[recordno].target.parentElement.parentElement.parentElement.parentElement.innerText
         }
@@ -170,7 +166,7 @@ var source
       }
 });
 
-function addFileInfo(pronomID, scanResult, etag, mimetype, qstat) {
+function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
   let panels = document.querySelector("#info_panel > div > div > div").childElementCount;
   try{
   	//let panels = document.querySelector("#info_panel > div > div.scrollarea-content > div").childElementCount;
@@ -216,6 +212,19 @@ function addFileInfo(pronomID, scanResult, etag, mimetype, qstat) {
       newinfovalueScan.textContent = scanResult
       newinfodivScan.appendChild(newinfolabelScan)
       newinfodivScan.appendChild(newinfovalueScan)
+      
+      let newinfodivScan2 = document.createElement("div")
+      newinfodivScan2.class = "infoPanelRow"
+      newinfodivScan2.style.padding = "0px 16px 6px"
+      let newinfolabelScan2 = document.createElement("div");
+      newinfolabelScan2.class = "infoPanelLabel"
+      newinfolabelScan2.style.fontWeight = '415'
+      newinfolabelScan2.textContent = "Second virus scan result"
+      let newinfovalueScan2 = document.createElement("div");
+      newinfovalueScan2.class = "infoPanelValue"
+      newinfovalueScan2.textContent = scan2Result
+      newinfodivScan2.appendChild(newinfolabelScan2)
+      newinfodivScan2.appendChild(newinfovalueScan2)
       
       let newinfodivTag = document.createElement("div")
       newinfodivTag.class = "infoPanelRow"
@@ -275,6 +284,7 @@ function addFileInfo(pronomID, scanResult, etag, mimetype, qstat) {
       newRows.appendChild(qInfo)
       newRows.appendChild(newinfodivStatus)
       newRows.appendChild(newinfodivScan)
+      newRows.appendChild(newinfodivScan2)
       newRows.appendChild(bCap)
       
       
@@ -302,10 +312,13 @@ document.onload = function(){
 }
 
 function handleSomeDiv(someDiv, mutations) { 
-    console.log("div was handled");
-    console.log("memes: ", mutations[0].addedNodes[0].innerText)
-    //if (mutations[0].addedNodes[0].innerText.includes('File Info'))
-    //addInfo()
+    //console.log("div was handled");
+    //console.log("memes: ", mutations[0].addedNodes[0].innerText)
+    var chev = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").firstChild.className
+    if (mutations[0].addedNodes[0].innerText.includes('File Info') && !chev.includes('down')){
+    addInfo()
+    }
+    
     //mutationInstance.disconnect();
 }
 
