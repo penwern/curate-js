@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function(){
   })
   
   let u = "https://"+window.location.hostname+":6903/bannerMessage"
-  mR.open("POST", u)
+  mR.open("GET", u)
   mR.setRequestHeader("content-type", "application/json")
   mR.send()
 })
