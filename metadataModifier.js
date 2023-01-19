@@ -201,6 +201,13 @@ function isadDivs(areas){
             labelSpan.setAttribute("state-icon", "+")
           }
         })
+        mdsLabel.addEventListener("click", function(){
+          if (labelSpan.getAttribute("state-icon") == "+"){
+            labelSpan.setAttribute("state-icon", "-")
+          }else {
+            labelSpan.setAttribute("state-icon", "+")
+          }
+        })
         labelSpan.className = "mdsSpan2"
         labelSpan.textContent = areas[x]
         mdsLabel.appendChild(labelSpan)
