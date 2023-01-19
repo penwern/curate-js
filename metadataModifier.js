@@ -195,17 +195,19 @@ function isadDivs(areas){
         labelSpan.id = "mdsSpan-"+(areas[x].replaceAll(' ','-'))
         labelSpan.setAttribute("state-icon", "+")
         labelSpan.addEventListener("click", function(){
-          if (labelSpan.getAttribute("state-icon") == "+"){
-            labelSpan.setAttribute("state-icon", "-")
+          let l = document.querySelector("#mdsSpan-"+(areas[x].replaceAll(' ','-')))
+          if (l.getAttribute("state-icon") == "+"){
+            l.setAttribute("state-icon", "-")
           }else {
-            labelSpan.setAttribute("state-icon", "+")
+            l.setAttribute("state-icon", "+")
           }
         })
         mdsLabel.addEventListener("click", function(){
-          if (labelSpan.getAttribute("state-icon") == "+"){
-            labelSpan.setAttribute("state-icon", "-")
+          let l = document.querySelector("#mdsSpan-"+(areas[x].replaceAll(' ','-')))
+          if (l.getAttribute("state-icon") == "+"){
+            l.setAttribute("state-icon", "-")
           }else {
-            labelSpan.setAttribute("state-icon", "+")
+            l.setAttribute("state-icon", "+")
           }
         })
         labelSpan.className = "mdsSpan2"
