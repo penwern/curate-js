@@ -194,22 +194,6 @@ function isadDivs(areas){
         ul.className = "mdsSlide"
         labelSpan.id = "mdsSpan-"+(areas[x].replaceAll(' ','-'))
         labelSpan.setAttribute("state-icon", "+")
-        labelSpan.addEventListener("click", function(){
-          let l = document.querySelector("#mdsSpan-"+(areas[x].replaceAll(' ','-')))
-          if (l.getAttribute("state-icon") == "+"){
-            l.setAttribute("state-icon", "-")
-          }else {
-            l.setAttribute("state-icon", "+")
-          }
-        })
-        mdsLabel.addEventListener("click", function(){
-          let l = document.querySelector("#mdsSpan-"+(areas[x].replaceAll(' ','-')))
-          if (l.getAttribute("state-icon") == "+"){
-            l.setAttribute("state-icon", "-")
-          }else {
-            l.setAttribute("state-icon", "+")
-          }
-        })
         labelSpan.className = "mdsSpan2"
         labelSpan.textContent = areas[x]
         mdsLabel.appendChild(labelSpan)
@@ -217,7 +201,15 @@ function isadDivs(areas){
         mdsSelector.name = "schema-"+areas[x]
         mdsSelector.className = "checkbox-isadg2"
         mdsSelector.id = "checkbox-isadg"+x
-
+        mdsSelector.addEventListener("change", function(){
+          let c = mdsSelector.checked
+          if (c == true){
+            labelSpan.setAttribute("state-icon", "-")
+          }
+          else if(c == false){
+            labelSpan.setAttribute("state-icon", "+")
+          }
+        })
         mdsLabel.htmlFor = mdsSelector.id
    
         div.appendChild(mdsLabel)
