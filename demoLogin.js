@@ -124,10 +124,13 @@ bSpan.style="font-size: 12pt; display: inline-block;"
 
 var dSpan = document.createElement("span")
 dSpan.style="font-size: 12pt; display: inline-block;"
-dSpan.innerText = "This demo will reset itself every hour. Please feel free to upload and edit files as you wish and the data will be cleared shortly. Click below to sign in and try it out. Built on the open-source platform Pydio Cells: https://pydio.com/en/pydio-cells/overview"
-
+dSpan.innerText = "This demo will reset itself every hour. Please feel free to upload and edit files as you wish and the data will be cleared shortly. Click below to sign in and try it out."
+var creditRef = document.createElement("a")
+creditRef.style="font-size: 12pt; display: inline-block;"
+creditRef.href = "https://pydio.com/en/pydio-cells/overview"
+creditRef.innerText = "Built on the open-source platform Pydio Cells."
 bSpan.appendChild(dSpan)
-
+bSpan.appendChild(creditRef)
 
 let lB = document.createElement("div")
 lB.classList.add("demoLaunchBtn")
