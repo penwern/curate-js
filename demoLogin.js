@@ -124,7 +124,7 @@ bSpan.style="font-size: 12pt; display: inline-block;"
 
 var dSpan = document.createElement("span")
 dSpan.style="font-size: 12pt; display: inline-block;"
-dSpan.innerText = "This demo will reset itself every hour. Please feel free to upload and edit files as you wish and the data will be cleared shortly. Click below to sign in and try it out."
+dSpan.innerText = "This demo will reset itself every hour. Please feel free to upload and edit files as you wish and the data will be cleared shortly. Click below to sign in and try it out. Built on the open-source platform Pydio Cells: https://pydio.com/en/pydio-cells/overview"
 
 bSpan.appendChild(dSpan)
 
