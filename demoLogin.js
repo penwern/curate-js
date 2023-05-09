@@ -138,7 +138,7 @@ lB.onclick = function(){
     document.querySelector("#application-login").value = "demo"
     document.querySelector("#application-password").value = "D3moUser!"
     document.querySelector("#dialog-login-submit").click()
-    document.querySelector("#loginForm").remove()
+    //document.querySelector("#loginForm").remove()
 }
 let liC = document.createElement("div")
 liC.innerHTML = '<span class="mdi mdi-account" style="position:relative; top:-0.1em;font-size: 60px; margin-bottom: 10px;"></span>'
