@@ -251,11 +251,11 @@ if (result.length !== 0){
 
 function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
   setTimeout(function(){ //file info panel takes 5ms to load in subfolders for some reason
-    let infoPanelOpen = document.querySelector("#orbit_content > div > div.desktop-container.vertical_layout.vertical_fit > div:nth-child(1) > div:nth-child(2) > div:nth-child(4) > button").style.backgroundColor
-  if (infoPanelOpen == "initial"){
-    //closed
-    panels = "null"
-  }else{
+  	if (!document.querySelector("#info_panel > div > div > div > div:nth-child(2)").querySelector(".panelContent")){
+    		//closed
+		panels = "null"
+	}else{
+		
     //open
     let panels = document.querySelector("#info_panel > div > div > div").childElementCount;
   
