@@ -574,7 +574,7 @@ accordionHeaders.forEach(function (header) {
       const tagsSection = metadataPanelTemplate.querySelector("#tagsSection")
       const lengthMax = metadataFields.length
        if (pydio.UI.themeBuilder.dark == true){
-        var bgc = "rgb(237, 242, 241) !important"
+        var bgc = "#465957 !important"
       }else{
         var bgc = "white !important"
       }
