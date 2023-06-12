@@ -578,10 +578,7 @@ accordionHeaders.forEach(function (header) {
       }else{
         var bgc = "white !important"
       }
-      const aHeaders = Array.from(metadataPanelTemplate.querySelector(".metadataPanel-accordion-header"))
-      aHeaders.forEach(header => {
-        header.style.backgroundColor = bgc
-      })
+     
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
@@ -613,7 +610,10 @@ accordionHeaders.forEach(function (header) {
      if (metadataPanel.tagName == "DIV"){
        metadataPanel.addEventListener("click", function(){this.id=null})
      }
-    
+       const aHeaders = Array.from(document.querySelector(".metadataPanel-accordion-header"))
+      aHeaders.forEach(header => {
+        header.style.backgroundColor = bgc
+      })
       retrieveSidecarInfo(metadataPanel)
     
   }
