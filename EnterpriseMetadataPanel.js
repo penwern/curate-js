@@ -610,9 +610,10 @@ accordionHeaders.forEach(function (header) {
      if (metadataPanel.tagName == "DIV"){
        metadataPanel.addEventListener("click", function(){this.id=null})
      }
-       const aHeaders = Array.from(document.querySelector(".metadataPanel-accordion-header"))
-      aHeaders.forEach(header => {
-        header.style.backgroundColor = bgc
+     const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
+     aHeaders.forEach(header => {
+      header.style.backgroundColor = bgc
+        console.log(header.style.backgroundColor)
       })
       retrieveSidecarInfo(metadataPanel)
     
