@@ -18,21 +18,7 @@ function waitForElm(selector) {
     });
 }
 function getOpenWS(){
-	var ws
-  var wspaces = document.querySelector("#orbit_content > div > div.left-panel.vertical_fit.vertical_layout > div.scrollarea.vertical_fit > div > div > div:nth-child(2) > div.workspaces")
-  for (var childno in wspaces.children){
-  	childno++
-  //console.log("childno: ", childno++)
-  	if (!isNaN(childno) && childno != null){
-      var child = document.querySelector("#orbit_content > div > div.left-panel.vertical_fit.vertical_layout > div.scrollarea.vertical_fit > div > div > div:nth-child(2) > div.workspaces > div:nth-child("+(childno++)+")")
-      //console.log(child)
-      if (child.lastChild.className.includes('folders-tree')){
-        //console.log("open ws is: ", child.innerText)
-        ws = child.innerText.toLowerCase().replace(' ','-')
-        return ws
-      }
-     }
-  }
+	return(document.querySelector(".workspace-current").textContent.toLowerCase().replace(" ","-")
 }
 function reqListener () {
   //console.log(this.responseText);
