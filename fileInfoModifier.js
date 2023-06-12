@@ -18,7 +18,7 @@ function waitForElm(selector) {
     });
 }
 function getOpenWS(){
-	return(document.querySelector(".workspace-current").textContent.toLowerCase().replace(" ","-")
+	return(document.querySelector(".workspace-current").textContent.toLowerCase().replace(" ","-"))
 }
 function reqListener () {
   //console.log(this.responseText);
