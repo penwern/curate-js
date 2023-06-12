@@ -559,17 +559,7 @@ accordionHeaders.forEach(function (header) {
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
         return
-      }
-      if (pydio.UI.themeBuilder.dark == true){
-        var bgc = "rgb(237, 242, 241) !important"
-      }else{
-        var bgc = "white !important"
-      }
-      const aHeaders = Array.from(document.querySelector(".metadataPanel-accordion-header"))
-      aHeaders.forEach(header => {
-        header.style.backgroundColor = bgc
-      })
-      
+      }      
       const panelContentParent = metadataPanel.querySelector(".panelContent")
       const panelContent = panelContentParent.firstChild
       const panelContentClone = panelContentParent.firstChild.cloneNode(true)
@@ -583,6 +573,15 @@ accordionHeaders.forEach(function (header) {
       const exportSection = metadataPanelTemplate.querySelector("#exportSection")
       const tagsSection = metadataPanelTemplate.querySelector("#tagsSection")
       const lengthMax = metadataFields.length
+       if (pydio.UI.themeBuilder.dark == true){
+        var bgc = "rgb(237, 242, 241) !important"
+      }else{
+        var bgc = "white !important"
+      }
+      const aHeaders = Array.from(metadataPanelTemplate.querySelector(".metadataPanel-accordion-header"))
+      aHeaders.forEach(header => {
+        header.style.backgroundColor = bgc
+      })
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
