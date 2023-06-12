@@ -560,6 +560,16 @@ accordionHeaders.forEach(function (header) {
       if (metadataPanel.id == "curateMdPanel"){
         return
       }
+      if (pydio.UI.themeBuilder.dark == true){
+        var bgc = "rgb(237, 242, 241) !important"
+      }else{
+        var bgc = "white !important"
+      }
+      const aHeaders = Array.from(document.querySelector(".metadataPanel-accordion-header"))
+      aHeaders.forEach(header => {
+        header.style.backgroundColor = bgc
+      })
+      
       const panelContentParent = metadataPanel.querySelector(".panelContent")
       const panelContent = panelContentParent.firstChild
       const panelContentClone = panelContentParent.firstChild.cloneNode(true)
