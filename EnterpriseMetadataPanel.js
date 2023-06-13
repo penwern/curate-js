@@ -559,12 +559,14 @@ function darkModeModify(){
         var ddc = "#474747"
         var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
         var dzc = "#5c5a5a"
+        var hc = "#202529 !important"
       }else{
         var bgc = "#f6f6f6"
         var icc = "#EFEEEE"
         var ddc = "white"
         var itc = "linear-gradient(white, white) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
         var dzc = "#F5F5F5"
+        var hc = "linear-gradient(90deg, var(--customerColourPrimary), var(--customerColourHighlight)) !important"
       }
      const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
      aHeaders.forEach(header => {
@@ -580,6 +582,7 @@ function darkModeModify(){
     aItems.forEach(item=>{item.style.background=itc})
     const dropZones = Array.from(document.querySelectorAll(".drop-zone"))
     dropZones.forEach(zone=>{zone.style.backgroundColor = dzc})
+    document.querySelector("#workspace_toolbar").parentElement.style.background = hc
 }
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
@@ -779,7 +782,6 @@ function darkModeModify(){
         if (!cM.classList.contains("mdi-theme-light-dark")){
             return
         }
-        console.log("b clicked")
         // Get the initial state of ui theme
         const themeState = pydio.UI.themeBuilder.dark;
         // Create a setInterval function that checks for the state flip
