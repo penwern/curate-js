@@ -187,6 +187,7 @@ function addFileInfo(fileInfoPanel) {
         let bCap = document.createElement("div")
         bCap.style.marginBottom = '5px'
         qInfo.textContent = "Quarantine Info"
+	qInfo.id = "quarantineInfoLabel"
         qInfo.style.color = 'rgb(77, 122, 143)'
         qInfo.style.fontSize = '14px'
         qInfo.style.fontWeight = '500'
