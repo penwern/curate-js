@@ -567,9 +567,13 @@ accordionHeaders.forEach(function (header) {
       if (pydio.UI.themeBuilder.dark == true){
         var bgc = "#465957"
         var icc = "#314243"
+        var ddc = "#474747"
+        var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box;"
       }else{
         var bgc = "white"
         var icc = "#e9e7e7"
+        var ddc = "white"
+        var itc = "linear-gradient(white, white) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box;"
       }
       console.log("active bg colour: ", bgc)
       for (let x=0; x<metadataFieldsClone.length; x++){
@@ -611,6 +615,8 @@ accordionHeaders.forEach(function (header) {
      aIcons.forEach(icon =>{
       icon.style.backgroundColor = icc
      })
+    const aItems = Array.from(document.querySelectorAll(".dropdown-item"))
+    aItems.forEach(item=>{item.style.backgroundColor=})
       retrieveSidecarInfo(metadataPanel)
     
   }
