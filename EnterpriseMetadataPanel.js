@@ -765,6 +765,13 @@ function darkModeModify(){
            // Hide the parent element by setting its display property to "none"
            document.querySelector('[title="OtherMeta"]').parentElement.style.display = "none"
          }
+         if (addedNode.querySelector("#workspace_toolbar")){
+             if (pydio.UI.themeBuilder.dark){
+                 document.querySelector("#workspace_toolbar").parentElement.style.background = "rgb(32, 37, 41)"
+             }else{
+                 document.querySelector("#workspace_toolbar").parentElement.style.background = "linear-gradient(90deg, var(--customerColourPrimary), var(--customerColourHighlight))"
+             }
+         }
        });
      }
    }  
