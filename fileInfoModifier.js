@@ -60,10 +60,10 @@ function getMetaTag(){
 
 function getMetaScan(){
     let scanArr = [Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan-first"], Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata)["usermeta-virus-scan-second"]]
-        if(scanArr[0]==undefined){
+        if(scanArr[0]== undefined || scanArr[0]== ""){
         	scanArr[0] = 'File has not been scanned'
         }
-        if(scanArr[1]==undefined){
+        if(scanArr[1]==undefined || scanArr[1]== ""){
         	scanArr[1] = 'File has not been scanned'
         }
         return scanArr
@@ -136,74 +136,24 @@ var idr = []
 var lastmutation = {}
 var attempts = 0
 const delay = ms => new Promise(res => setTimeout(res, ms));
-const memer = new MutationObserver((mutations, memer) => {
-	//console.log("memer: ", mutations)
-})
-const observer = new MutationObserver((mutations, observer) => {
-//console.log(mutations)
-var source
-var clickList
-//var result = mutations.filter(record => record.target.selected == true && record.attributeName == 'class');
-var result = mutations;
-if (result.length !== 0){
-	var currSelectVol = window.pydio._dataModel._selectedNodes.length
-  if (currSelectVol == 1 && selC>1){
-   multosingDelay()   
-  }
-  selC = currSelectVol
-}
 
-	for (var recordno in mutations){
-  		var recordselected = mutations[recordno].target.selected
-			var target = mutations[recordno].target.className
-      var targetID = mutations[recordno].target.getAttribute('id');
-			var searchText = mutations[recordno].target.innerHtml
-      //if !window.location.includes("settings"){
-        //var infoBtnState = document.querySelector("#orbit_content > div > div.desktop-container.vertical_layout.vertical_fit > div:nth-child(1) > div:nth-child(2) > div:nth-child(4) > button").style.backgroundColor
-      //};
-      try {if (target.includes('chevron-')){
-      	source = mutations[recordno].target.parentElement.parentElement.parentElement.parentElement.innerText
+const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
+          const fileInfoPanel = node;
+          console.log("found by obs: ",fileInfoPanel);
+          observer.disconnect();
+          return;
         }
-        
-        }catch(err){}
-      try {if (target.includes('chevron-down') && source == 'File Info'){
-        
-      	removeRows()
-        lastmutation = mutations[recordno].target.id
-      } 
-      }catch(err){}
-      try {if (target.includes('chevron-up')&& source == 'File Info'){
-      	//console.log(mutations[recordno])
-      	var itempath = mutations[recordno].target.id 
-        var parpath = mutations[recordno].target.ownerDocument.location.pathname
-        parpath = parpath.replace('/ws-','')
-        parpath = parpath.replace('/','')
-       	nodepath = parpath + itempath
-      	addInfo()
-		
-        //lastmutation = mutations[recordno].target.id
       }
-      }catch(err){}
-      let chevvy
-      try{ chevvy = document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").lastChild.className
-      }catch(err){ chevvy='ok'; }
-      
-      //if (chevvy == ''){chevvy='mdi mdi-chevron-down'}
-    	//console.log(chevvy)
-      //console.log("clas: ", document.querySelector("#info_panel > div > div > div > div:nth-child(2) > div:nth-child(1) > div > button > div").lastChild.className)
-  		if (recordselected === true && lastmutation !== mutations[recordno].target.id && !chevvy.includes('chevron-down')
-){
-      	var itempath = mutations[recordno].target.id 
-        var parpath = mutations[recordno].target.ownerDocument.location.pathname
-        parpath = parpath.replace('/ws-','')
-        parpath = parpath.replace('/','')
-       	nodepath = parpath + itempath
-      	addInfo()
-
-        lastmutation = mutations[recordno].target.id
-        }
-}
+    }
+  }
 });
+
+fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
+
 
 function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
   setTimeout(function () {
@@ -212,7 +162,7 @@ function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
     if (fileInfoPanel) {
         let newRows = document.createElement("div")
         newRows.style.marginTop = "-11px"
-
+	newRows.id = "curateAdditionalInfo"
         let newinfodivPronom = genNewRow("Pronom ID", pronomID)
         let newinfodivScan = genNewRow("First virus scan result",scanResult)
         let newinfodivScan2 = genNewRow("Second virus scan result",scan2Result)
