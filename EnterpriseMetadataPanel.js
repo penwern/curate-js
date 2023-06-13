@@ -47,7 +47,7 @@
   }
 
   .metadataPanel-accordion-content {
-    background-color: #fff;
+    background-color: inherit;
     max-height: 0;
     overflow: hidden;
     transition: all 0.3s ease-out;
@@ -59,6 +59,7 @@
 
   .metadataPanel-accordion-subfield {
     margin-bottom: 0.5em !important;
+    background-color: inherit;
   }
 
   /* Add this style to show the expanded content */
