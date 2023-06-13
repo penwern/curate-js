@@ -583,6 +583,8 @@ function darkModeModify(){
     const dropZones = Array.from(document.querySelectorAll(".drop-zone"))
     dropZones.forEach(zone=>{zone.style.backgroundColor = dzc})
     document.querySelector("#workspace_toolbar").parentElement.style.background = hc
+    console.log("keks: ", hc)
+    console.log(document.querySelector("#workspace_toolbar").parentElement.style.background)
 }
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
