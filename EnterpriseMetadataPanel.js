@@ -552,12 +552,19 @@ accordionHeaders.forEach(function (header) {
     return area;
   };
 function darkModeModify(){
-      var bgc = "#465957"
-      var icc = "#314243"
-      var ddc = "#474747"
-      var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
-      var dzc = "#5c5a5a"
-      
+      if (pydio.UI.themeBuilder.dark){
+        var bgc = "#465957"
+        var icc = "#314243"
+        var ddc = "#474747"
+        var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
+        var dzc = "#5c5a5a"
+      }else{
+        var bgc = "#f6f6f6"
+        var icc = "#EFEEEE"
+        var ddc = "white"
+        var itc = "linear-gradient(white, white) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
+        var dzc = "#F5F5F5"
+      }
      const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
      aHeaders.forEach(header => {
       header.style.backgroundColor = bgc
@@ -624,9 +631,9 @@ function darkModeModify(){
        metadataPanel.addEventListener("click", function(){this.id=null})
      }
       
-     if (pydio.UI.themeBuilder.dark == true){
-       darkModeModify()
-      }
+     
+     darkModeModify()
+      
       retrieveSidecarInfo(metadataPanel)
     
   }
@@ -763,12 +770,21 @@ function darkModeModify(){
       // Create a new instance of the MutationObserver
       const wsObserver = new MutationObserver(wsCallback);
       wsObserver.observe(document.body, {childList: true, subtree: true });
-      
+      document.addEventListener("click",e=>{
+        let cM = e.target.closest(".mdi")
+        if (!cM){
+            return
+        }
+        if (!cM.classList.contains("mdi-theme-light-dark")){
+            return
+        }
+        darkModeModify()
+      })
       const interval = setInterval(() => {
         if (pydio) {
           clearInterval(interval);
           pydio._dataModel.observe("selection_changed",retrieveSidecarInfo)
-         
+          
         }
       }, 50);
       
