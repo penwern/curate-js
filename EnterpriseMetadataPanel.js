@@ -553,7 +553,7 @@ accordionHeaders.forEach(function (header) {
   };
 function darkModeModify(){
   console.log("togglin")
-      if (pydio.UI.themeBuilder.dark){
+      if (!pydio.UI.themeBuilder.dark){
         var bgc = "#465957"
         var icc = "#314243"
         var ddc = "#474747"
