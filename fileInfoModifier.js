@@ -207,27 +207,9 @@ if (result.length !== 0){
 
 function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
   setTimeout(function () {
-    if (!document.querySelector("#info_panel > div > div > div > div:nth-child(2)").querySelector(".panelContent")) {
-      panels = "null"
-    } else {
-    if (panels !== "null") {
-        const pCards = Array.from(document.querySelectorAll(".panelCard"));
-	const fileInfoPanel = pCards.find(card => card.innerText.includes("File Info"));
-	const genNewRow = (label, value) => {
-	    let n = document.createElement("div")
-	    n.class = "infoPanelRow"
-	    n.style.padding = "0px 16px 6px"
-	    let l = document.createElement("div")
-	    l.class = "infoPanelLabel"
-	    l.style.fontWeight = "415"
-	    l.textContent = label
-	    let v = document.createElement("div")
-	    v.class = "infoPanelValue"
-	    v.textContent = value
-	    n.appendChild(l)
-	    n.appendChild(v)
-	    return n
-	}
+    const pCards = Array.from(document.querySelectorAll(".panelCard"));
+    const fileInfoPanel = pCards.find(card => card.innerText.includes("File Info"));
+    if (fileInfoPanel) {
         let newRows = document.createElement("div")
         newRows.style.marginTop = "-11px"
 
@@ -271,6 +253,21 @@ function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
       }
     }
   }, 5);
+  const genNewRow = (label, value) => {
+    let n = document.createElement("div")
+    n.class = "infoPanelRow"
+    n.style.padding = "0px 16px 6px"
+    let l = document.createElement("div")
+    l.class = "infoPanelLabel"
+    l.style.fontWeight = "415"
+    l.textContent = label
+    let v = document.createElement("div")
+    v.class = "infoPanelValue"
+    v.textContent = value
+    n.appendChild(l)
+    n.appendChild(v)
+    return n
+  }
 }
 
 observer.observe(document, {
