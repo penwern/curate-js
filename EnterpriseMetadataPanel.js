@@ -38,8 +38,11 @@
   }
 
   .metadataPanel-accordion-icon {
-    width: 1.5em;
-    height: 1.5em;
+    min-width: 1.5em;
+    max-width: 1.5em;
+    min-height: 1.5em;
+    max-height: 1.5em;
+    margin: 0.5em;
     background-color: #EFEEEE;
     border-radius: 50%;
     transition: transform 0.3s;
