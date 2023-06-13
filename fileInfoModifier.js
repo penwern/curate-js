@@ -147,7 +147,6 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
 	  if(node.querySelector(".panelContent")){
 	      addFileInfo(node) 
 	  }
-	  observer.disconnect();
           return;
         }
       }
