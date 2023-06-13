@@ -559,14 +559,14 @@ function darkModeModify(){
         var ddc = "#474747"
         var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
         var dzc = "#5c5a5a"
-        var hc = "#202529 !important"
+        var hc = "#202529"
       }else{
         var bgc = "#f6f6f6"
         var icc = "#EFEEEE"
         var ddc = "white"
         var itc = "linear-gradient(white, white) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
         var dzc = "#F5F5F5"
-        var hc = "linear-gradient(90deg, var(--customerColourPrimary), var(--customerColourHighlight)) !important"
+        var hc = "linear-gradient(90deg, var(--customerColourPrimary), var(--customerColourHighlight))"
       }
      const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
      aHeaders.forEach(header => {
@@ -583,7 +583,6 @@ function darkModeModify(){
     const dropZones = Array.from(document.querySelectorAll(".drop-zone"))
     dropZones.forEach(zone=>{zone.style.backgroundColor = dzc})
     document.querySelector("#workspace_toolbar").parentElement.style.background = hc
-    console.log("keks: ", hc)
     console.log(document.querySelector("#workspace_toolbar").parentElement.style.background)
 }
   function modifyMetadataPanel(metadataPanel){
