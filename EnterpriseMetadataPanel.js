@@ -551,6 +551,28 @@ accordionHeaders.forEach(function (header) {
     const area = mapping[fieldString] || 'Unknown';
     return area;
   };
+function darkModeModify(){
+      var bgc = "#465957"
+      var icc = "#314243"
+      var ddc = "#474747"
+      var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
+      var dzc = "#5c5a5a"
+      
+     const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
+     aHeaders.forEach(header => {
+      header.style.backgroundColor = bgc
+      })
+     const aIcons = Array.from(document.querySelectorAll(".metadataPanel-accordion-icon"))
+     aIcons.forEach(icon =>{
+      icon.style.backgroundColor = icc
+     })
+    const adItems = Array.from(document.querySelectorAll(".dropdown-item"))
+    adItems.forEach(item=>{item.style.backgroundColor=ddc})
+    const aItems = Array.from(document.querySelectorAll(".metadataPanel-accordion-item"))
+    aItems.forEach(item=>{item.style.background=itc})
+    const dropZones = Array.from(document.querySelectorAll(".drop-zone"))
+    dropZones.forEach(zone=>{zone.style.backgroundColor = dzc})
+}
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
         return
@@ -568,18 +590,8 @@ accordionHeaders.forEach(function (header) {
       const exportSection = metadataPanelTemplate.querySelector("#exportSection")
       const tagsSection = metadataPanelTemplate.querySelector("#tagsSection")
       const lengthMax = metadataFields.length
-      if (pydio.UI.themeBuilder.dark == true){
-        var bgc = "#465957"
-        var icc = "#314243"
-        var ddc = "#474747"
-        var itc = "linear-gradient(#474747, #474747) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
-      }else{
-        var bgc = "white"
-        var icc = "#e9e7e7"
-        var ddc = "white"
-        var itc = "linear-gradient(white, white) padding-box, linear-gradient(to right, var(--customerColourPrimary), var(--customerColourHighlight)) border-box"
-      }
-      console.log("active bg colour: ", bgc)
+     
+
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
@@ -611,18 +623,10 @@ accordionHeaders.forEach(function (header) {
      if (metadataPanel.tagName == "DIV"){
        metadataPanel.addEventListener("click", function(){this.id=null})
      }
-     const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
-     aHeaders.forEach(header => {
-      header.style.backgroundColor = bgc
-      })
-     const aIcons = Array.from(document.querySelectorAll(".metadataPanel-accordion-icon"))
-     aIcons.forEach(icon =>{
-      icon.style.backgroundColor = icc
-     })
-    const adItems = Array.from(document.querySelectorAll(".dropdown-item"))
-    adItems.forEach(item=>{item.style.backgroundColor=ddc})
-    const aItems = Array.from(document.querySelectorAll(".metadataPanel-accordion-item"))
-    aItems.forEach(item=>{item.style.background=itc})
+      
+     if (pydio.UI.themeBuilder.dark == true){
+       darkModeModify()
+      }
       retrieveSidecarInfo(metadataPanel)
     
   }
