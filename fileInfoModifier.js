@@ -101,14 +101,8 @@ function removeRows(){
 	}
 }
 
-function addInfo(){
-  var pid = getMetaPid()
-  var scanarr = getMetaScan()
-  var scan = scanarr[0]
-  var scan2 = scanarr[1]
-  var tag = getMetaTag()
-  var mime = getMetaMime()
-  var status
+function getQStatus(scan,scan2){
+  var status = "Risk"
   if (scan == 'File has not been scanned'){
   	status = 'Risk'
   }
@@ -121,8 +115,7 @@ function addInfo(){
   if(scan.toLowerCase().includes('passed') && scan2.toLowerCase().includes('passed')){
     status = 'Released'
     }
-  if(status==undefined){status= 'Risk'}
-  addFileInfo(pid, scan,scan2, tag, mime, status)
+  return status
 }
 
 const multosingDelay = async () => {
@@ -142,8 +135,8 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
     if (mutation.type === "childList") {
       for (const node of mutation.addedNodes) {
         if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
-          const fileInfoPanel = node;
-          console.log("found by obs: ",fileInfoPanel);
+          //found fileInfoPanel
+	  addFileInfo(node)
           observer.disconnect();
           return;
         }
@@ -155,11 +148,24 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
 fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
 
 
-function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
+function addFileInfo(fileInfoPanel) {
+  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
+      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
+          console.log("currently open, closing")
+	  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
+      }else if(fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")){
+          console.log("currently closed, opening")
+	  
+      }
+  })
+  var pid = getMetaPid()
+  var scanarr = getMetaScan()
+  var scan = scanarr[0]
+  var scan2 = scanarr[1]
+  var tag = getMetaTag()
+  var mime = getMetaMime()
+  var status = getQStatus(scan,scan2)
   setTimeout(function () {
-    const pCards = Array.from(document.querySelectorAll(".panelCard"));
-    const fileInfoPanel = pCards.find(card => card.innerText.includes("File Info"));
-    if (fileInfoPanel) {
         let newRows = document.createElement("div")
         newRows.style.marginTop = "-11px"
 	newRows.id = "curateAdditionalInfo"
@@ -200,7 +206,6 @@ function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
           fileInfoPanel.removeChild(fileInfoPanel.lastChild);
           fileInfoPanel.appendChild(newRows)
         }
-    }
   }, 5);
   const genNewRow = (label, value) => {
     let n = document.createElement("div")
@@ -218,10 +223,3 @@ function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
     return n
   }
 }
-
-observer.observe(document, {
-  subtree: true,
-  attributes: true
-});
-
-     
