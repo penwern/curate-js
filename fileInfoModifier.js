@@ -141,7 +141,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
 	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
 		  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
 	      }else if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")){
-		  addFileInfo()
+		  addFileInfo(fileInfoPanel)
 	      }
 	  })
 	  if(node.querySelector(".panelContent")){
