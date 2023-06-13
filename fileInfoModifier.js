@@ -250,7 +250,6 @@ function addFileInfo(pronomID, scanResult, scan2Result, etag, mimetype, qstat) {
           fileInfoPanel.removeChild(fileInfoPanel.lastChild);
           fileInfoPanel.appendChild(newRows)
         }
-      }
     }
   }, 5);
   const genNewRow = (label, value) => {
