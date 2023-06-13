@@ -771,17 +771,7 @@ function darkModeModify(){
       // Create a new instance of the MutationObserver
       const wsObserver = new MutationObserver(wsCallback);
       wsObserver.observe(document.body, {childList: true, subtree: true });
-      document.addEventListener("click",e=>{
-        let cM = e.target.closest(".mdi")
-        if (!cM){
-            return
-        }
-        if (!cM.classList.contains("mdi-theme-light-dark")){
-            return
-        }
-        
-        darkModeModify()
-      })
+      
       const interval = setInterval(() => {
         if (pydio) {
           clearInterval(interval);
