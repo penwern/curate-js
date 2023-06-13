@@ -7,17 +7,8 @@
 </template> 
 <template id="curateMetadataPanel">
   <style>
-     /*IGNORE, THIS IS FOR CODEPEN*/
-  html {
-    font-family: DM Sans;
-    overflow: hidden;
-  }
-
   /*move this to brand css*/
-  :root {
-    --customerColourPrimary: #9fd0c7;
-    --customerColourHighlight: #8EE5C8;
-  }
+  
 /*CSS*/
   .metadataPanel-accordion {
     margin-top: 1em !important;
@@ -578,7 +569,7 @@ accordionHeaders.forEach(function (header) {
       }else{
         var bgc = "white !important"
       }
-     
+      console.log("active bg colour: ", bgc)
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
@@ -611,7 +602,9 @@ accordionHeaders.forEach(function (header) {
        metadataPanel.addEventListener("click", function(){this.id=null})
      }
      const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
+     console.log("aheaders: ", aHeaders)
      aHeaders.forEach(header => {
+       console.log(header)
       header.style.backgroundColor = bgc
         console.log(header.style.backgroundColor)
       })
