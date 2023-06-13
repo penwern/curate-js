@@ -564,10 +564,12 @@ accordionHeaders.forEach(function (header) {
       const exportSection = metadataPanelTemplate.querySelector("#exportSection")
       const tagsSection = metadataPanelTemplate.querySelector("#tagsSection")
       const lengthMax = metadataFields.length
-       if (pydio.UI.themeBuilder.dark == true){
-        var bgc = "#465957 !important"
+      if (pydio.UI.themeBuilder.dark == true){
+        var bgc = "#465957"
+        var icc = "#314243"
       }else{
-        var bgc = "white !important"
+        var bgc = "white"
+        var icc = "#e9e7e7"
       }
       console.log("active bg colour: ", bgc)
       for (let x=0; x<metadataFieldsClone.length; x++){
@@ -602,12 +604,13 @@ accordionHeaders.forEach(function (header) {
        metadataPanel.addEventListener("click", function(){this.id=null})
      }
      const aHeaders = Array.from(document.querySelectorAll(".metadataPanel-accordion-header"))
-     console.log("aheaders: ", aHeaders)
      aHeaders.forEach(header => {
-       console.log(header)
       header.style.backgroundColor = bgc
-        console.log(header.style.backgroundColor)
       })
+     const aIcons = Array.from(document.querySelectorAll(".metadataPanel-accordion-icon"))
+     aIcons.forEach(icon =>{
+      icon.style.backgroundColor = icc
+     })
       retrieveSidecarInfo(metadataPanel)
     
   }
