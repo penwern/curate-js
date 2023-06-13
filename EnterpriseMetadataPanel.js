@@ -615,8 +615,10 @@ accordionHeaders.forEach(function (header) {
      aIcons.forEach(icon =>{
       icon.style.backgroundColor = icc
      })
-    const aItems = Array.from(document.querySelectorAll(".dropdown-item"))
-    aItems.forEach(item=>{item.style.backgroundColor=})
+    const adItems = Array.from(document.querySelectorAll(".dropdown-item"))
+    adItems.forEach(item=>{item.style.backgroundColor=ddc})
+    const aItems = Array.from(document.querySelectorAll(".metadataPanel-accordion-item"))
+    aItems.forEach(item=>{item.style.backgroundColor=itc})
       retrieveSidecarInfo(metadataPanel)
     
   }
