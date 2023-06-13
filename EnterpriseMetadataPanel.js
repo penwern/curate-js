@@ -553,7 +553,7 @@ accordionHeaders.forEach(function (header) {
   };
 function darkModeModify(){
   console.log("togglin")
-      if (!pydio.UI.themeBuilder.dark){
+      if (pydio.UI.themeBuilder.dark){
         var bgc = "#465957"
         var icc = "#314243"
         var ddc = "#474747"
@@ -780,7 +780,16 @@ function darkModeModify(){
             return
         }
         console.log("b clicked")
-        darkModeModify()
+        // Get the initial state of ui theme
+        const themeState = pydio.UI.themeBuilder.dark;
+        // Create a setInterval function that checks for the state flip
+        const themeInterval = setInterval(() => {
+          // Check if the state has flipped
+          if (pydio.UI.themeBuilder.dark !== themeState) {
+            darkModeModify()
+            clearInterval(themeInterval);
+          }
+        }, 100);
       })
       const interval = setInterval(() => {
         if (pydio) {
