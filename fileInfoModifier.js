@@ -136,8 +136,18 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
       for (const node of mutation.addedNodes) {
         if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
           //found fileInfoPanel
-	  addFileInfo(node)
-          observer.disconnect();
+	  const fileInfoPanel = node
+	  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
+	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
+		  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
+	      }else if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")){
+		  addFileInfo()
+	      }
+	  })
+	  if(node.querySelector(".panelContent")){
+	      addFileInfo(node) 
+	  }
+	  observer.disconnect();
           return;
         }
       }
@@ -149,15 +159,7 @@ fileInfoObserver.observe(document.documentElement, { childList: true, subtree: t
 
 
 function addFileInfo(fileInfoPanel) {
-  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
-      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
-          console.log("currently open, closing")
-	  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
-      }else if(fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")){
-          console.log("currently closed, opening")
-	  
-      }
-  })
+  
   var pid = getMetaPid()
   var scanarr = getMetaScan()
   var scan = scanarr[0]
