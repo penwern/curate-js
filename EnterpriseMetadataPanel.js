@@ -552,6 +552,7 @@ accordionHeaders.forEach(function (header) {
     return area;
   };
 function darkModeModify(){
+  console.log("togglin")
       if (pydio.UI.themeBuilder.dark){
         var bgc = "#465957"
         var icc = "#314243"
@@ -778,6 +779,7 @@ function darkModeModify(){
         if (!cM.classList.contains("mdi-theme-light-dark")){
             return
         }
+        
         darkModeModify()
       })
       const interval = setInterval(() => {
