@@ -341,6 +341,7 @@ objectA.Nodes.forEach((nodeA) => {
   if (matchingFile && matchingFile.hash === nodeA.Etag) {
     matches.push({
       Uuid: nodeA.Uuid,
+      Name: nodeA.MetaStore.name,
       Path: nodeA.Path,
       Etag: nodeA.Etag,
       Hash: matchingFile.hash,
@@ -348,13 +349,13 @@ objectA.Nodes.forEach((nodeA) => {
   }else if(matchingFile){
       fails.push({
           Uuid: nodeA.Uuid,
+          Name: nodeA.MetaStore.name,
           Path: nodeA.Path,
           Etag: nodeA.Etag,
           Hash: matchingFile.hash,
       })
   }
 });
-
 return {"matches":matches, "fails":fails};
 }
 function verifyChecksums(checksums){
@@ -377,6 +378,8 @@ function verifyChecksums(checksums){
         .then(r => r.json())
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
+            const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+            comparison.matches.forEach(match=>{uploadedElements.find(element => element.textContent.includes("gradient (2)-18.png"));})
             console.log("Nodes: ", rjs)
             console.log("Checksums: ", checksums)
             console.log("Comparison: ", comparison)
@@ -407,6 +410,27 @@ function verifyChecksums(checksums){
     })
     
             
+}
+function generateVerificationMessage(status){
+    const verEl = document.createElement("div")
+    if (status){
+        verEl.style = "color:green;padding-left:0.3em;padding-right:0.4em;max-width:1.5em;border:gray solid 1px;border-radius:5em;margin-left:0.2em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
+        verEl.textContent = "✓ File verified"
+        verEl.title = "File successfully verified."
+    }else{
+        verEl.style = "color:green;padding-left:0.3em;padding-right:0.4em;max-width:1.5em;border:gray solid 1px;border-radius:5em;margin-left:0.2em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
+        verEl.textContent = "X File compromised"
+        verEl.title = "File compromised. Please reupload."
+    }
+    verEl.addEventListener("mouseover", e=>{
+        e.target.style.backgroundColor = "#e2e2e2";
+        e.target.style.maxWidth = "10em"
+    })
+    verEl.addEventListener("mouseleave", e=>{
+        e.target.style.backgroundColor = "white";
+        e.target.style.maxWidth = "1.5em"
+    }) 
+    return verEL
 }
 document.addEventListener("input",function(e){    
     let t = e.target
