@@ -1,8 +1,9 @@
 function curateNotification(input, token){ //send a notification to a Curate user
+    let url
     if (input.NodeId){
-        const url = "https://"+window.location.hostname+"/a/scheduler/hooks/notifynode"
+        url = "https://"+window.location.hostname+"/a/scheduler/hooks/notifynode"
     }else{
-        const url = "https://"+window.location.hostname+"/a/scheduler/hooks/notify"
+        url = "https://"+window.location.hostname+"/a/scheduler/hooks/notify"
     }
     const fetchOptions = {
       method: 'POST',
@@ -18,7 +19,7 @@ function curateNotification(input, token){ //send a notification to a Curate use
     .catch(err => console.error('error', err));
 }
 function searchNodesWithTokens(bearerToken, body) { //get tree 
-    const url = "https://"+window.location.hostname+"/a/tree/stats";
+    let url = "https://"+window.location.hostname+"/a/tree/stats";
     const fetchOptions = {
       method: 'POST',
       headers: {
