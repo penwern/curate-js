@@ -1,8 +1,8 @@
 function curateNotification(input, token){ //send a notification to a Curate user
     if (input.NodeId){
-        const url = "https://demo.curate.penwern.co.uk/a/scheduler/hooks/notifynode"
+        const url = "https://"+window.location.hostname+"/a/scheduler/hooks/notifynode"
     }else{
-        const url = "https://demo.curate.penwern.co.uk/a/scheduler/hooks/notify"
+        const url = "https://"+window.location.hostname+"/a/scheduler/hooks/notify"
     }
     const fetchOptions = {
       method: 'POST',
@@ -12,13 +12,13 @@ function curateNotification(input, token){ //send a notification to a Curate use
       },
       body: JSON.stringify({"JobParameters":input})
     };
-    fetch("https://demo.curate.penwern.co.uk/a/scheduler/hooks/notify", fetchOptions)
+    fetch(url, fetchOptions)
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(err => console.error('error', err));
 }
 function searchNodesWithTokens(bearerToken, body) { //get tree 
-    const url = 'https://demo.curate.penwern.co.uk/a/tree/stats';
+    const url = "https://"+window.location.hostname+"/a/tree/stats";
     const fetchOptions = {
       method: 'POST',
       headers: {
@@ -178,7 +178,6 @@ function metadataReaderHandler(e, userId, parentId, token,cNodes, metaOnly){ //h
                 }
             })
     }else{
-        console.log("yo the rjs now is dis: ", cNodes)
         var asc
         try{
             asc = associateNodes(parsedMeta,cNodes.Nodes,true)
@@ -205,7 +204,7 @@ function metadataReaderHandler(e, userId, parentId, token,cNodes, metaOnly){ //h
         const metadatas = convertMetadataArrayToObject(asc)   
         
         
-        const url = "https://demo.curate.penwern.co.uk/a/user-meta/update";
+        const url = "https://"+window.location.hostname+"/a/user-meta/update";
         const authorizationHeader = `Bearer ${token}`;
         fetch(url, {
           method: "PUT",
