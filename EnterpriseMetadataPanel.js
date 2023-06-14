@@ -289,36 +289,6 @@ border-radius: 13px;
   
   // Select all accordion headers
 var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-header');
-/*
-// Attach click event listener to each accordion header
-accordionHeaders.forEach(function (header) {
-  header.addEventListener('click', function () {
-    console.log("cloick")
-    // Get the content and icon elements
-    var content = this.nextElementSibling;
-    var icon = this.querySelector('.metadataPanel-accordion-icon');
-
-    // Check if the current header is a subfield
-    var isSubfield = this.parentElement.classList.contains('metadataPanel-accordion-subfield');
-
-    // Determine the main content element based on whether it's a subfield or not
-    var mainContent = isSubfield ? this.parentElement.parentElement : content;
-
-    // Toggle the 'expanded' class on the content and icon elements
-    content.classList.toggle('expanded');
-    icon.classList.toggle('expanded');
-
-    // Update the max-height of the content based on its expanded state
-    if (content.classList.contains('expanded')) {
-      content.style.maxHeight = content.scrollHeight*1.1 + 'px';
-      adjustMainContentHeight(mainContent, content.scrollHeight);
-    } else {
-      content.style.maxHeight = null;
-      adjustMainContentHeight(mainContent, -content.scrollHeight);
-    }
-  });
-});
-*/
   function accordionHeader (e) {
     // Get the content and icon elements
     var content = e.nextElementSibling;
@@ -462,15 +432,7 @@ accordionHeaders.forEach(function (header) {
                   console.error('Error getting sidecar files:', error);
                 });
 
-
-
-
               })
-        
-        /*var sidecarFileArea = document.querySelector(".sidecar-list")
-        var sidecarFileDiv = document.querySelector("#sidecarFileTemplate").content.cloneNode(true)
-        sidecarFileDiv.querySelector("#sidecarLabel").textContent = file.name
-        sidecarFileArea.appendChild(sidecarFileDiv)*/
       }
     }
   }
@@ -582,8 +544,9 @@ function darkModeModify(){
     aItems.forEach(item=>{item.style.background=itc})
     const dropZones = Array.from(document.querySelectorAll(".drop-zone"))
     dropZones.forEach(zone=>{zone.style.backgroundColor = dzc})
-    document.querySelector("#workspace_toolbar").parentElement.style.background = hc
-    console.log(document.querySelector("#workspace_toolbar").parentElement.style.background)
+    if (document.querySelector("#workspace_toolbar")){
+      document.querySelector("#workspace_toolbar").parentElement.style.background = hc
+    }
 }
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
