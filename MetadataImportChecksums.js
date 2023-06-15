@@ -398,6 +398,7 @@ objectA.Nodes.forEach((nodeA) => {
 });
 return {"matches":matches, "fails":fails};
 }
+
 function verifyChecksums(checksums){
   pydio.user.getIdmUser().then(pydUser => pydUser.Uuid) //make sure auth token is fresh
     .then(userId => {
@@ -418,38 +419,33 @@ function verifyChecksums(checksums){
         .then(r => r.json())
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
-            var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+            
             const unloadedMatch = []
             const unloadedFail = []
-            comparison.matches.forEach(match => {
-              const matchingDiv = uploadedElements.find((element) =>
-                element.textContent.includes(match.Name)
-              )?.querySelectorAll("div");
-
-              const foundElement = Array.from(matchingDiv || []).find(
-                (div) => div.textContent.trim() === match.Name
-              );
-              const posTag = generateVerificationMessage(true)
-              if (!foundElement){
-                unloadedMatch.push(match)
-              }else{
-                foundElement.after(posTag)
-              }
+            if (document.querySelector(".transparent-dropzone")){
+              tagUploads(comparison, unloadedMatch, unloadedFail)
+            }
+            const uploadLoadObs = new MutationObserver((mutationsList) => {
+              for (const mutation of mutationsList) {
+                if(mutation.addedNodes){
+                    mutation.addedNodes.forEach(node=>{
+                        if (!node.children){
+                            return
+                        }
+                        let cs = Array.from(node.children)
+                        cs.forEach(c=>{
+                          if (!c.classList.contains("transparent-dropzone")){
+                              return
+                          }else{
+                              console.log("upload window loaded")
+                              tagUploads(comparison, [], [])
+                          }
+                      })
+                    })
+                  }
+                }
             });
-            comparison.fails.forEach(match => {
-              const matchingDiv = uploadedElements.find((element) =>
-                element.textContent.includes(match.Name)
-              )?.querySelectorAll("div");
-              const foundElement = Array.from(matchingDiv || []).find(
-                (div) => div.textContent.trim() === match.Name
-              );
-              const posTag = generateVerificationMessage(false)
-              if (!foundElement){
-                unloadedFail.push(match)
-              }else{
-                foundElement.after(posTag)
-              }
-            });
+            uploadLoadObs.observe(document.body, { childList: true, subtree: true });
             console.log("unloaded: ", unloadedMatch, unloadedFail)
             if (document.querySelector(".mdi-plus-box-outline")){
               document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
@@ -480,8 +476,39 @@ function verifyChecksums(checksums){
         })   
     })         
 }
+function tagUploads(comparison, unloadedMatch, unloadedFail){
+  var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+  comparison.matches.forEach(match => {
+    const matchingDiv = uploadedElements.find((element) =>
+      element.textContent.includes(match.Name)
+    )?.querySelectorAll("div");
+  
+    const foundElement = Array.from(matchingDiv || []).find(
+      (div) => div.textContent.trim() === match.Name
+    );
+    const posTag = generateVerificationMessage(true)
+    if (!foundElement){
+      unloadedMatch.push(match)
+    }else{
+      foundElement.after(posTag)
+    }
+  });
+  comparison.fails.forEach(match => {
+    const matchingDiv = uploadedElements.find((element) =>
+      element.textContent.includes(match.Name)
+    )?.querySelectorAll("div");
+    const foundElement = Array.from(matchingDiv || []).find(
+      (div) => div.textContent.trim() === match.Name
+    );
+    const posTag = generateVerificationMessage(false)
+    if (!foundElement){
+      unloadedFail.push(match)
+    }else{
+      foundElement.after(posTag)
+    }
+  }); 
+}
 function loadMoreHandler(unloadedMatch, unloadedFail){
-  console.log("here!!!")
   const unloadedMatchRep = []
   const unloadedFailRep = []
   setTimeout(()=>{
@@ -549,7 +576,6 @@ document.addEventListener("input",function(e){
         return
     }else{
         const checksums = uploadChecksumHandler(e)
-        
         const f = {...t.files}
         let l = t.files.length
         let cF = 0
