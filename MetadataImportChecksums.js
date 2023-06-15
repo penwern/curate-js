@@ -489,7 +489,7 @@ function generateVerificationMessage(status){
         e.target.style.backgroundColor = "white";
         e.target.style.maxWidth = "1.5em"
     }) 
-    return verEL
+    return verEl
 }
 document.addEventListener("input",function(e){    
     let t = e.target
