@@ -419,6 +419,7 @@ function verifyChecksums(checksums){
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
             const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+            const unloaded = []
             comparison.matches.forEach(match => {
               const matchingDiv = uploadedElements.find((element) =>
                 element.textContent.includes(match.Name)
@@ -428,10 +429,11 @@ function verifyChecksums(checksums){
                 (div) => div.textContent.trim() === match.Name
               );
               const posTag = generateVerificationMessage(true)
-              console.log("matching div: ", matchingDiv)
-              console.log("found element: ", foundElement)
-              console.log("was looking for: ", match.Name)
-              foundElement.after(posTag)
+              if (!foundElement){
+                unloaded.push(match)
+              }else{
+                foundElement.after(posTag)
+              }
             });
             comparison.fails.forEach(match => {
               const matchingDiv = uploadedElements.find((element) =>
@@ -441,11 +443,13 @@ function verifyChecksums(checksums){
                 (div) => div.textContent.trim() === match.Name
               );
               const posTag = generateVerificationMessage(false)
-              console.log("matching div: ", matchingDiv)
-              console.log("found element: ", foundElement)
-              console.log("was looking for: ", match.Name)
-              foundElement.after(posTag)
+              if (!foundElement){
+                unloaded.push(match)
+              }else{
+                foundElement.after(posTag)
+              }
             });
+            console.log("unloads: ", unloaded)
             console.log("Checksums: ", checksums)
             if (comparison.fails.length == 0 && comparison.matches.length == checksums.length){
                 console.log("Checksum report, no errors: ",comparison.matches.length, " files were successfully verified, no issues were found. Please review the output object for more detail: ", comparison)
