@@ -382,6 +382,7 @@ function uploadChecksumHandler(e){
   }   
 }
 function compareChecksums(objectA, objectB){
+  console.log("objs: ", objectA, objectB)
     const matches = [];
 const fails = []
 objectA.Nodes.forEach((nodeA) => {
