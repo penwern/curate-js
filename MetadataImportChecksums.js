@@ -452,47 +452,7 @@ function verifyChecksums(checksums){
             });
             console.log("unloaded: ", unloadedMatch, unloadedFail)
             if (document.querySelector(".mdi-plus-box-outline")){
-              document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", e=>{
-                console.log("here!!!")
-                const unloadedMatchRep = []
-                const unloadedFailRep = []
-                setTimeout(()=>{
-                  console.log("ars: ", unloadedMatch)
-                  let uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
-                  unloadedMatch.forEach(match => {
-                    console.log(match)
-                    const matchingDiv = uploadedElements.find((element) =>
-                      element.textContent.includes(match.Name)
-                    )?.querySelectorAll("div");
-                    const foundElement = Array.from(matchingDiv || []).find(
-                      (div) => div.textContent.trim() === match.Name
-                    );
-                    const posTag = generateVerificationMessage(true)
-                    if (!foundElement){
-                      unloadedMatchRep.push(match)
-                    }else{
-                      foundElement.after(posTag)
-                    }
-                  });
-                  unloadedFail.forEach(match => {
-                    const matchingDiv = uploadedElements.find((element) =>
-                      element.textContent.includes(match.Name)
-                    )?.querySelectorAll("div");
-                    const foundElement = Array.from(matchingDiv || []).find(
-                      (div) => div.textContent.trim() === match.Name
-                    );
-                    const posTag = generateVerificationMessage(false)
-                    if (!foundElement){
-                      unloadedFailRep.push(match)
-                    }else{
-                      foundElement.after(posTag)
-                    }
-                  });
-                  unloadedMatch.splice(0, unloadedMatch.length, ...unloadedMatchRep);
-                  unloadedFail.splice(0, unloadedFail.length, ...unloadedFailRep);
-                },100)
-                
-              })
+              document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
             }
             console.log("Checksums: ", checksums)
             if (comparison.fails.length == 0 && comparison.matches.length == checksums.length){
@@ -519,6 +479,47 @@ function verifyChecksums(checksums){
             }
         })   
     })         
+}
+function loadMoreHandler(unloadedMatch, unloadedFail){
+  console.log("here!!!")
+  const unloadedMatchRep = []
+  const unloadedFailRep = []
+  setTimeout(()=>{
+    let uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+    unloadedMatch.forEach(match => {
+      const matchingDiv = uploadedElements.find((element) =>
+        element.textContent.includes(match.Name)
+      )?.querySelectorAll("div");
+      const foundElement = Array.from(matchingDiv || []).find(
+        (div) => div.textContent.trim() === match.Name
+      );
+      const posTag = generateVerificationMessage(true)
+      if (!foundElement){
+        unloadedMatchRep.push(match)
+      }else{
+        foundElement.after(posTag)
+      }
+    });
+    unloadedFail.forEach(match => {
+      const matchingDiv = uploadedElements.find((element) =>
+        element.textContent.includes(match.Name)
+      )?.querySelectorAll("div");
+      const foundElement = Array.from(matchingDiv || []).find(
+        (div) => div.textContent.trim() === match.Name
+      );
+      const posTag = generateVerificationMessage(false)
+      if (!foundElement){
+        unloadedFailRep.push(match)
+      }else{
+        foundElement.after(posTag)
+      }
+    });
+    unloadedMatch.splice(0, unloadedMatch.length, ...unloadedMatchRep);
+    unloadedFail.splice(0, unloadedFail.length, ...unloadedFailRep);
+  },100)
+  if (document.querySelector(".mdi-plus-box-outline")){
+    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click",()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
+  }
 }
 function generateVerificationMessage(status){
     const verEl = document.createElement("div")
