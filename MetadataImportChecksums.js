@@ -446,10 +446,6 @@ function verifyChecksums(checksums){
                 }
             });
             uploadLoadObs.observe(document.body, { childList: true, subtree: true });
-            console.log("unloaded: ", unloadedMatch, unloadedFail)
-            if (document.querySelector(".mdi-plus-box-outline")){
-              document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
-            }
             console.log("Checksums: ", checksums)
             if (comparison.fails.length == 0 && comparison.matches.length == checksums.length){
                 console.log("Checksum report, no errors: ",comparison.matches.length, " files were successfully verified, no issues were found. Please review the output object for more detail: ", comparison)
@@ -506,7 +502,11 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     }else{
       foundElement.after(posTag)
     }
-  }); 
+  });
+  console.log("unloaded: ", unloadedMatch, unloadedFail)
+  if (document.querySelector(".mdi-plus-box-outline")){
+    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
+  }
 }
 function loadMoreHandler(unloadedMatch, unloadedFail){
   const unloadedMatchRep = []
