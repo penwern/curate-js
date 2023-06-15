@@ -419,7 +419,8 @@ function verifyChecksums(checksums){
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
             const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
-            const unloaded = []
+            const unloadedMatch = []
+            const unloadedFail = []
             comparison.matches.forEach(match => {
               const matchingDiv = uploadedElements.find((element) =>
                 element.textContent.includes(match.Name)
@@ -430,7 +431,7 @@ function verifyChecksums(checksums){
               );
               const posTag = generateVerificationMessage(true)
               if (!foundElement){
-                unloaded.push(match)
+                unloadedMatch.push(match)
               }else{
                 foundElement.after(posTag)
               }
@@ -444,12 +445,49 @@ function verifyChecksums(checksums){
               );
               const posTag = generateVerificationMessage(false)
               if (!foundElement){
-                unloaded.push(match)
+                unloadedFail.push(match)
               }else{
                 foundElement.after(posTag)
               }
             });
-            console.log("unloads: ", unloaded)
+            if (document.querySelector(".mdi-plus-box-outline")){
+              document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", e=>{
+                const unloadedMatchRep = []
+                const unloadedFailRep = []
+                setTimeout(()=>{
+                  unloadedMatch.forEach(match => {
+                    const matchingDiv = uploadedElements.find((element) =>
+                      element.textContent.includes(match.Name)
+                    )?.querySelectorAll("div");
+                    const foundElement = Array.from(matchingDiv || []).find(
+                      (div) => div.textContent.trim() === match.Name
+                    );
+                    const posTag = generateVerificationMessage(true)
+                    if (!foundElement){
+                      unloadedMatchRep.push(match)
+                    }else{
+                      foundElement.after(posTag)
+                    }
+                  });
+                  unloadedFail.forEach(match => {
+                    const matchingDiv = uploadedElements.find((element) =>
+                      element.textContent.includes(match.Name)
+                    )?.querySelectorAll("div");
+                    const foundElement = Array.from(matchingDiv || []).find(
+                      (div) => div.textContent.trim() === match.Name
+                    );
+                    const posTag = generateVerificationMessage(false)
+                    if (!foundElement){
+                      unloadedFailRep.push(match)
+                    }else{
+                      foundElement.after(posTag)
+                    }
+                  });
+                },100)
+                unloadedMatch.splice(0, unloadedMatch.length, ...unloadedMatchRep);
+                unloadedFail.splice(0, unloadedFail.length, ...unloadedFailRep);
+              })
+            }
             console.log("Checksums: ", checksums)
             if (comparison.fails.length == 0 && comparison.matches.length == checksums.length){
                 console.log("Checksum report, no errors: ",comparison.matches.length, " files were successfully verified, no issues were found. Please review the output object for more detail: ", comparison)
