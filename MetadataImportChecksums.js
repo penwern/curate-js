@@ -388,7 +388,7 @@ const fails = []
 objectA.Nodes.forEach((nodeA) => {
   const matchingFile = objectB.find(
     (item) =>
-      item.file.name.toLowerCase() === JSON.parse(nodeA.MetaStore.name.toLowerCase())
+      item.name.toLowerCase() === JSON.parse(nodeA.MetaStore.name.toLowerCase())
   );
 
   if (matchingFile && matchingFile.hash === nodeA.Etag) {
