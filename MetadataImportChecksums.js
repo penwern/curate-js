@@ -430,6 +430,7 @@ function verifyChecksums(checksums){
               const posTag = generateVerificationMessage(true)
               console.log("matching div: ", matchingDiv)
               console.log("found element: ", foundElement)
+              console.log("was looking for: ", match.Name)
               foundElement.after(posTag)
             });
             comparison.fails.forEach(match => {
