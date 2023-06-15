@@ -452,6 +452,7 @@ function verifyChecksums(checksums){
             });
             if (document.querySelector(".mdi-plus-box-outline")){
               document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", e=>{
+                console.log("here!!!")
                 const unloadedMatchRep = []
                 const unloadedFailRep = []
                 setTimeout(()=>{
