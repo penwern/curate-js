@@ -485,7 +485,6 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       unloadedMatch.push(match)
     }else{
       const posTag = generateVerificationMessage(true)
-      foundElement.parentElement.style.transition = "all 0.3s ease"
       foundElement.after(posTag)
     }
   });
@@ -501,7 +500,6 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       unloadedFail.push(match)
     }else{
       const posTag = generateVerificationMessage(false)
-      foundElement.parentElement.style.transition = "all 0.3s ease"
       foundElement.after(posTag)
     }
   });
@@ -526,7 +524,6 @@ function loadMoreHandler(unloadedMatch, unloadedFail){
         unloadedMatchRep.push(match)
       }else{
         const posTag = generateVerificationMessage(true)
-        foundElement.parentElement.style.transition = "all 0.3s ease"
         foundElement.after(posTag)
       }
     });
@@ -542,7 +539,6 @@ function loadMoreHandler(unloadedMatch, unloadedFail){
         unloadedFailRep.push(match)
       }else{
         const posTag = generateVerificationMessage(false)
-        foundElement.parentElement.style.transition = "all 0.3s ease"
         foundElement.after(posTag)
       }
     });
@@ -588,3 +584,14 @@ document.addEventListener("input",function(e){
         pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished
     }
 })
+document.addEventListener("drop",function(e){
+  if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
+    let t = e.target
+     const checksums = uploadChecksumHandler(e)
+    const f = {...t.files}
+    let l = t.files.length
+    let cF = 0
+    let s = 0
+    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished 
+  }
+}) 
