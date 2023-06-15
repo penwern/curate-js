@@ -8,7 +8,6 @@ async function checkAndIncrementPathname(token, pathname, commonHeaders, increme
   const extension = extIndex !== -1 ? pathname.slice(extIndex) : '';
 
   const incrementedPathname = increment === 0 ? pathname : `${baseName}-${increment}${extension}`;
-  console.log(commonHeaders)
   const request = await fetch("https://www.curate.penwern.co.uk/a/tree/stats", {
     method: "POST",
     headers: {
@@ -72,8 +71,6 @@ function generateJson(files) {  //convert upload input to nodepaths
     return JSON.stringify(result);
 }
 function associateNodes(inputA, inputB, folderMode) { //associate pre-upload files with Curate nodes
-    console.log("input import: ", inputA)
-    console.log("input nodes: ", inputB)
   const result = []; // initialize an empty result array
   for (const nodeA of inputA) {
     const filename = nodeA.filename.replace(/^objects\//, ''); // remove "objects/" prefix
@@ -116,7 +113,6 @@ function metadataReaderHandler(e, userId, parentId, token,cNodes, metaOnly){ //h
         return
     }
     if (metaOnly){
-        console.log("ashdahasdh: ", parsedMeta)
         const searchImportNodes = searchNodesWithTokens(token, JSON.stringify(
             {  //search Curate for uploaded nodes
                 "NodePaths": parsedMeta.map(obj => (
@@ -237,8 +233,6 @@ function metadataReaderHandler(e, userId, parentId, token,cNodes, metaOnly){ //h
             return
         }
         const metadatas = convertMetadataArrayToObject(asc)   
-        
-        
         const url = "https://"+window.location.hostname+"/a/user-meta/update";
         const authorizationHeader = `Bearer ${token}`;
         fetch(url, {
@@ -283,8 +277,7 @@ function metadataReaderHandler(e, userId, parentId, token,cNodes, metaOnly){ //h
                 "NodeId": parentId
             }, token)
         });        
-    }
-    
+    }    
 }
 function importMetadata(cF,l,f,type){
     pydio.user.getIdmUser().then(pydUser => pydUser.Uuid) //make sure auth token is fresh
@@ -329,14 +322,12 @@ function longtaskCounter(cF,l,f,type,checksums){
     if (cF !== l){
         pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,type,checksums)}) //if uploads are still in progress watch the next longtask
     }else{
-        
       setTimeout(()=>{ //wait a moment to ensure uploads are finished
           verifyChecksums(checksums)
           if (f.length==1 && f[0].name !== "metadata.json"){
             return
         }
         importMetadata(cF,l,f,type) 
-        
       },(50*l)) 
     }
 }
@@ -348,7 +339,6 @@ function uploadChecksumHandler(e){
       var blob = new Blob([document.querySelector('#hashWorker').textContent]);
       var blobURL = window.URL.createObjectURL(blob);
       var myWorker = new Worker(blobURL);
-      // Usage example
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
         const pathname = getOpenWS()+"/"+file.name;
@@ -358,13 +348,11 @@ function uploadChecksumHandler(e){
         };
         getAvailableFilename(token, pathname, headers)
           .then(availableFilename => {
-            console.log("Available Filename:", availableFilename);
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
                 const aF = availableFilename.replace(getOpenWS()+"/","")
                 console.log("hash is: ",event.data.hash)
-                console.log("anme is: ", aF)
                 fileHashes.push({"file":file,"hash":event.data.hash, "name":aF})
               }
             }
@@ -382,7 +370,6 @@ function uploadChecksumHandler(e){
   }   
 }
 function compareChecksums(objectA, objectB){
-  console.log("objs: ", objectA, objectB)
     const matches = [];
 const fails = []
 objectA.Nodes.forEach((nodeA) => {
@@ -433,8 +420,6 @@ function verifyChecksums(checksums){
             const comparison = compareChecksums(rjs, checksums)
             const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
             comparison.matches.forEach(match => {
-              console.log("finding: ", match.Name, match)
-              console.log("els: ", uploadedElements)
               const matchingDiv = uploadedElements.find((element) =>
                 element.textContent.includes(match.Name)
               )?.querySelectorAll("div");
@@ -442,28 +427,20 @@ function verifyChecksums(checksums){
               const foundElement = Array.from(matchingDiv || []).find(
                 (div) => div.textContent.trim() === match.Name
               );
-              console.log(foundElement)
               const posTag = generateVerificationMessage(true)
               foundElement.after(posTag)
             });
             comparison.fails.forEach(match => {
-              console.log("finding: ", match.Name, match)
-              console.log("els: ", uploadedElements)
               const matchingDiv = uploadedElements.find((element) =>
                 element.textContent.includes(match.Name)
               )?.querySelectorAll("div");
-
               const foundElement = Array.from(matchingDiv || []).find(
                 (div) => div.textContent.trim() === match.Name
               );
-              console.log(foundElement)
               const posTag = generateVerificationMessage(false)
               foundElement.after(posTag)
             });
-            console.log("Nodes: ", rjs)
             console.log("Checksums: ", checksums)
-            console.log("Comparison: ", comparison)
-            
             if (comparison.fails.length == 0 && comparison.matches.length == checksums.length){
                 console.log("Checksum report, no errors: ",comparison.matches.length, " files were successfully verified, no issues were found. Please review the output object for more detail: ", comparison)
                 curateNotification({
@@ -487,13 +464,11 @@ function verifyChecksums(checksums){
                 }, token)
             }
         })   
-    })
-    
-            
+    })         
 }
 function generateVerificationMessage(status){
     const verEl = document.createElement("div")
-    verEl.style = "padding-left:0.3em;padding-right:0.4em;max-width:1.5em;max-height:1.7em;border:gray solid 1px;border-radius:5em;margin-left:0.2em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
+    verEl.style = "padding-left:0.3em;padding-right:0.4em;max-width:1.5em;max-height:1.7em;border:gray solid 1px;border-radius:5em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
     if (status){
         verEl.style.color = "green"
         verEl.textContent = "✓ File verified"
