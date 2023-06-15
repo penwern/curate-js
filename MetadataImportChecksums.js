@@ -433,6 +433,8 @@ function verifyChecksums(checksums){
             const comparison = compareChecksums(rjs, checksums)
             const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
             comparison.matches.forEach(match => {
+              console.log("finding: ", match.Name, match)
+              console.log("els: ", uploadedElements)
               const foundElement = uploadedElements.find(element => element.textContent.includes(match.Name));
               console.log(foundElement)
               const posTag = generateVerificationMessage(true)
