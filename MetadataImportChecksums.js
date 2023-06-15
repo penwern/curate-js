@@ -337,7 +337,7 @@ function longtaskCounter(cF,l,f,type,checksums){
         }
         importMetadata(cF,l,f,type) 
         
-      },(10*l)) 
+      },(50*l)) 
     }
 }
 function uploadChecksumHandler(e){
@@ -446,7 +446,20 @@ function verifyChecksums(checksums){
               const posTag = generateVerificationMessage(true)
               foundElement.after(posTag)
             });
+            comparison.fails.forEach(match => {
+              console.log("finding: ", match.Name, match)
+              console.log("els: ", uploadedElements)
+              const matchingDiv = uploadedElements.find((element) =>
+                element.textContent.includes(match.Name)
+              )?.querySelectorAll("div");
 
+              const foundElement = Array.from(matchingDiv || []).find(
+                (div) => div.textContent.trim() === match.Name
+              );
+              console.log(foundElement)
+              const posTag = generateVerificationMessage(false)
+              foundElement.after(posTag)
+            });
             console.log("Nodes: ", rjs)
             console.log("Checksums: ", checksums)
             console.log("Comparison: ", comparison)
