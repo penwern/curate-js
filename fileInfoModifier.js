@@ -225,16 +225,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
   }
 });
 fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
-window.addEventListener("load",e=>{
-	const pydInter = setInternal(()=>{
-		if (pydio){
-			clearInterval(pydInter)
-			
-		}else{
-			console.log("loading")
-		}
-	},10)
-})
+
 
 
 
