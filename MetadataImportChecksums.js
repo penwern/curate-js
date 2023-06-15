@@ -480,10 +480,12 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     const foundElement = Array.from(matchingDiv || []).find(
       (div) => div.textContent.trim() === match.Name
     );
-    const posTag = generateVerificationMessage(true)
+    
     if (!foundElement){
       unloadedMatch.push(match)
     }else{
+      const posTag = generateVerificationMessage(true)
+      foundElement.parentElement.style.transition = "ease all 0.3s"
       foundElement.after(posTag)
     }
   });
@@ -494,10 +496,12 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     const foundElement = Array.from(matchingDiv || []).find(
       (div) => div.textContent.trim() === match.Name
     );
-    const posTag = generateVerificationMessage(false)
+    
     if (!foundElement){
       unloadedFail.push(match)
     }else{
+      const posTag = generateVerificationMessage(false)
+      foundElement.parentElement.style.transition = "ease all 0.3s"
       foundElement.after(posTag)
     }
   });
