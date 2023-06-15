@@ -418,7 +418,7 @@ function verifyChecksums(checksums){
         .then(r => r.json())
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
-            const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+            var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
             const unloadedMatch = []
             const unloadedFail = []
             comparison.matches.forEach(match => {
@@ -450,13 +450,16 @@ function verifyChecksums(checksums){
                 foundElement.after(posTag)
               }
             });
+            console.log("unloaded: ", unloadedMatch, unloadedFail)
             if (document.querySelector(".mdi-plus-box-outline")){
               document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", e=>{
                 console.log("here!!!")
                 const unloadedMatchRep = []
                 const unloadedFailRep = []
                 setTimeout(()=>{
+                  let uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
                   unloadedMatch.forEach(match => {
+                    console.log(match)
                     const matchingDiv = uploadedElements.find((element) =>
                       element.textContent.includes(match.Name)
                     )?.querySelectorAll("div");
