@@ -457,6 +457,7 @@ function verifyChecksums(checksums){
                 const unloadedMatchRep = []
                 const unloadedFailRep = []
                 setTimeout(()=>{
+                  console.log("ars: ", unloadedMatch)
                   let uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
                   unloadedMatch.forEach(match => {
                     console.log(match)
