@@ -1,3 +1,37 @@
+async function getAvailableFilename(token, pathname, headers) {
+  return await checkAndIncrementPathname(token, pathname,headers);
+}
+
+async function checkAndIncrementPathname(token, pathname, commonHeaders, increment = 0) {
+  const extIndex = pathname.lastIndexOf('.');
+  const baseName = extIndex !== -1 ? pathname.slice(0, extIndex) : pathname;
+  const extension = extIndex !== -1 ? pathname.slice(extIndex) : '';
+
+  const incrementedPathname = increment === 0 ? pathname : `${baseName}-${increment}${extension}`;
+  console.log(commonHeaders)
+  const request = await fetch("https://www.curate.penwern.co.uk/a/tree/stats", {
+    method: "POST",
+    headers: {
+      ...commonHeaders,
+      "authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ "NodePaths": [incrementedPathname] })
+  });
+
+  if (request.ok) {
+    const response = await request.json();
+    const isPathnameTaken = response.Nodes;
+
+    if (isPathnameTaken && isPathnameTaken.length > 0) {
+      return checkAndIncrementPathname(token, pathname, commonHeaders, increment + 1);
+    } else {
+      return incrementedPathname;
+    }
+  } else {
+    console.error("Error checking pathname");
+    return null;
+  }
+}
 function curateNotification(input, token){ //send a notification to a Curate user
     let url
     if (input.NodeId){
@@ -314,14 +348,32 @@ function uploadChecksumHandler(e){
       var blob = new Blob([document.querySelector('#hashWorker').textContent]);
       var blobURL = window.URL.createObjectURL(blob);
       var myWorker = new Worker(blobURL);
-      console.log('[Main]', 'Init Web Worker');
-      myWorker.onmessage = function(event) {
-        if (event.data.status == "complete"){
-          console.log("hash is: ",event.data.hash)
-          fileHashes.push({"file":file,"hash":event.data.hash})
-        }
-      }
-      myWorker.postMessage({file:file, msg:"begin hash"}) 
+      // Usage example
+      const authSession = PydioApi._PydioRestClient.getAuthToken();
+      authSession.then(token => {
+        const pathname = getOpenWs()+"/"+file.name;
+        const headers = {
+          "content-type": "application/json",
+          "accept-encoding": "gzip" 
+        };
+        getAvailableFilename(token, pathname, headers)
+          .then(availableFilename => {
+            console.log("Available Filename:", availableFilename);
+            console.log('[Main]', 'Init Web Worker');
+            myWorker.onmessage = function(event) {
+              if (event.data.status == "complete"){
+                file.name = availableFilename.replace(getOpenWs()+"/","")
+                console.log("hash is: ",event.data.hash)
+                console.log("anme is: ", file.name)
+                fileHashes.push({"file":file,"hash":event.data.hash})
+              }
+            }
+            myWorker.postMessage({file:file, msg:"begin hash"}) 
+          })
+          .catch(error => {
+            console.error("Error:", error);
+          });
+      });
     })
     console.log("hash array: ", fileHashes)
     return fileHashes
