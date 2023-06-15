@@ -485,7 +485,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       unloadedMatch.push(match)
     }else{
       const posTag = generateVerificationMessage(true)
-      foundElement.parentElement.style.transition = "all ease 0.3s"
+      foundElement.parentElement.style.transition = "all 0.3s ease"
       foundElement.after(posTag)
     }
   });
@@ -501,7 +501,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       unloadedFail.push(match)
     }else{
       const posTag = generateVerificationMessage(false)
-      foundElement.parentElement.style.transition = "all ease 0.3s"
+      foundElement.parentElement.style.transition = "all 0.3s ease"
       foundElement.after(posTag)
     }
   });
@@ -526,7 +526,7 @@ function loadMoreHandler(unloadedMatch, unloadedFail){
         unloadedMatchRep.push(match)
       }else{
         const posTag = generateVerificationMessage(true)
-        foundElement.parentElement.style.transition = "all ease 0.3s"
+        foundElement.parentElement.style.transition = "all 0.3s ease"
         foundElement.after(posTag)
       }
     });
@@ -542,7 +542,7 @@ function loadMoreHandler(unloadedMatch, unloadedFail){
         unloadedFailRep.push(match)
       }else{
         const posTag = generateVerificationMessage(false)
-        foundElement.parentElement.style.transition = "all ease 0.3s"
+        foundElement.parentElement.style.transition = "all 0.3s ease"
         foundElement.after(posTag)
       }
     });
