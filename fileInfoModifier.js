@@ -129,36 +129,7 @@ var idr = []
 var lastmutation = {}
 var attempts = 0
 const delay = ms => new Promise(res => setTimeout(res, ms));
-
-const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
-  for (const mutation of mutationsList) {
-    if (mutation.type === "childList") {
-      for (const node of mutation.addedNodes) {
-        if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
-          //found fileInfoPanel
-	  const fileInfoPanel = node
-	  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
-	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
-		  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
-	      }else if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")){
-		  addFileInfo(fileInfoPanel)
-	      }
-	  })
-	  if(node.querySelector(".panelContent")){
-	      addFileInfo(node) 
-	  }
-          return;
-        }
-      }
-    }
-  }
-});
-
-fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
-
-
 function addFileInfo(fileInfoPanel) {
-  
   var pid = getMetaPid()
   var scanarr = getMetaScan()
   var scan = scanarr[0]
@@ -225,3 +196,45 @@ function addFileInfo(fileInfoPanel) {
     return n
   }
 }
+const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === "childList") {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
+          //found fileInfoPanel
+	  const fileInfoPanel = node
+	  pydio._dataModel.observe("selection_changed", e=>{
+		  if (fileInfoPanel.querySelector(".panelContent")){
+			addFileInfo(fileInfoPanel)  
+		  }
+	  })
+	  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
+	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
+		  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
+	      }else if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")){
+		  addFileInfo(fileInfoPanel)
+	      }
+	  })
+	  if(node.querySelector(".panelContent")){
+	      addFileInfo(node) 
+	  }
+          return;
+        }
+      }
+    }
+  }
+});
+fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
+window.addEventListener("load",e=>{
+	const pydInter = setInternal(()=>{
+		if (pydio){
+			clearInterval(pydInter)
+			
+		}else{
+			console.log("loading")
+		}
+	},10)
+})
+
+
+
