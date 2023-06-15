@@ -436,11 +436,11 @@ function verifyChecksums(checksums){
               console.log("finding: ", match.Name, match)
               console.log("els: ", uploadedElements)
               const matchingDiv = uploadedElements.find((element) =>
-                element.textContent.includes("Logo 3 - Website-3.png")
+                element.textContent.includes(match.Name)
               )?.querySelectorAll("div");
 
               const foundElement = Array.from(matchingDiv || []).find(
-                (div) => div.textContent.trim() === "Logo 3 - Website-3.png"
+                (div) => div.textContent.trim() === match.Name
               );
               console.log(foundElement)
               const posTag = generateVerificationMessage(true)
