@@ -428,6 +428,8 @@ function verifyChecksums(checksums){
                 (div) => div.textContent.trim() === match.Name
               );
               const posTag = generateVerificationMessage(true)
+              console.log("matching div: ", matchingDiv)
+              console.log("found element: ", foundElement)
               foundElement.after(posTag)
             });
             comparison.fails.forEach(match => {
@@ -438,6 +440,8 @@ function verifyChecksums(checksums){
                 (div) => div.textContent.trim() === match.Name
               );
               const posTag = generateVerificationMessage(false)
+              console.log("matching div: ", matchingDiv)
+              console.log("found element: ", foundElement)
               foundElement.after(posTag)
             });
             console.log("Checksums: ", checksums)
