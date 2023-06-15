@@ -362,10 +362,10 @@ function uploadChecksumHandler(e){
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
-                file.name = availableFilename.replace(getOpenWS()+"/","")
+                const aF = availableFilename.replace(getOpenWS()+"/","")
                 console.log("hash is: ",event.data.hash)
-                console.log("anme is: ", file.name)
-                fileHashes.push({"file":file,"hash":event.data.hash})
+                console.log("anme is: ", aF)
+                fileHashes.push({"file":file,"hash":event.data.hash, "name":aF})
               }
             }
             myWorker.postMessage({file:file, msg:"begin hash"}) 
