@@ -488,9 +488,10 @@ function verifyChecksums(checksums){
                       foundElement.after(posTag)
                     }
                   });
+                  unloadedMatch.splice(0, unloadedMatch.length, ...unloadedMatchRep);
+                  unloadedFail.splice(0, unloadedFail.length, ...unloadedFailRep);
                 },100)
-                unloadedMatch.splice(0, unloadedMatch.length, ...unloadedMatchRep);
-                unloadedFail.splice(0, unloadedFail.length, ...unloadedFailRep);
+                
               })
             }
             console.log("Checksums: ", checksums)
