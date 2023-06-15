@@ -432,7 +432,13 @@ function verifyChecksums(checksums){
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
             const uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
-            comparison.matches.forEach(match=>{uploadedElements.find(element => element.textContent.includes("gradient (2)-18.png"));})
+            comparison.matches.forEach(match => {
+              const foundElement = uploadedElements.find(element => element.textContent.includes(match.Name));
+              console.log(foundElement)
+              const posTag = generateVerificationMessage(true)
+              foundElement.after(posTag)
+            });
+
             console.log("Nodes: ", rjs)
             console.log("Checksums: ", checksums)
             console.log("Comparison: ", comparison)
