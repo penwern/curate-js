@@ -394,7 +394,7 @@ objectA.Nodes.forEach((nodeA) => {
   if (matchingFile && matchingFile.hash === nodeA.Etag) {
     matches.push({
       Uuid: nodeA.Uuid,
-      Name: nodeB.name,
+      Name: JSON.parse(nodeA.MetaStore.name),
       Path: nodeA.Path,
       Etag: nodeA.Etag,
       Hash: matchingFile.hash,
@@ -402,7 +402,7 @@ objectA.Nodes.forEach((nodeA) => {
   }else if(matchingFile){
       fails.push({
           Uuid: nodeA.Uuid,
-          Name: nodeB.name,
+          Name: JSON.parse(nodeA.MetaStore.name),
           Path: nodeA.Path,
           Etag: nodeA.Etag,
           Hash: matchingFile.hash,
