@@ -585,6 +585,8 @@ document.addEventListener("input",function(e){
 })
 document.addEventListener("drop",function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
+    console.log(e)
+    console.log(e.dataTransfer)
      const checksums = uploadChecksumHandler(e.dataTransfer.files)
     const f = {...e.dataTransfer.files}
     let l = e.dataTransfer.files.length
