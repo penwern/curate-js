@@ -370,14 +370,68 @@ function uploadChecksumHandler(files){
     console.log("Browser does not support web-workers. Please update.")
   }   
 }
+function updateMetaField(uuid,namespace,value){
+  pydio.user.getIdmUser().then(pydUser => pydUser.Uuid) //make sure auth token is fresh
+    .then(userId => {
+       return PydioApi._PydioRestClient.authentications.oauth2.accessToken
+    })
+    .then(token => {
+      const url = "https://"+window.location.hostname+"/a/user-meta/update";
+      const authorizationHeader = `Bearer ${token}`;
+      const metadatas = {
+        MetaDatas: [
+          {
+            NodeUuid: uuid,
+            Namespace: namespace,
+            JsonValue: JSON.stringify(value),
+            Policies: [
+              {
+                Action: "READ",
+                Effect: "allow",
+                Subject: "*",
+              },
+              {
+                Action: "WRITE",
+                Effect: "allow",
+                Subject: "*",
+              },
+            ],
+          },
+        ],
+        Operation: "PUT",
+      };
+      fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": authorizationHeader
+        },
+        body: JSON.stringify(metadatas)
+      })
+      .then(response => {
+          if (response.status !== 200){
+              console.error("Update Error")
+              return
+          }else{
+              response.json()
+              .then(rjs =>{ 
+                  console.log("detail: ", rjs)
+              })
+          }  
+      })
+      .catch(err => {
+          console.error("Update Error: ",err)
+      });   
+    })
+}
 function compareChecksums(objectA, objectB){
     const matches = [];
-const fails = []
-objectA.Nodes.forEach((nodeA) => {
-  const matchingFile = objectB.find(
-    (item) =>
-      item.name.toLowerCase() === JSON.parse(nodeA.MetaStore.name.toLowerCase())
-  );
+    const fails = []
+  objectA.Nodes.forEach((nodeA) => {
+    const matchingFile = objectB.find(
+      (item) =>
+        item.name.toLowerCase() === JSON.parse(nodeA.MetaStore.name.toLowerCase())
+    );
 
   if (matchingFile && matchingFile.hash === nodeA.Etag) {
     matches.push({
@@ -387,6 +441,7 @@ objectA.Nodes.forEach((nodeA) => {
       Etag: nodeA.Etag,
       Hash: matchingFile.hash,
     });
+    updateMetaField(nodeA.Uuid, "usermeta-file-integrity", "✓ Integrity verified")
   }else if(matchingFile){
       fails.push({
           Uuid: nodeA.Uuid,
@@ -394,7 +449,8 @@ objectA.Nodes.forEach((nodeA) => {
           Path: nodeA.Path,
           Etag: nodeA.Etag,
           Hash: matchingFile.hash,
-      })
+      });
+      updateMetaField(nodeA.Uuid, "usermeta-file-integrity", "X Integrity compromised")
   }
 });
 return {"matches":matches, "fails":fails};
