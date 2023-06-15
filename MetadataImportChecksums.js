@@ -421,8 +421,8 @@ function verifyChecksums(checksums){
   NodePaths: checksums.map((item) => 
 
     item.file.webkitRelativePath !== ""
-      ? getOpenWS()+"/"+item.file.webkitRelativePath
-      : getOpenWS()+"/"+item.file.name
+      ? getOpenWS()+"/"+item.file.webkitRelativePath.replace(item.file.webkitRelativePath.split("/")[1], item.name)
+      : getOpenWS()+"/"+item.name
   ),
 };
     const searchNodes = searchNodesWithTokens(token, JSON.stringify(transformedObject)) 
