@@ -419,7 +419,6 @@ function verifyChecksums(checksums){
         .then(r => r.json())
         .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
-            
             const unloadedMatch = []
             const unloadedFail = []
             if (document.querySelector(".transparent-dropzone")){
@@ -437,7 +436,6 @@ function verifyChecksums(checksums){
                           if (!c.classList.contains("transparent-dropzone")){
                               return
                           }else{
-                              console.log("upload window loaded")
                               tagUploads(comparison, [], [])
                           }
                       })
@@ -503,7 +501,6 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       foundElement.after(posTag)
     }
   });
-  console.log("unloaded: ", unloadedMatch, unloadedFail)
   if (document.querySelector(".mdi-plus-box-outline")){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
   }
@@ -520,10 +517,12 @@ function loadMoreHandler(unloadedMatch, unloadedFail){
       const foundElement = Array.from(matchingDiv || []).find(
         (div) => div.textContent.trim() === match.Name
       );
-      const posTag = generateVerificationMessage(true)
+      
       if (!foundElement){
         unloadedMatchRep.push(match)
       }else{
+        const posTag = generateVerificationMessage(true)
+        foundElement.parentElement.style.transition = "ease all 0.3s"
         foundElement.after(posTag)
       }
     });
@@ -534,10 +533,12 @@ function loadMoreHandler(unloadedMatch, unloadedFail){
       const foundElement = Array.from(matchingDiv || []).find(
         (div) => div.textContent.trim() === match.Name
       );
-      const posTag = generateVerificationMessage(false)
+      
       if (!foundElement){
         unloadedFailRep.push(match)
       }else{
+        const posTag = generateVerificationMessage(false)
+        foundElement.parentElement.style.transition = "ease all 0.3s"
         foundElement.after(posTag)
       }
     });
