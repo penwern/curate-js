@@ -474,12 +474,13 @@ function verifyChecksums(checksums){
 }
 function generateVerificationMessage(status){
     const verEl = document.createElement("div")
+    verEl.style = "padding-left:0.3em;padding-right:0.4em;max-width:1.5em;max-height:1.7em;border:gray solid 1px;border-radius:5em;margin-left:0.2em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
     if (status){
-        verEl.style = "color:green;padding-left:0.3em;padding-right:0.4em;max-width:1.5em;border:gray solid 1px;border-radius:5em;margin-left:0.2em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
+        verEl.style.color = "green"
         verEl.textContent = "✓ File verified"
         verEl.title = "File successfully verified."
     }else{
-        verEl.style = "color:green;padding-left:0.3em;padding-right:0.4em;max-width:1.5em;border:gray solid 1px;border-radius:5em;margin-left:0.2em;display:inline-flex;font-size:9pt;transition: ease all 0.3s;overflow:hidden;"
+        verEl.style.color = "red"
         verEl.textContent = "X File compromised"
         verEl.title = "File compromised. Please reupload."
     }
