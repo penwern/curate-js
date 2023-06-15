@@ -563,11 +563,13 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   if (document.querySelector(".mdi-plus-box-outline")){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
   }
-  document.querySelector(".transparent-dropzone").addEventListener("click",e=>{
-    if (e.target.classList.contains("mdi-close-circle-outline")){
+  document.querySelector(".transparent-dropzone").removeEventListener("click",removeHandler)
+  document.querySelector(".transparent-dropzone").addEventListener("click",removeHandler)
+  const removeHandler=(e)=>{
+     if (e.target.classList.contains("mdi-close-circle-outline")){
       tagUploads(comparison, unloadedMatch, unloadedFail)
     }
-  })
+  }
 }
 function loadMoreHandler(unloadedMatch, unloadedFail){
   const unloadedMatchRep = []
