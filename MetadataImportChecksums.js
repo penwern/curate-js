@@ -435,13 +435,16 @@ function verifyChecksums(checksums){
             comparison.matches.forEach(match => {
               console.log("finding: ", match.Name, match)
               console.log("els: ", uploadedElements)
-              const foundElements = Array.from(uploadedElements).find(element => element.textContent.includes(match.Name)).querySelectorAll('div');
-              const matchingDiv = Array.from(foundElements).find(div => div.textContent.includes(match.Name));
+              const matchingDiv = uploadedElements.find((element) =>
+                element.textContent.includes("Logo 3 - Website-3.png")
+              )?.querySelectorAll("div");
 
-              console.log(foundElements)
-              console.log(matchingDiv)
+              const foundElement = Array.from(matchingDiv || []).find(
+                (div) => div.textContent.trim() === "Logo 3 - Website-3.png"
+              );
+              console.log(foundElement)
               const posTag = generateVerificationMessage(true)
-              matchingDiv.after(posTag)
+              foundElement.after(posTag)
             });
 
             console.log("Nodes: ", rjs)
