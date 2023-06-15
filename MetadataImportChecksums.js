@@ -327,7 +327,9 @@ function longtaskCounter(cF,l,f,type,checksums){
           if (f.length==1 && f[0].name !== "metadata.json"){
             return
         }
-        importMetadata(cF,l,f,type) 
+        if (type){
+          importMetadata(cF,l,f,type) 
+        }
       },(50*l)) 
     }
 }
@@ -585,13 +587,11 @@ document.addEventListener("input",function(e){
 })
 document.addEventListener("drop",function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
-    console.log(e.dataTransfer)
-    console.log(e.dataTransfer.types)
      const checksums = uploadChecksumHandler(e.dataTransfer.files)
     const f = {...e.dataTransfer.files}
     let l = e.dataTransfer.files.length
     let cF = 0
     let s = 0
-    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished 
+    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,null,checksums)}) //begin watching the upload tasks and process import when finished 
   }
 }) 
