@@ -351,7 +351,7 @@ function uploadChecksumHandler(e){
       // Usage example
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
-        const pathname = getOpenWs()+"/"+file.name;
+        const pathname = getOpenWS()+"/"+file.name;
         const headers = {
           "content-type": "application/json",
           "accept-encoding": "gzip" 
@@ -362,7 +362,7 @@ function uploadChecksumHandler(e){
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
-                file.name = availableFilename.replace(getOpenWs()+"/","")
+                file.name = availableFilename.replace(getOpenWS()+"/","")
                 console.log("hash is: ",event.data.hash)
                 console.log("anme is: ", file.name)
                 fileHashes.push({"file":file,"hash":event.data.hash})
