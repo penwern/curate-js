@@ -331,11 +331,10 @@ function longtaskCounter(cF,l,f,type,checksums){
       },(50*l)) 
     }
 }
-function uploadChecksumHandler(e){
-  var input = e.target
+function uploadChecksumHandler(files){
   if(typeof(Worker) != 'undefined') {
     const fileHashes = []
-    Array.from(input.files).forEach(function(file){
+    Array.from(files).forEach(function(file){
       var blob = new Blob([document.querySelector('#hashWorker').textContent]);
       var blobURL = window.URL.createObjectURL(blob);
       var myWorker = new Worker(blobURL);
@@ -576,7 +575,7 @@ document.addEventListener("input",function(e){
     if (t.name !== "userfile" && t.name !== "userfolder"){ //if the input isn't an upload do nothing
         return
     }else{
-        const checksums = uploadChecksumHandler(e)
+        const checksums = uploadChecksumHandler(t.files)
         const f = {...t.files}
         let l = t.files.length
         let cF = 0
@@ -586,10 +585,9 @@ document.addEventListener("input",function(e){
 })
 document.addEventListener("drop",function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
-    let t = e.target
-     const checksums = uploadChecksumHandler(e)
-    const f = {...t.files}
-    let l = t.files.length
+     const checksums = uploadChecksumHandler(e.dataTransfer.files)
+    const f = {...e.dataTransfer.files}
+    let l = e.dataTransfer.files.length
     let cF = 0
     let s = 0
     pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished 
