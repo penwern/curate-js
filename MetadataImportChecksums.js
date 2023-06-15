@@ -435,7 +435,8 @@ function verifyChecksums(checksums){
             comparison.matches.forEach(match => {
               console.log("finding: ", match.Name, match)
               console.log("els: ", uploadedElements)
-              const foundElement = Array.from(uploadedElements).find(element => element.textContent.includes(match.Name)).querySelectorAll('div').find(div => div.textContent.includes(match.Name))
+              const foundElement = Array.from(uploadedElements).find(element => element.textContent.includes(match.Name)).querySelectorAll('div').find(div => div.textContent.includes(match.Name));
+
               console.log(foundElement)
               const posTag = generateVerificationMessage(true)
               foundElement.after(posTag)
