@@ -435,11 +435,13 @@ function verifyChecksums(checksums){
             comparison.matches.forEach(match => {
               console.log("finding: ", match.Name, match)
               console.log("els: ", uploadedElements)
-              const foundElement = Array.from(uploadedElements).find(element => element.textContent.includes(match.Name)).querySelectorAll('div').find(div => div.textContent.includes(match.Name));
+              const foundElements = Array.from(uploadedElements).find(element => element.textContent.includes(match.Name)).querySelectorAll('div');
+              const matchingDiv = Array.from(foundElements).find(div => div.textContent.includes(match.Name));
 
-              console.log(foundElement)
+              console.log(foundElements)
+              console.log(matchingDiv)
               const posTag = generateVerificationMessage(true)
-              foundElement.after(posTag)
+              matchingDiv.after(posTag)
             });
 
             console.log("Nodes: ", rjs)
