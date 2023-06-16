@@ -198,12 +198,12 @@ function addFileInfo(fileInfoPanel) {
 }
 const selectHandler=(e)=>{
 	console.log("select e: ",e)
-	if(e._selectedNodes[0] == selectedNode){
+	if(e.memo._selectedNodes[0] == selectedNode){
 		return
 	}
 	if (fileInfoPanel.querySelector(".panelContent")){
 		addFileInfo(fileInfoPanel) 
-		selectedNode = e._selectedNodes[0]
+		selectedNode = e.memo._selectedNodes[0]
 	}	  
 }
 var selectedNode 
