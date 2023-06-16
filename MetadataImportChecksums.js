@@ -561,7 +561,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         : uploadedElements;
       
       const foundElement = matchingDiv.find((div) => div.textContent.trim() === level);
-  
+      console.log("found: ", foundElement)
       if (!foundElement) {
         unloadedMatch.push(match);
         return; // Skip to the next match if the element is not found
@@ -575,7 +575,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         // Not the last level, add click listener to load sub-level tags
         if (foundElement.querySelector(".mdi.mdi-folder")) {
           console.log("folder el");
-          foundElement.addEventListener("click", () => {
+          matchingDiv.addEventListener("click", () => {
             console.log("egghead")
             tagUploads(comparison, unloadedMatch, unloadedFail);
           });
