@@ -574,8 +574,10 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   if (document.querySelector(".mdi-plus-box-outline")){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
   }
-  document.querySelector(".transparent-dropzone").removeEventListener("click",removeHandler)
-  document.querySelector(".transparent-dropzone").addEventListener("click",removeHandler)
+  let dz = document.querySelector(".transparent-dropzone");
+  if (!dz.hasEventListener("click", removeHandler)) {
+    dz.addEventListener("click", removeHandler);
+  }
   const removeHandler=(e)=>{
      if (e.target.classList.contains("mdi-close-circle-outline")){
       tagUploads(comparison, unloadedMatch, unloadedFail)
