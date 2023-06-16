@@ -196,7 +196,7 @@ function addFileInfo(fileInfoPanel) {
     return n
   }
 }
-const selectHandler=()=>{
+const selectHandler=(e)=>{
 	console.log("select e: ",e)
 	if(e._selectedNodes[0] == selectedNode){
 		return
@@ -217,7 +217,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
 	  
 	  // Check if "selectHandler" is in the observers array
 	  if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
-	    pydio._dataModel.observe("selection_changed", selectHandler)
+	    pydio._dataModel.observe("selection_changed", selectHandler(e))
 	  }
 	  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
 	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
