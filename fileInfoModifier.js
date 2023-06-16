@@ -18,7 +18,7 @@ function waitForElm(selector) {
     });
 }
 function getOpenWS(){
-	return(document.querySelector(".workspace-current").textContent.toLowerCase().replace(" ","-"))
+	return(pydio._contextHolder._contextNode._label.toLowerCase())
 }
 function reqListener () {
   //console.log(this.responseText);
@@ -204,6 +204,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
           //found fileInfoPanel
 	  const fileInfoPanel = node
 	  pydio._dataModel.observe("selection_changed", e=>{
+		  console.log("select e: ",e)
 		  if (fileInfoPanel.querySelector(".panelContent")){
 			addFileInfo(fileInfoPanel)  
 		  }
