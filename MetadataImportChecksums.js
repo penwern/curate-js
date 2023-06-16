@@ -550,6 +550,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     }
   }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
+  console.log("comparison: ", comparison)
   comparison.matches.forEach(match => {
     const matchingDiv = uploadedElements.find((element) =>
       element.textContent.includes(match.Name)
