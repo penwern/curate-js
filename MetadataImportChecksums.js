@@ -349,6 +349,11 @@ function uploadChecksumHandler(files){
         };
         getAvailableFilename(token, pathname, headers)
           .then(availableFilename => {
+            if (pydio._dataModel._currentRep == "/"){
+              const relpath = getOpenWS()+availableFilename
+            }else{
+              const relpath = getOpenWS()+pydio._dataModel._currentRep+availableFilename
+            }
             const relpath = pydio._dataModel._currentRep+availableFilename;
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
