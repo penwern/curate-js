@@ -585,8 +585,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
   }
   let dz = document.querySelector(".transparent-dropzone");
-  if (!hasEventListener(dz,"click", removeHandler)) {
+  if (!dzEAdded) {
     dz.addEventListener("click", removeHandler);
+    dzEAdded = true
   }
   
 }
@@ -654,6 +655,7 @@ function generateVerificationMessage(status){
     }) 
     return verEl
 }
+var dzEAdded = false
 document.addEventListener("input",function(e){    
     let t = e.target
     if (t.name !== "userfile" && t.name !== "userfolder"){ //if the input isn't an upload do nothing
