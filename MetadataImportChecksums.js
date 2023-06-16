@@ -576,6 +576,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         if (foundElement.querySelector(".mdi.mdi-folder")) {
           console.log("folder el");
           foundElement.addEventListener("click", () => {
+            console.log("egghead")
             tagUploads(comparison, unloadedMatch, unloadedFail);
           });
         }
