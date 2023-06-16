@@ -464,18 +464,18 @@ function verifyChecksums(checksums){
     })
     .then(token => {
         var userId = pydio.user.idmUser.Uuid
-         const transformedObject = {
-  NodePaths: checksums.map((item) => 
-
-    item.file.webkitRelativePath !== ""
-      ? getOpenWS()+"/"+item.file.webkitRelativePath.replace(item.file.webkitRelativePath.split("/")[1], item.name)
-      : getOpenWS()+"/"+item.name
-  ),
-};
-    const searchNodes = searchNodesWithTokens(token, JSON.stringify(transformedObject)) 
-    searchNodes
-        .then(r => r.json())
-        .then(rjs => {
+        const transformedObject = {
+          NodePaths: checksums.map((item) => 
+            item.file.webkitRelativePath !== ""
+              ? getOpenWS()+"/"+item.file.webkitRelativePath.replace(item.file.webkitRelativePath.split("/")[1], item.name)
+              : getOpenWS()+"/"+item.name
+          ),
+        };
+        console.log("tra: ", transformedObject)
+        const searchNodes = searchNodesWithTokens(token, JSON.stringify(transformedObject)) 
+        searchNodes
+          .then(r => r.json())
+          .then(rjs => {
             const comparison = compareChecksums(rjs, checksums)
             const unloadedMatch = []
             const unloadedFail = []
