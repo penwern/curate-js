@@ -549,35 +549,40 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       tagUploads(comparison, unloadedMatch, unloadedFail)
     }
   }
+  const folderHander=(e)=>{
+    if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
+      tagUploads(comparison, unloadedMatch, unloadedFail)  
+    }
+  }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   console.log("comparison: ", comparison)
   
   comparison.matches.forEach(match => {
+    
     let pathLevels = match.Path.split("/").slice(1);
-    const matchingDivs = uploadedElements.find((element) =>
-      element.textContent.includes(pathLevels[1])
-    )?.querySelectorAll("div")
-    const matchPar = uploadedElements.find((element) =>
-      element.textContent.includes(pathLevels[1])
-    )
-    const foundElement = Array.from(matchingDivs || []).find(
-      (div) => div.textContent.trim() === level
-    );
-    if (!foundElement){
-      unloadedMatch.push(match)
-    }else{
-      if (matchPar.querySelector("mdi mdi-folder")){
-        console.log("folder el")
-        unloadedMatch.push(match)
-        matchPar.addEventListener("click", e=>{
-            console.log("eg")
-            tagUploads(comparison, unloadedMatch,unloadedFail)
-        })
-      }else{
-        const posTag = generateVerificationMessage(true)
-        foundElement.after(posTag)
-      }
-    } 
+    pathLevels.forEach(level=>{
+        console.log("looking for: ", level)
+        const matchingDivs = uploadedElements.find((element) =>
+          element.textContent.includes(level)
+        )?.querySelectorAll("div")
+        const matchPar = uploadedElements.find((element) =>
+          element.textContent.includes(level)
+        )
+        console.log("found: ", matchPar)
+        if (matchPar.querySelector(".mdi-folder")){
+          return
+        }else{
+           const foundElement = Array.from(matchingDivs || []).find(
+             (div) => div.textContent.trim() === level
+           );
+           if (!foundElement){
+             unloadedMatch.push(match)
+           }else{
+              const posTag = generateVerificationMessage(true)
+              foundElement.after(posTag)
+            }          
+        }
+    })
   });
   comparison.fails.forEach(match => {
     const matchingDiv = uploadedElements.find((element) =>
@@ -600,6 +605,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   let dz = document.querySelector(".transparent-dropzone");
   if (!dzEAdded) {
     dz.addEventListener("click", removeHandler);
+    dz.addEventListener("click", folderHandler)
     dzEAdded = true
   }
   
