@@ -552,17 +552,19 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   console.log("comparison: ", comparison)
   comparison.matches.forEach(match => {
-    let pathLevels = match.Path.split("/")
-    if (pathLevels[1] !== match.Name){ //folder upload
-      pathLevels.shift()
-      var parent = uploadedElements
-      pathLevels.forEach(level =>{
-          parent = Array.from(parent.find((element)=>
-            element.textContent.includes(level)
-          ).children)
-      })
-      console.log("parent: ", parent)
-    }
+   let pathLevels = match.Path.split("/");
+if (pathLevels[1] !== match.Name) { //folder upload
+  let remainingLevels = pathLevels.slice(1);
+  var parent = uploadedElements;
+  remainingLevels.forEach(level => {
+    console.log("level: ", level);
+    parent = parent.find((element) =>
+      element.textContent.includes(level)
+    );
+    console.log("parent: ", parent);
+  });
+}
+
     const matchingDiv = uploadedElements.find((element) =>
       element.textContent.includes(match.Name)
     )?.querySelectorAll("div");
