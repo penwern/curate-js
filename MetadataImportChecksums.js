@@ -342,19 +342,20 @@ function uploadChecksumHandler(files){
       var myWorker = new Worker(blobURL);
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
-        const pathname = getOpenWS()+"/"+file.name;
+        const pathname = getOpenWS()+pydio._dataModel._currentRep+file.name;
         const headers = {
           "content-type": "application/json",
           "accept-encoding": "gzip" 
         };
         getAvailableFilename(token, pathname, headers)
           .then(availableFilename => {
+            const relpath = getOpenWS()+pydio._dataModel._currentRep+availableFilename;
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
                 const aF = availableFilename.replace(getOpenWS()+"/","")
                 console.log("hash is: ",event.data.hash)
-                fileHashes.push({"file":file,"hash":event.data.hash, "name":aF})
+                fileHashes.push({"file":file,"hash":event.data.hash, "name":aF, "relativePath":relpath})
               }
             }
             myWorker.postMessage({file:file, msg:"begin hash"}) 
@@ -468,8 +469,8 @@ function verifyChecksums(checksums){
         const transformedObject = {
           NodePaths: checksums.map((item) => 
             item.file.webkitRelativePath !== ""
-              ? getOpenWS()+"/"+item.file.webkitRelativePath.replace(item.file.webkitRelativePath.split("/")[1], item.name)
-              : getOpenWS()+"/"+item.name
+              ? item.relativePath+item.file.webkitRelativePath.replace(item.file.webkitRelativePath.split("/")[1], item.name)
+              : item.relativePath
           ),
         };
         console.log("tra: ", transformedObject)
