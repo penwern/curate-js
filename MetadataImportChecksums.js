@@ -343,7 +343,10 @@ function uploadChecksumHandler(files){
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
         console.log("file in q: ", file)
-        const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
+        //const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
+        const pathname = (pydio._dataModel._currentRep === "/")
+          ? (getOpenWS() + (file.webkitRelativePath ? file.webkitRelativePath : file.name))
+          : (getOpenWS() + pydio._dataModel._currentRep + "/" + (file.webkitRelativePath ? file.webkitRelativePath : file.name));
         console.log("path: ", pathname)
         const headers = {
           "content-type": "application/json",
