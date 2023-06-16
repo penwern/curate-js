@@ -555,13 +555,13 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
    let pathLevels = match.Path.split("/");
 if (pathLevels[1] !== match.Name) { //folder upload
   let remainingLevels = pathLevels.slice(1);
-  var parent = uploadedElements;
+  var parentElements = uploadedElements;
   remainingLevels.forEach(level => {
     console.log("level: ", level);
-    parent = parent.find((element) =>
+    parentElements = parentElements.find((element) =>
       element.textContent.includes(level)
-    );
-    console.log("parent: ", parent);
+    ).children;
+    console.log("parentElements: ", parentElements);
   });
 }
 
