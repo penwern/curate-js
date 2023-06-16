@@ -554,10 +554,13 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
-    const matchingDiv = uploadedElements.find((element) =>
+    const matchingDivs = uploadedElements.find((element) =>
+      element.textContent.includes(pathLevels[1])
+    )?.querySelectorAll("div")
+    const matchPar = uploadedElements.find((element) =>
       element.textContent.includes(pathLevels[1])
     )
-    const foundElement = Array.from(matchingDiv.querySelectorAll("div") || []).find(
+    const foundElement = Array.from(matchingDiv || []).find(
       (div) => div.textContent.trim() === level
     );
     if (!foundElement){
@@ -566,7 +569,8 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       if (matchingDiv.querySelector("mdi mdi-folder")){
         console.log("folder el")
         unloadedMatch.push(match)
-        matchingDiv.addEventListener("click", e=>{
+        matchPar.addEventListener("click", e=>{
+            console.log("eg")
             tagUploads(comparison, unloadedMatch,unloadedFail)
         })
       }else{
