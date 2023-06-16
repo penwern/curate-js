@@ -464,6 +464,7 @@ function verifyChecksums(checksums){
     })
     .then(token => {
         var userId = pydio.user.idmUser.Uuid
+        console.log("chegg: ", checksums)
         const transformedObject = {
           NodePaths: checksums.map((item) => 
             item.file.webkitRelativePath !== ""
