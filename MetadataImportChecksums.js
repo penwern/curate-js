@@ -558,9 +558,9 @@ if (pathLevels[1] !== match.Name) { //folder upload
   var parentElements = uploadedElements;
   remainingLevels.forEach(level => {
     console.log("level: ", level);
-    parentElements = parentElements.find((element) =>
+    parentElements = Array.from(parentElements.find((element) =>
       element.textContent.includes(level)
-    ).children;
+    ).children);
     console.log("parentElements: ", parentElements);
   });
 }
