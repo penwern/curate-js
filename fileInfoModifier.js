@@ -196,6 +196,17 @@ function addFileInfo(fileInfoPanel) {
     return n
   }
 }
+const selectHandler=()=>{
+	console.log("select e: ",e)
+	if(e._selectedNodes[0] == selectedNode){
+		return
+	}
+	if (fileInfoPanel.querySelector(".panelContent")){
+		addFileInfo(fileInfoPanel) 
+		selectedNode = e._selectedNodes[0]
+	}	  
+}
+var selectedNode 
 const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
   for (const mutation of mutationsList) {
     if (mutation.type === "childList") {
@@ -203,12 +214,11 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
         if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
           //found fileInfoPanel
 	  const fileInfoPanel = node
-	  pydio._dataModel.observe("selection_changed", e=>{
-		  console.log("select e: ",e)
-		  if (fileInfoPanel.querySelector(".panelContent")){
-			addFileInfo(fileInfoPanel)  
-		  }
-	  })
+	  
+	  // Check if "selectHandler" is in the observers array
+	  if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
+	    pydio._dataModel.observe("selection_changed", selectHandler)
+	  }
 	  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
 	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
 		  fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
