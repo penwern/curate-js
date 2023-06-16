@@ -563,7 +563,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       if (!foundElement){
         unloadedMatch.push(match)
       }else{
-        if (index < levels.length - 1){
+        if (index < pathLevels.length - 1){
           console.log("folder el")
           let remainingLevels = levels
           foundElement.addEventListener("click", e=>{
