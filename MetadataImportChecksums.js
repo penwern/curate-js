@@ -353,13 +353,13 @@ function uploadChecksumHandler(files){
             console.log("av: ", availableFilename)
             console.log("crep: ", pydio._dataModel._currentRep)
             console.log("gows: ", getOpenWS())
-            const relpath = (pydio._dataModel._currentRep === "/") ? (availableFilename) : (getOpenWS() + pydio._dataModel._currentRep + availableFilename.replace(getOpenWS(),""));
+            //const relpath = (pydio._dataModel._currentRep === "/") ? (availableFilename) : (getOpenWS() + pydio._dataModel._currentRep + availableFilename.replace(getOpenWS(),""));
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
                 const aF = availableFilename.replace(getOpenWS()+"/","")
                 console.log("hash is: ",event.data.hash)
-                fileHashes.push({"file":file,"hash":event.data.hash, "name":aF, "relativePath":relpath})
+                fileHashes.push({"file":file,"hash":event.data.hash, "name":aF, "relativePath":availableFilename})
               }
             }
             myWorker.postMessage({file:file, msg:"begin hash"}) 
