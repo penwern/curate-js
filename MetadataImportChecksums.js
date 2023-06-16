@@ -557,9 +557,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       pathLevels.shift()
       var parent = uploadedElements
       pathLevels.forEach(level =>{
-          parent = parent.find((element)=>{
+          parent = Array.from(parent.find((element)=>
             element.textContent.includes(level)
-          })
+          ).children)
       })
       console.log("parent: ", parent)
     }
