@@ -427,6 +427,7 @@ function updateMetaField(uuid,namespace,value){
 function compareChecksums(objectA, objectB){
     const matches = [];
     const fails = []
+  console.log("obja: ", objectA)
   objectA.Nodes.forEach((nodeA) => {
     const matchingFile = objectB.find(
       (item) =>
