@@ -560,13 +560,13 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     const matchPar = uploadedElements.find((element) =>
       element.textContent.includes(pathLevels[1])
     )
-    const foundElement = Array.from(matchingDiv || []).find(
+    const foundElement = Array.from(matchingDivs || []).find(
       (div) => div.textContent.trim() === level
     );
     if (!foundElement){
       unloadedMatch.push(match)
     }else{
-      if (matchingDiv.querySelector("mdi mdi-folder")){
+      if (matchPar.querySelector("mdi mdi-folder")){
         console.log("folder el")
         unloadedMatch.push(match)
         matchPar.addEventListener("click", e=>{
