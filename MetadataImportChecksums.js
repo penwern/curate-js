@@ -345,7 +345,9 @@ function uploadChecksumHandler(files){
         console.log("file in q: ", file)
         //const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
         const basePath = getOpenWS() + (pydio._dataModel._currentRep !== "/" ? pydio._dataModel._currentRep + "/" : "");
-        const pathname = basePath + (file.webkitRelativePath ? file.webkitRelativePath : file.name);
+        const relativePath = (file.webkitRelativePath ? "/" + file.webkitRelativePath : "");
+        const pathname = basePath + relativePath + (relativePath ? "" : file.name);
+
 
         console.log("path: ", pathname)
         const headers = {
