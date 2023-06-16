@@ -200,8 +200,8 @@ const selectHandler=(e,fileInfoPanel)=>{
 	console.log("fi: ", fileInfoPanel)
 	console.log("curr: ", selectedNode)
 	console.log("sell: ", e.memo._selectedNodes[0])
-	if(e.memo._selectedNodes[0] == selectedNode){
-		return
+	if (!e.memo._selectedNodes || e.memo._selectedNodes.length==0 || e.memo._selectedNodes[0] == selectedNode){
+		return	
 	}
 	if (fileInfoPanel.querySelector(".panelContent")){
 		console.log("eere")
