@@ -342,14 +342,14 @@ function uploadChecksumHandler(files){
       var myWorker = new Worker(blobURL);
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
-        const pathname = getOpenWS()+pydio._dataModel._currentRep+file.name;
+        const pathname = pydio._dataModel._currentRep+file.name;
         const headers = {
           "content-type": "application/json",
           "accept-encoding": "gzip" 
         };
         getAvailableFilename(token, pathname, headers)
           .then(availableFilename => {
-            const relpath = getOpenWS()+pydio._dataModel._currentRep+availableFilename;
+            const relpath = pydio._dataModel._currentRep+availableFilename;
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
