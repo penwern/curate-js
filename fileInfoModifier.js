@@ -217,7 +217,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
 	  
 	  // Check if "selectHandler" is in the observers array
 	  if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
-	    pydio._dataModel.observe("selection_changed", selectHandler(e))
+	    pydio._dataModel.observe("selection_changed", e=>{selectHandler(e)})
 	  }
 	  fileInfoPanel.firstElementChild.addEventListener("click",e=>{
 	      if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")){
