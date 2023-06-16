@@ -539,17 +539,9 @@ function verifyChecksums(checksums){
     })         
 }
 function hasEventListener(element, event, handler) {
-  const eventListeners = getEventListeners(element)[event];
-  
-  if (eventListeners && eventListeners.length > 0) {
-    for (const eventListener of eventListeners) {
-      if (eventListener.listener === handler) {
-        return true;
-      }
-    }
-  }
-  
-  return false;
+  const eventListeners = element[event];
+
+  return eventListeners && eventListeners.some(listener => listener === handler);
 }
 function tagUploads(comparison, unloadedMatch, unloadedFail){
   const removeHandler=(e)=>{
