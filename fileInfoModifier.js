@@ -197,11 +197,14 @@ function addFileInfo(fileInfoPanel) {
   }
 }
 const selectHandler=(e,fileInfoPanel)=>{
-	console.log("select e: ",e)
+	console.log("fi: ", fileInfoPanel)
+	console.log("curr: ", selectedNode)
+	console.log("sell: ", e.memo._selectedNodes[0])
 	if(e.memo._selectedNodes[0] == selectedNode){
 		return
 	}
 	if (fileInfoPanel.querySelector(".panelContent")){
+		console.log("eere")
 		addFileInfo(fileInfoPanel) 
 		selectedNode = e.memo._selectedNodes[0]
 	}	  
