@@ -18,7 +18,7 @@ function waitForElm(selector) {
     });
 }
 function getOpenWS(){
-	return(pydio._contextHolder._contextNode._label.toLowerCase())
+	return(pydio._dataModel._rootNode._label.toLowerCase())
 }
 function reqListener () {
   //console.log(this.responseText);
@@ -197,14 +197,10 @@ function addFileInfo(fileInfoPanel) {
   }
 }
 const selectHandler=(e,fileInfoPanel)=>{
-	console.log("fi: ", fileInfoPanel)
-	console.log("curr: ", selectedNode)
-	console.log("sell: ", e.memo._selectedNodes[0])
 	if (!e.memo._selectedNodes || e.memo._selectedNodes.length==0 || e.memo._selectedNodes[0] == selectedNode){
 		return	
 	}
 	if (fileInfoPanel.querySelector(".panelContent")){
-		console.log("eere")
 		addFileInfo(fileInfoPanel) 
 		selectedNode = e.memo._selectedNodes[0]
 	}	  
