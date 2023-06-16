@@ -342,6 +342,7 @@ function uploadChecksumHandler(files){
       var myWorker = new Worker(blobURL);
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
+        console.log("file in q: ", file)
         const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
         console.log("path: ", pathname)
         const headers = {
