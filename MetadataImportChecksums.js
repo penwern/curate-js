@@ -551,38 +551,29 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   console.log("comparison: ", comparison)
+  
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
-    let parentElement = null;
-  
-    pathLevels.forEach((level, index) => {
-      const matchingDiv = uploadedElements.find((div) => div.textContent.includes(level))
-      console.log("match div: ", matchingDiv)
-      const foundElement = Array.from(matchingDiv.children).find((div) => div.textContent.trim() === level);
-      console.log("found: ", foundElement)
-      if (!foundElement) {
-        unloadedMatch.push(match);
-        return; // Skip to the next match if the element is not found
+    const matchingDiv = uploadedElements.find((element) =>
+      element.textContent.includes(pathLevels[1])
+    )
+    const foundElement = Array.from(matchingDiv.querySelectorAll("div") || []).find(
+      (div) => div.textContent.trim() === level
+    );
+    if (!foundElement){
+      unloadedMatch.push(match)
+    }else{
+      if (matchingDiv.querySelector("mdi mdi-folder")){
+        console.log("folder el")
+        unloadedMatch.push(match)
+        matchingDiv.addEventListener("click", e=>{
+            tagUploads(comparison, unloadedMatch,unloadedFail)
+        })
+      }else{
+        const posTag = generateVerificationMessage(true)
+        foundElement.after(posTag)
       }
-  
-      if (index === pathLevels.length - 1) {
-        // Last level, add the verification message
-        const posTag = generateVerificationMessage(true);
-        foundElement.after(posTag);
-      } else {
-        // Not the last level, add click listener to load sub-level tags
-        if (foundElement.querySelector(".mdi.mdi-folder")) {
-          console.log("folder el");
-          unloadedMatch.push(match);
-          matchingDiv.addEventListener("click", () => {
-            console.log("egghead")
-            tagUploads(comparison, unloadedMatch, unloadedFail);
-          });
-        }
-  
-        parentElement = foundElement; // Set parentElement for the next iteration
-      }
-    });
+    } 
   });
   comparison.fails.forEach(match => {
     const matchingDiv = uploadedElements.find((element) =>
