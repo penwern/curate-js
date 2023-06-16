@@ -357,7 +357,7 @@ function uploadChecksumHandler(files){
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
               if (event.data.status == "complete"){
-                const aF = availableFilename.replace(getOpenWS()+"/","")
+                const aF = availableFilename.substring(availableFilename.lastIndexOf('/') + 1);
                 console.log("hash is: ",event.data.hash)
                 fileHashes.push({"file":file,"hash":event.data.hash, "name":aF, "relativePath":availableFilename})
               }
