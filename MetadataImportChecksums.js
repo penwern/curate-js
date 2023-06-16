@@ -478,9 +478,7 @@ function verifyChecksums(checksums){
         console.log("chegg: ", checksums)
         const transformedObject = {
           NodePaths: checksums.map((item) => 
-            item.file.webkitRelativePath !== ""
-              ? item.relativePath+item.file.webkitRelativePath.replace(item.file.webkitRelativePath.split("/")[1], item.name)
-              : item.relativePath
+            item.relativePath
           ),
         };
         console.log("tra: ", transformedObject)
