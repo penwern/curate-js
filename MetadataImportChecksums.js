@@ -539,6 +539,11 @@ function verifyChecksums(checksums){
     })         
 }
 function tagUploads(comparison, unloadedMatch, unloadedFail){
+  const removeHandler=(e)=>{
+     if (e.target.classList.contains("mdi-close-circle-outline")){
+      tagUploads(comparison, unloadedMatch, unloadedFail)
+    }
+  }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
     const matchingDiv = uploadedElements.find((element) =>
@@ -578,11 +583,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   if (!dz.hasEventListener("click", removeHandler)) {
     dz.addEventListener("click", removeHandler);
   }
-  const removeHandler=(e)=>{
-     if (e.target.classList.contains("mdi-close-circle-outline")){
-      tagUploads(comparison, unloadedMatch, unloadedFail)
-    }
-  }
+  
 }
 function loadMoreHandler(unloadedMatch, unloadedFail){
   const unloadedMatchRep = []
