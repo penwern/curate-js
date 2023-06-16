@@ -552,36 +552,30 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   console.log("comparison: ", comparison)
   comparison.matches.forEach(match => {
-   let pathLevels = match.Path.split("/");
-if (pathLevels[1] !== match.Name) { // folder upload
-  let remainingLevels = pathLevels.slice(1);
-  var parentElements = uploadedElements;
-  remainingLevels.forEach((level, index) => {
-    console.log("level: ", level);
-    let pEl = parentElements.find((element) =>
-      element.textContent.includes(level)
-    );
-    if (index < remainingLevels.length - 1) {
-      parentElements = Array.from(pEl.children);
-    }
-    console.log("parent: ", pEl);
-  });
-}
-
-    const matchingDiv = uploadedElements.find((element) =>
-      element.textContent.includes(match.Name)
-    )?.querySelectorAll("div");
-  
-    const foundElement = Array.from(matchingDiv || []).find(
-      (div) => div.textContent.trim() === match.Name
-    );
-    
-    if (!foundElement){
-      unloadedMatch.push(match)
-    }else{
-      const posTag = generateVerificationMessage(true)
-      foundElement.after(posTag)
-    }
+    let pathLevels = match.Path.split("/").slice(1);
+    pathLevels.forEach((level, index)=>{
+      const matchingDiv = uploadedElements.find((element) =>
+        element.textContent.includes(level)
+      )?.querySelectorAll("div");
+      const foundElement = Array.from(matchingDiv || []).find(
+        (div) => div.textContent.trim() === level
+      );
+      if (!foundElement){
+        unloadedMatch.push(match)
+      }else{
+        if (index < levels.length - 1){
+          console.log("folder el")
+          let remainingLevels = levels
+          foundElement.addEventListener("click", e=>{
+              tagUploads(comparison, unloadedMatch,unloadedFail)
+          })
+        }else{
+          const posTag = generateVerificationMessage(true)
+          foundElement.after(posTag)
+        }
+        
+      } 
+    })
   });
   comparison.fails.forEach(match => {
     const matchingDiv = uploadedElements.find((element) =>
