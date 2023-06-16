@@ -342,7 +342,7 @@ function uploadChecksumHandler(files){
       var myWorker = new Worker(blobURL);
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
-        const pathname = pydio._dataModel._currentRep+file.name;
+        const pathname = const relpath = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + file.name) : (getOpenWS() + pydio._dataModel._currentRep + file.name);
         const headers = {
           "content-type": "application/json",
           "accept-encoding": "gzip" 
