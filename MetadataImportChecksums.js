@@ -551,6 +551,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   }
   const folderHander=(e)=>{
     if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
+      console.log("folder click")
       tagUploads(comparison, unloadedMatch, unloadedFail)  
     }
   }
@@ -570,6 +571,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         )
         console.log("found: ", matchPar)
         if (matchPar.querySelector(".mdi-folder")){
+          matchPar.addEventListener("click", folderHandler)
           return
         }else{
            const foundElement = Array.from(matchingDivs || []).find(
@@ -605,7 +607,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   let dz = document.querySelector(".transparent-dropzone");
   if (!dzEAdded) {
     dz.addEventListener("click", removeHandler);
-    dz.addEventListener("click", folderHandler)
+    
     dzEAdded = true
   }
   
