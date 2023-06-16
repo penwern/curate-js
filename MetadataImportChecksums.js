@@ -538,6 +538,19 @@ function verifyChecksums(checksums){
         })   
     })         
 }
+function hasEventListener(element, event, handler) {
+  const eventListeners = getEventListeners(element)[event];
+  
+  if (eventListeners && eventListeners.length > 0) {
+    for (const eventListener of eventListeners) {
+      if (eventListener.listener === handler) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
 function tagUploads(comparison, unloadedMatch, unloadedFail){
   const removeHandler=(e)=>{
      if (e.target.classList.contains("mdi-close-circle-outline")){
@@ -580,7 +593,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
   }
   let dz = document.querySelector(".transparent-dropzone");
-  if (!dz.hasEventListener("click", removeHandler)) {
+  if (!hasEventListener(dz,"click", removeHandler)) {
     dz.addEventListener("click", removeHandler);
   }
   
