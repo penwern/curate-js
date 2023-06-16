@@ -16,7 +16,7 @@ async function checkAndIncrementPathname(token, pathname, commonHeaders, increme
     },
     body: JSON.stringify({ "NodePaths": [incrementedPathname] })
   });
-
+  console.log({ "NodePaths": [incrementedPathname] })
   if (request.ok) {
     const response = await request.json();
     const isPathnameTaken = response.Nodes;
@@ -343,6 +343,7 @@ function uploadChecksumHandler(files){
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
         const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + file.name) : (getOpenWS() + pydio._dataModel._currentRep + file.name);
+        console.log("path: ", pathname)
         const headers = {
           "content-type": "application/json",
           "accept-encoding": "gzip" 
