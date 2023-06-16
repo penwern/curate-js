@@ -344,9 +344,9 @@ function uploadChecksumHandler(files){
       authSession.then(token => {
         console.log("file in q: ", file)
         //const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
-        const pathname = (pydio._dataModel._currentRep === "/")
-          ? (getOpenWS() + (file.webkitRelativePath ? file.webkitRelativePath : file.name))
-          : (getOpenWS() + pydio._dataModel._currentRep + "/" + (file.webkitRelativePath ? file.webkitRelativePath : file.name));
+        const basePath = getOpenWS() + (pydio._dataModel._currentRep !== "/" ? pydio._dataModel._currentRep + "/" : "");
+        const pathname = basePath + (file.webkitRelativePath ? file.webkitRelativePath : file.name);
+
         console.log("path: ", pathname)
         const headers = {
           "content-type": "application/json",
