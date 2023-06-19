@@ -327,7 +327,7 @@ function longtaskCounter(cF,l,f,type,checksums){
         if (type){
           importMetadata(cF,l,f,type) 
         }
-      },(150*l)) 
+      },(200*l)) 
     }
 }
 function uploadChecksumHandler(files){
