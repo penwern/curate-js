@@ -339,8 +339,6 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
   }) 
   function sidecarHandler(e){
     const fileInput = document.querySelector("#file-input")
-    
-    
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       if (file.name === "metadata.json") {
@@ -392,13 +390,14 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                   fetch(data.url, {
                     method: 'PUT',
                     headers: {
-                      ...data.headers
+                      ...data.headers,
+                      'Authorization': 'Bearer '+token
                     },
                     body: file // Replace 'file' with the actual file you want to send as the request body
                   })
                     .then(response => {
                       // Handle the response
-                      console.log("sidecar file uploaded.");
+                      console.log("sidecar file response: ", response);
                       retrieveSidecarInfo()
                     })
                     .catch(error => {
