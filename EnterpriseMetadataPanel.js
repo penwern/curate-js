@@ -397,7 +397,10 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                   })
                     .then(response => {
                       // Handle the response
-                      console.log("sidecar file response: ", response);
+                      response.json().then(body => {
+                        console.log("sidecar file response: ", body);
+                      })
+                      
                       retrieveSidecarInfo()
                     })
                     .catch(error => {
