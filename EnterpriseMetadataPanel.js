@@ -548,15 +548,14 @@ function darkModeModify(){
     }
 }
 function inputHandler(ev){
-  let mds = document.querySelector("#mdsCont")
-  let x = mds.parentNode.lastChild
-  if (x.innerHTML.includes("Save")){
+  let md = document.querySelector("#curateMdPanel")
+  let x = md.lastChild
+  if (x.innerHTML.includes("unsaved changes")){
       return
   }else{
-      let saveBtn = document.createElement("div")
-      saveBtn.innerHTML = '<div id=mdsSave style="padding: 2px; text-align: right; border-top: 1px solid rgb(224, 224, 224);"><button tabindex="0" type="button" style="border: 10px; box-sizing: border-box; display: inline-block; font-family: Roboto, sans-serif; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: pointer; text-decoration: none; margin: 0px; padding: 0px; outline: none; font-size: inherit; font-weight: inherit; position: relative; height: 36px; line-height: 36px; min-width: 88px; color: rgba(0, 0, 0, 0.87); transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms; border-radius: 2px; user-select: none; overflow: hidden; background-color: rgba(0, 0, 0, 0); text-align: center;"><div><span>You have unsaved changes!<span style="position: relative; padding-left: 16px; padding-right: 16px; vertical-align: middle; letter-spacing: 0px; text-transform: uppercase; font-weight: 500; font-size: 14px;">Save meta</span></div></button></div>'
-      saveBtn.addEventListener("click",saveHandler)
-      mds.parentNode.appendChild(saveBtn) 
+      const usc = document.createElement("span")
+      usc.textContent = "You have unsaved changes!"
+      x.prepend(usc)
   } 
 }
 
@@ -682,9 +681,9 @@ function clearMetadata(){
       }
       panelContentParent.removeChild(panelContentParent.firstChild)
       panelContentParent.appendChild(metadataPanelTemplate)
-     if (metadataPanel.tagName == "DIV"){
-       metadataPanel.addEventListener("click", function(){this.id=null})
-     }
+     //if (metadataPanel.tagName == "DIV"){
+       //metadataPanel.addEventListener("click", function(){this.id=null})
+     //}
       
      
      darkModeModify()
