@@ -613,6 +613,9 @@ const harvestOaiHandler = async () => {
   }
                     
 function clearMetadata(){
+  if (!document.querySelector("#curateMdPanel")){
+    return
+  }
   const md = document.querySelector("#curateMdPanel")
   const fields = Array.from(md.getElementsByTagName("input"))
   fields.forEach(field =>{
