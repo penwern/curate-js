@@ -547,6 +547,71 @@ function darkModeModify(){
       document.querySelector("#workspace_toolbar").parentElement.style.background = hc
     }
 }
+function inputHandler(ev){
+  let mds = document.querySelector("#mdsCont")
+  let x = mds.parentNode.lastChild
+  if (x.innerHTML.includes("Save")){
+      return
+  }else{
+      let saveBtn = document.createElement("div")
+      saveBtn.innerHTML = '<div id=mdsSave style="padding: 2px; text-align: right; border-top: 1px solid rgb(224, 224, 224);"><button tabindex="0" type="button" style="border: 10px; box-sizing: border-box; display: inline-block; font-family: Roboto, sans-serif; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); cursor: pointer; text-decoration: none; margin: 0px; padding: 0px; outline: none; font-size: inherit; font-weight: inherit; position: relative; height: 36px; line-height: 36px; min-width: 88px; color: rgba(0, 0, 0, 0.87); transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms; border-radius: 2px; user-select: none; overflow: hidden; background-color: rgba(0, 0, 0, 0); text-align: center;"><div><span>You have unsaved changes!<span style="position: relative; padding-left: 16px; padding-right: 16px; vertical-align: middle; letter-spacing: 0px; text-transform: uppercase; font-weight: 500; font-size: 14px;">Save meta</span></div></button></div>'
+      saveBtn.addEventListener("click",saveHandler)
+      mds.parentNode.appendChild(saveBtn) 
+  } 
+}
+const harvestOaiHandler = async () => {
+    const loader = document.createElement("i")
+    loader.className = "fa fa-circle-o-notch fa-spin"
+    loader.id = "loader"
+    harvestBtn.prepend(loader)
+    let linkId = document.querySelector("#import-oai-link-id").value
+    let harvestRepo = document.querySelector("#import-oai-repo-url").value
+    let pfix = document.querySelector("#import-oai-metadata-prefix").value
+    //set harvest params 
+    const harvest = {
+      baseUrl:harvestRepo,
+      verb:'GetRecord',
+      identifier:linkId,
+      metadataPrefix:pfix,
+      oaiVersion:1,
+    }
+    //perform the operation
+    const metadata = await harvestOAI(harvest);
+    console.log(metadata)
+    if (!metadata){
+      document.querySelector("#loader").remove()
+      console.log("harvest error, please check linking parameters.")
+      return
+    }
+    document.querySelector("#loader").remove()
+    if (pfix == "DC"){
+      for (let metaField in metadata){
+        let fieldId
+        if (pfix.includes("DC")){
+          fieldId = "#dc-"+metaField
+        }
+        else if (pfix.includes("EAD")){
+          fieldId = "#isadg-"+metaField
+        }
+        
+        if (Array.isArray(metadata[metaField])){
+          document.querySelector(fieldId).value = metadata[metaField].join(", ")
+          console.log(fieldId.replace("#",""))
+          dcVals[fieldId.replace("#","")] = metadata[metaField].join(", ")
+        }else{
+          document.querySelector(fieldId).value = metadata[metaField]
+          console.log(fieldId.replace("#",""))
+          dcVals[fieldId.replace("#","")] = metadata[metaField]
+        }
+      }  
+    }
+    else if(pfix.includes("ead")){
+      //TODO add field updates for returned ISAD json
+    }
+    inputHandler()
+  }
+                    
+
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
         return
@@ -564,8 +629,7 @@ function darkModeModify(){
       const exportSection = metadataPanelTemplate.querySelector("#exportSection")
       const tagsSection = metadataPanelTemplate.querySelector("#tagsSection")
       const lengthMax = metadataFields.length
-     
-
+    
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
@@ -588,6 +652,19 @@ function darkModeModify(){
               field.remove()
           }
       }
+       //create OAI harvest button
+      const harvestBtn = document.createElement("button")
+      harvestBtn.id = "harvestBtn"
+      harvestBtn.innerHTML = '<i class="icon-link menu-icons" style="color:gray;margin-left:0 !important";></i>'
+      harvestBtn.className = "harvestBtn"
+      harvestBtn.addEventListener("click", harvestOaiHandler)
+      let harvestBtnText = document.createElement("text")
+      harvestBtnText.textContent = "Harvest from OAI link ID"
+      harvestBtnText.className = "cwT"
+      harvestBtn.append(harvestBtnText)
+      let harvestBtnDiv = document.createElement("div")
+      harvestBtnDiv.append(harvestBtn)      
+      importSection.querySelector("#import-oai-link-id").parentElement.after(harvestBtnDiv)
       if (metadataPanel.parentElement.childElementCount == 1){
         metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.overflowY = "auto"
         metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.maxHeight = "50em"
