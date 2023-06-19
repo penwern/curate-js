@@ -542,9 +542,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
-    console.log("level split: ", pathLevels)
     pathLevels.forEach(level=>{
-        console.log("looking for: ", level)
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
@@ -594,8 +592,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   });
   if (document.querySelector(".mdi-plus-box-outline")){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{
-      console.log("gbubububub")
-      tagUploads(comparison,[],[])
+      setTimeout(function(){
+        tagUploads(comparison,[],[])
+      },200)
     })
   }
   let dz = document.querySelector(".transparent-dropzone");
