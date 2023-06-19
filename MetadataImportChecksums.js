@@ -549,10 +549,10 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       tagUploads(comparison, unloadedMatch, unloadedFail)
     }
   }
-  const folderHander=(e)=>{
+  const folderHandler=(e)=>{
     if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
       console.log("folder click")
-      tagUploads(comparison, unloadedMatch, unloadedFail)  
+      tagUploads(comparison, [], [])  
     }
   }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
