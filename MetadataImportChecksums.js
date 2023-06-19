@@ -577,8 +577,10 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           matchPar.setAttribute("listening", true)
           matchPar.addEventListener("click", folderHandler)
           return
+        }else if(matchPar.querySelector(".mdi-folder")){
+          return
         }else{
-           const foundElement = Array.from(matchingDivs || []).find(
+           const foundElement = matchDivs.find(
              (div) => div.textContent.trim() === level
            );
            if (!foundElement){
