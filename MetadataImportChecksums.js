@@ -591,7 +591,10 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         })
   });
   if (document.querySelector(".mdi-plus-box-outline")){
-    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{tagUploads(comparison,[],[])})
+    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{
+      console.log("gbubububub")
+      tagUploads(comparison,[],[])
+    })
   }
   let dz = document.querySelector(".transparent-dropzone");
   if (!dzEAdded) {
