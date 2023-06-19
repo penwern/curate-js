@@ -585,9 +585,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }else if(matchPar.querySelector(".mdi-folder")){
           return
-        }else{
+        }else if(!matchPar.textContent.includes("File verified")){
             const posTag = generateVerificationMessage(true)
-            matchPar.after(posTag)
+            matchPar.firstChild.childElements[1].after(posTag)
         }          
         })
   });
