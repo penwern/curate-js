@@ -399,8 +399,6 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                       response.text().then(body => {
                         console.log("sidecar file response: ", body);
                       })
-                      
-                      retrieveSidecarInfo()
                     })
                     .catch(error => {
                       // Handle any errors
@@ -420,7 +418,7 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                   .then(data => {
                     // Handle the response data
                     console.info("sidecar file successfully added: ",data);
-                    
+                    retrieveSidecarInfo()
                   })
                   .catch(error => {
                     // Handle any errors
@@ -754,15 +752,12 @@ function clearMetadata(){
       var target = document 
     }
     if (pydio._dataModel._selectedNodes.length == 0){
-
       return
     }
     if(!target.querySelector(".sidecar-list")){
-
       return
     }
     else{
-
       Array.from(target.querySelector(".sidecar-list").children).forEach(c=>{
         c.remove()
       })
