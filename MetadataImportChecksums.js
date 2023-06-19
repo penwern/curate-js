@@ -566,7 +566,8 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         const matchingDivs = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )?.querySelectorAll("div")
-        const matchPar = uploadedElements.find((element) =>
+        console.log("match divs: ", matchingDivs)
+        const matchPar = matchingDivs.find((element) =>
           element.textContent.includes(level)
         )
         console.log("found: ", matchPar)
