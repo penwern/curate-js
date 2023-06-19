@@ -563,15 +563,18 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
     let pathLevels = match.Path.split("/").slice(1);
     pathLevels.forEach(level=>{
         console.log("looking for: ", level)
-        const matchingDivs = uploadedElements.find((element) =>
+        const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
-        )?.querySelectorAll("div")
-        console.log("match divs: ", matchingDivs)
-        const matchPar = Array.from(matchingDivs).find((element) =>
+        )
+        const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
+        console.log("match div: ", matchingDiv)
+        console.log("chil: ", matchDivs)
+        const matchPar = matchDivs.find((element) =>
           element.textContent.includes(level)
         )
         console.log("found: ", matchPar)
-        if (matchPar.querySelector(".mdi-folder")){
+        if (matchPar.querySelector(".mdi-folder") && !matchPar.hasAttribute("listening")){
+          matchPar.setAttribute("listening", true)
           matchPar.addEventListener("click", folderHandler)
           return
         }else{
