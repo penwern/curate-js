@@ -554,6 +554,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         return
       }
       setTimeout(function(){
+        console.log("folder click")
         tagUploads(comparison, [], [])  
       },150)
     }
@@ -569,7 +570,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
-        console.log("match div: ", matchingDiv)
+        if (!matchingDiv){
+          return
+        }
         const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
         console.log("chil: ", matchDivs)
         const matchPar = matchDivs.find((element) =>
@@ -583,17 +586,10 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         }else if(matchPar.querySelector(".mdi-folder")){
           return
         }else{
-           const foundElement = matchDivs.find(
-             (div) => div.textContent.trim() === level
-           );
-           if (!foundElement){
-             unloadedMatch.push(match)
-           }else{
-              const posTag = generateVerificationMessage(true)
-              foundElement.after(posTag)
-            }          
-        }
-    })
+            const posTag = generateVerificationMessage(true)
+            matchPar.after(posTag)
+        }          
+        })
   });
   comparison.fails.forEach(match => {
     const matchingDiv = uploadedElements.find((element) =>
