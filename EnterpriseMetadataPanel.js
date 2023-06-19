@@ -397,9 +397,7 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                     .then(response => {
                       // Handle the response
                       response.text().then(body => {
-                        console.log("sidecar file response: ", body);
                         setTimeout(function(){
-                          console.log()
                           retrieveSidecarInfo()
                         },200)
                       })
@@ -746,7 +744,6 @@ function clearMetadata(){
     });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
-    console.log("hello!")
     if (!metadataPanel){
       metadataPanel = document.querySelector("#curateMdPanel")
     }
@@ -763,7 +760,6 @@ function clearMetadata(){
       return
     }
     else{
-      console.log("here dawg!")
       Array.from(target.querySelector(".sidecar-list").children).forEach(c=>{
         c.remove()
       })
