@@ -566,8 +566,8 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
-        const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
         console.log("match div: ", matchingDiv)
+        const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
         console.log("chil: ", matchDivs)
         const matchPar = matchDivs.find((element) =>
           element.textContent.includes(level)
