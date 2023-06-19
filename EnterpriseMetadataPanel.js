@@ -743,6 +743,7 @@ function clearMetadata(){
     });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
+    console.log("hello!")
     if (!metadataPanel){
       metadataPanel = document.querySelector("#curateMdPanel")
     }
