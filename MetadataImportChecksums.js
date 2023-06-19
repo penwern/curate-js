@@ -591,7 +591,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         })
   });
   if (document.querySelector(".mdi-plus-box-outline")){
-    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
+    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{tagUploads(comparison,[],[])})
   }
   let dz = document.querySelector(".transparent-dropzone");
   if (!dzEAdded) {
