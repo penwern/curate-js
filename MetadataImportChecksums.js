@@ -542,7 +542,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
+    console.log("level split: ", pathLevels)
     pathLevels.forEach(level=>{
+        console.log("looking for: ", level)
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
