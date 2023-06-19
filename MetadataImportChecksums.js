@@ -412,12 +412,7 @@ function updateMetaField(uuid,namespace,value){
           if (response.status !== 200){
               console.error("Update Error")
               return
-          }else{
-              response.json()
-              .then(rjs =>{ 
-                  console.log("detail: ", rjs)
-              })
-          }  
+          }
       })
       .catch(err => {
           console.error("Update Error: ",err)
@@ -566,6 +561,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }else if(!matchPar.textContent.includes("File verified")){
             const posTag = generateVerificationMessage(true)
+            console.log("the matched par: ", matchPar)
             matchPar.firstChild.children[1].firstChild.after(posTag)
         }          
         })
