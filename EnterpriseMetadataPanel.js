@@ -664,7 +664,7 @@ const harvestOaiHandler = async () => {
       harvestBtn.append(harvestBtnText)
       let harvestBtnDiv = document.createElement("div")
       harvestBtnDiv.append(harvestBtn)      
-      importSection.appendChild(harvestBtnDiv)
+      importSection.querySelector(".metadataPanel-accordion-content").appendChild(harvestBtnDiv)
       if (metadataPanel.parentElement.childElementCount == 1){
         metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.overflowY = "auto"
         metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.maxHeight = "50em"
