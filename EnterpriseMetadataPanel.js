@@ -439,7 +439,6 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
     
   dropzone.addEventListener("change", sidecarHandler)
   document.addEventListener("drop", function(e){
-    console.log("drop targ: ", e)
     if (e.target.className !== "drop-zone dropzone-hover"){
       return
     }else{
@@ -642,7 +641,6 @@ function clearMetadata(){
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
-          field.addEventListener("input", inputHandler)
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
@@ -744,7 +742,6 @@ function clearMetadata(){
     });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
-    clearMetadata()
     if (metadataPanel.tagName == "DIV"){
       
       var target = metadataPanel
