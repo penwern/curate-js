@@ -552,7 +552,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   const folderHandler=(e)=>{
     if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
       console.log("folder click")
-      tagUploads(comparison, [], [])  
+      setTimeout(function(){
+        tagUploads(comparison, [], [])  
+      },150)
     }
   }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
