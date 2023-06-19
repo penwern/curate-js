@@ -743,6 +743,9 @@ function clearMetadata(){
     });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
+    if (!metadataPanel){
+      metadataPanel = document.querySelector("#curateMdPanel")
+    }
     if (metadataPanel.tagName == "DIV"){
       
       var target = metadataPanel
