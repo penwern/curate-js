@@ -6,7 +6,6 @@ async function checkAndIncrementPathname(token, pathname, commonHeaders, increme
   const extIndex = pathname.lastIndexOf('.');
   const baseName = extIndex !== -1 ? pathname.slice(0, extIndex) : pathname;
   const extension = extIndex !== -1 ? pathname.slice(extIndex) : '';
-
   const incrementedPathname = increment === 0 ? pathname : `${baseName}-${increment}${extension}`;
   const request = await fetch("https://www.curate.penwern.co.uk/a/tree/stats", {
     method: "POST",
@@ -16,11 +15,9 @@ async function checkAndIncrementPathname(token, pathname, commonHeaders, increme
     },
     body: JSON.stringify({ "NodePaths": [incrementedPathname] })
   });
-  console.log({ "NodePaths": [incrementedPathname] })
   if (request.ok) {
     const response = await request.json();
     const isPathnameTaken = response.Nodes;
-
     if (isPathnameTaken && isPathnameTaken.length > 0) {
       return checkAndIncrementPathname(token, pathname, commonHeaders, increment + 1);
     } else {
