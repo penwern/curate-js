@@ -397,7 +397,7 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                   })
                     .then(response => {
                       // Handle the response
-                      response.json().then(body => {
+                      response.text().then(body => {
                         console.log("sidecar file response: ", body);
                       })
                       
