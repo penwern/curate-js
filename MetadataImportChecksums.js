@@ -330,7 +330,7 @@ function longtaskCounter(cF,l,f,type,checksums){
         if (type){
           importMetadata(cF,l,f,type) 
         }
-      },(50*l)) 
+      },(150*l)) 
     }
 }
 function uploadChecksumHandler(files){
@@ -540,7 +540,6 @@ function verifyChecksums(checksums){
 }
 function hasEventListener(element, event, handler) {
   const eventListeners = element[event];
-
   return eventListeners && eventListeners.some(listener => listener === handler);
 }
 function tagUploads(comparison, unloadedMatch, unloadedFail){
@@ -551,7 +550,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   }
   const folderHandler=(e)=>{
     if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
-      console.log("folder click")
+      if (e.target.closest(".upload-loaded").querySelector(".mdi-chevron-down")){
+        return
+      }
       setTimeout(function(){
         tagUploads(comparison, [], [])  
       },150)
