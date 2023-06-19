@@ -342,23 +342,16 @@ function uploadChecksumHandler(files){
       var myWorker = new Worker(blobURL);
       const authSession = PydioApi._PydioRestClient.getAuthToken();
       authSession.then(token => {
-        console.log("file in q: ", file)
         //const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
         const basePath = getOpenWS() + (pydio._dataModel._currentRep !== "/" ? pydio._dataModel._currentRep + "/" : "");
         const relativePath = (file.webkitRelativePath ? "/" + file.webkitRelativePath : "");
         const pathname = basePath + relativePath + (relativePath ? "" : "/"+file.name);
-
-
-        console.log("path: ", pathname)
         const headers = {
           "content-type": "application/json",
           "accept-encoding": "gzip" 
         };
         getAvailableFilename(token, pathname, headers)
           .then(availableFilename => {
-            console.log("av: ", availableFilename)
-            console.log("crep: ", pydio._dataModel._currentRep)
-            console.log("gows: ", getOpenWS())
             //const relpath = (pydio._dataModel._currentRep === "/") ? (availableFilename) : (getOpenWS() + pydio._dataModel._currentRep + availableFilename.replace(getOpenWS(),""));
             console.log('[Main]', 'Init Web Worker');
             myWorker.onmessage = function(event) {
@@ -375,7 +368,6 @@ function uploadChecksumHandler(files){
           });
       });
     })
-    console.log("hash array: ", fileHashes)
     return fileHashes
   }else{
     console.log("Browser does not support web-workers. Please update.")
@@ -438,7 +430,6 @@ function updateMetaField(uuid,namespace,value){
 function compareChecksums(objectA, objectB){
     const matches = [];
     const fails = []
-  console.log("obja: ", objectA)
   objectA.Nodes.forEach((nodeA) => {
     const matchingFile = objectB.find(
       (item) =>
@@ -475,13 +466,11 @@ function verifyChecksums(checksums){
     })
     .then(token => {
         var userId = pydio.user.idmUser.Uuid
-        console.log("chegg: ", checksums)
         const transformedObject = {
           NodePaths: checksums.map((item) => 
             item.relativePath
           ),
         };
-        console.log("tra: ", transformedObject)
         const searchNodes = searchNodesWithTokens(token, JSON.stringify(transformedObject)) 
         searchNodes
           .then(r => r.json())
@@ -554,19 +543,14 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         return
       }
       setTimeout(function(){
-        console.log("folder click")
         tagUploads(comparison, [], [])  
       },150)
     }
   }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
-  console.log("comparison: ", comparison)
-  
   comparison.matches.forEach(match => {
-    
     let pathLevels = match.Path.split("/").slice(1);
     pathLevels.forEach(level=>{
-        console.log("looking for: ", level)
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
@@ -574,11 +558,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }
         const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
-        console.log("chil: ", matchDivs)
         const matchPar = matchDivs.find((element) =>
           element.textContent.includes(level)
         )
-        console.log("found: ", matchPar)
         if (matchPar.querySelector(".mdi-folder") && !matchPar.hasAttribute("listening")){
           matchPar.setAttribute("listening", true)
           matchPar.addEventListener("click", folderHandler)
@@ -592,19 +574,29 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         })
   });
   comparison.fails.forEach(match => {
-    const matchingDiv = uploadedElements.find((element) =>
-      element.textContent.includes(match.Name)
-    )?.querySelectorAll("div");
-    const foundElement = Array.from(matchingDiv || []).find(
-      (div) => div.textContent.trim() === match.Name
-    );
-    
-    if (!foundElement){
-      unloadedFail.push(match)
-    }else{
-      const posTag = generateVerificationMessage(false)
-      foundElement.after(posTag)
-    }
+    let pathLevels = match.Path.split("/").slice(1);
+    pathLevels.forEach(level=>{
+        const matchingDiv = uploadedElements.find((element) =>
+          element.textContent.includes(level)
+        )
+        if (!matchingDiv){
+          return
+        }
+        const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
+        const matchPar = matchDivs.find((element) =>
+          element.textContent.includes(level)
+        )
+        if (matchPar.querySelector(".mdi-folder") && !matchPar.hasAttribute("listening")){
+          matchPar.setAttribute("listening", true)
+          matchPar.addEventListener("click", folderHandler)
+          return
+        }else if(matchPar.querySelector(".mdi-folder")){
+          return
+        }else if(!matchPar.textContent.includes("File verified")){
+            const posTag = generateVerificationMessage(false)
+            matchPar.firstChild.children[1].firstChild.after(posTag)
+        }          
+        })
   });
   if (document.querySelector(".mdi-plus-box-outline")){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{loadMoreHandler(unloadedMatch,unloadedFail)})
