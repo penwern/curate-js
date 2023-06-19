@@ -390,8 +390,7 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
                   fetch(data.url, {
                     method: 'PUT',
                     headers: {
-                      ...data.headers,
-                      'Authorization': 'Bearer '+token
+                      ...data.headers
                     },
                     body: file // Replace 'file' with the actual file you want to send as the request body
                   })
