@@ -587,7 +587,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }else if(!matchPar.textContent.includes("File verified")){
             const posTag = generateVerificationMessage(true)
-            matchPar.firstChild.childElements[1].after(posTag)
+            matchPar.firstChild.children[1].firstChild.after(posTag)
         }          
         })
   });
