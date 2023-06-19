@@ -559,6 +559,7 @@ function inputHandler(ev){
       mds.parentNode.appendChild(saveBtn) 
   } 
 }
+
 const harvestOaiHandler = async () => {
     const loader = document.createElement("i")
     loader.className = "fa fa-circle-o-notch fa-spin"
@@ -611,7 +612,13 @@ const harvestOaiHandler = async () => {
     inputHandler()
   }
                     
-
+function clearMetadata(){
+  const md = document.querySelector("#curateMdPanel")
+  const fields = Array.from(md.getElementsByTagName("input"))
+  fields.forEach(field =>{
+    field.value = ""
+  })
+}
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel"){
         return
@@ -633,6 +640,8 @@ const harvestOaiHandler = async () => {
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
+          field.addEventListener("input", inputHandler)
+          field.getElementsByTagName("input")[0].id = "md-"+fieldName.replaceAll(" ","-")
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
@@ -734,7 +743,7 @@ const harvestOaiHandler = async () => {
     });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
-
+    clearMetadata()
     if (metadataPanel.tagName == "DIV"){
       
       var target = metadataPanel
