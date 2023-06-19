@@ -623,7 +623,7 @@ function clearMetadata(){
   })
 }
   function modifyMetadataPanel(metadataPanel){
-      if (metadataPanel.id == "curateMdPanel"){
+      if (metadataPanel.id == "curateMdPanel" || pydio._dataModel._selectedNodes.length == 0){
         return
       }      
       const panelContentParent = metadataPanel.querySelector(".panelContent")
