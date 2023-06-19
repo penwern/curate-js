@@ -561,7 +561,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }else if(!matchPar.textContent.includes("File verified")){
             const posTag = generateVerificationMessage(true)
-            Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == ("cover.png")).after(posTag)
+            Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
         }          
         })
   });
@@ -586,7 +586,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }else if(!matchPar.textContent.includes("File verified")){
             const posTag = generateVerificationMessage(false)
-            Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == ("cover.png")).after(posTag)
+            Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
         }          
         })
   });
