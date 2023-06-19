@@ -644,7 +644,6 @@ function clearMetadata(){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
           field.addEventListener("input", inputHandler)
-          field.getElementsByTagName("input")[0].id = "md-"+fieldName.replaceAll(" ","-")
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
