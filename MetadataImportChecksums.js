@@ -523,22 +523,22 @@ function hasEventListener(element, event, handler) {
   const eventListeners = element[event];
   return eventListeners && eventListeners.some(listener => listener === handler);
 }
+const folderHandler=(e)=>{
+  if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
+    if (e.target.closest(".upload-loaded").querySelector(".mdi-chevron-down")){
+      return
+    }
+    setTimeout(function(){
+      tagUploads(comparison, [], [])  
+    },150)
+  }
+}
+const removeHandler=(e)=>{
+   if (e.target.classList.contains("mdi-close-circle-outline")){
+    tagUploads(comparison, unloadedMatch, unloadedFail)
+  }
+}
 function tagUploads(comparison, unloadedMatch, unloadedFail){
-  const removeHandler=(e)=>{
-     if (e.target.classList.contains("mdi-close-circle-outline")){
-      tagUploads(comparison, unloadedMatch, unloadedFail)
-    }
-  }
-  const folderHandler=(e)=>{
-    if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
-      if (e.target.closest(".upload-loaded").querySelector(".mdi-chevron-down")){
-        return
-      }
-      setTimeout(function(){
-        tagUploads(comparison, [], [])  
-      },150)
-    }
-  }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
@@ -584,7 +584,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
           return
         }else if(matchPar.querySelector(".mdi-folder")){
           return
-        }else if(!matchPar.textContent.includes("File verified")){
+        }else if(!matchPar.textContent.includes("File compromised")){
             const posTag = generateVerificationMessage(false)
             Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
         }          
@@ -656,7 +656,7 @@ function generateVerificationMessage(status){
         verEl.title = "File successfully verified."
     }else{
         verEl.style.color = "red"
-        verEl.textContent = "X File compromised"
+        verEl.textContent = "X  File compromised"
         verEl.title = "File compromised. Please reupload."
     }
     verEl.addEventListener("mouseover", e=>{
@@ -685,7 +685,7 @@ document.addEventListener("input",function(e){
         const checksums = uploadChecksumHandler(t.files)
         const f = {...t.files}
         const uploadTime = calculateUploadTime(t.files);
-        console.log(`Estimated Upload Time: ${uploadTime/1000} ms`);
+        console.log(`Estimated Upload Time: ${uploadTime/1000} s`);
         let l = t.files.length
         let cF = 0
         let s = 0
@@ -697,7 +697,7 @@ document.addEventListener("drop",function(e){
     const checksums = uploadChecksumHandler(e.dataTransfer.files)
     const f = {...e.dataTransfer.files}
     const uploadTime = calculateUploadTime(e.dataTransfer.files);
-    console.log(`Estimated Upload Time: ${uploadTime/1000} ms`);
+    console.log(`Estimated Upload Time: ${uploadTime/1000} s`);
     let l = e.dataTransfer.files.length
     let cF = 0
     let s = 0
