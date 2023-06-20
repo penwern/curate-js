@@ -542,11 +542,13 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
+    console.log("here doin adada match mang!: ", level)
     pathLevels.forEach(level=>{
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
         if (!matchingDiv){
+          console.log("yooo we bonked a match! haha! yo duuude!: ", level)
           return
         }
         const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
@@ -568,7 +570,9 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
   comparison.fails.forEach(match => {
     console.log("here doin tha fails")
     let pathLevels = match.Path.split("/").slice(1);
+    console.log("da path split: ", pathLevels)
     pathLevels.forEach(level=>{
+        
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
