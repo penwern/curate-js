@@ -541,6 +541,7 @@ const removeHandler=(e)=>{
 function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
+    setTimeout(e=>console.log("sloooow ddooown"), 200)
     let pathLevels = match.Path.split("/").slice(1);
     console.log("here doin adada match mang!: ", pathLevels)
     pathLevels.forEach(level=>{
@@ -568,6 +569,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         })
   });
   comparison.fails.forEach(match => {
+    setTimeout(e=>console.log("sloooow ddooown"), 200)
     console.log("here doin tha fails")
     let pathLevels = match.Path.split("/").slice(1);
     console.log("da path split: ", pathLevels)
