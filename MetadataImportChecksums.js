@@ -541,10 +541,10 @@ const removeHandler=(e)=>{
 function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
-    setTimeout(e=>console.log("sloooow ddooown"), 200)
-    let pathLevels = match.Path.split("/").slice(1);
-    console.log("here doin adada match mang!: ", pathLevels)
-    pathLevels.forEach(level=>{
+    setTimeout(e=>{
+      let pathLevels = match.Path.split("/").slice(1);
+      console.log("here doin adada match mang!: ", pathLevels)
+      pathLevels.forEach(level=>{
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
@@ -566,15 +566,15 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
             const posTag = generateVerificationMessage(true)
             Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
         }          
-        })
+        })  
+    }, 200)
   });
   comparison.fails.forEach(match => {
-    setTimeout(e=>console.log("sloooow ddooown"), 200)
-    console.log("here doin tha fails")
-    let pathLevels = match.Path.split("/").slice(1);
-    console.log("da path split: ", pathLevels)
-    pathLevels.forEach(level=>{
-        
+    setTimeout(e=>{
+      console.log("here doin tha fails")
+      let pathLevels = match.Path.split("/").slice(1);
+      console.log("da path split: ", pathLevels)
+      pathLevels.forEach(level=>{
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
@@ -597,6 +597,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
             Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
         }          
         })
+    }, 200)
   });
   if (document.querySelector(".mdi-plus-box-outline")){
     document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{
