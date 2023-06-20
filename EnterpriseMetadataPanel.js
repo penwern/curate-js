@@ -656,7 +656,7 @@ function clearMetadata(){
           }else if(fieldName.includes("export-")){
               field.className = "dropdown-item"
               exportSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
-          }else if(fieldName.includes("custom tags")){
+          }else if(fieldName.includes("tags")){
               tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
           }else{
               field.remove()
