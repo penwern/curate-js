@@ -327,7 +327,7 @@ function longtaskCounter(cF,l,f,type,checksums, uploadTime){
         if (type){
           importMetadata(cF,l,f,type) 
         }
-      },(uploadTime*1.2)) 
+      },(uploadTime*2.2)) 
     }
 }
 function uploadChecksumHandler(files){
