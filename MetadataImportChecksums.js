@@ -566,12 +566,14 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         })
   });
   comparison.fails.forEach(match => {
+    console.log("here doin tha fails")
     let pathLevels = match.Path.split("/").slice(1);
     pathLevels.forEach(level=>{
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
         if (!matchingDiv){
+          console.log("bonked it: ", level)
           return
         }
         const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
@@ -658,10 +660,11 @@ function generateVerificationMessage(status){
         verEl.style.color = "red"
         verEl.textContent = "X  File compromised"
         verEl.title = "File compromised. Please reupload."
+        verEl.style.paddingLeft = "0.35em;"
     }
     verEl.addEventListener("mouseover", e=>{
         e.target.style.backgroundColor = "#e2e2e2";
-        e.target.style.maxWidth = "10em"
+        e.target.style.maxWidth = "10.5em"
     })
     verEl.addEventListener("mouseleave", e=>{
         e.target.style.backgroundColor = "white";
