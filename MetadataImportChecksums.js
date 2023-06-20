@@ -316,7 +316,7 @@ function importMetadata(cF,l,f,type){
 }
 function longtaskCounter(cF,l,f,type,checksums, uploadTime){
     cF += 1
-    if (cF !== l){
+    if (cF !== l*2){
         pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,type,checksums)}) //if uploads are still in progress watch the next longtask
     }else{
       setTimeout(()=>{ //wait a moment to ensure uploads are finished
@@ -327,7 +327,7 @@ function longtaskCounter(cF,l,f,type,checksums, uploadTime){
         if (type){
           importMetadata(cF,l,f,type) 
         }
-      },(uploadTime*10.2)) 
+      },(l*10)) 
     }
 }
 function uploadChecksumHandler(files){
