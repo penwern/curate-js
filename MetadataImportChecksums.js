@@ -314,7 +314,7 @@ function importMetadata(cF,l,f,type){
         }
     })
 }
-function longtaskCounter(cF,l,f,type,checksums){
+function longtaskCounter(cF,l,f,type,checksums, uploadTime){
     cF += 1
     if (cF !== l){
         pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,type,checksums)}) //if uploads are still in progress watch the next longtask
@@ -327,7 +327,7 @@ function longtaskCounter(cF,l,f,type,checksums){
         if (type){
           importMetadata(cF,l,f,type) 
         }
-      },(200*l)) 
+      },(uploadTime*1.2)) 
     }
 }
 function uploadChecksumHandler(files){
@@ -669,6 +669,13 @@ function generateVerificationMessage(status){
     }) 
     return verEl
 }
+function calculateUploadTime(fileList) {
+  const totalSize = Array.from(fileList).reduce((sum, file) => sum + file.size, 0);
+  const averageUploadSpeedInBytesPerSecond = 20 * 1024 * 1024 / 8; // 20 Mbps in bytes per second
+  const uploadTimeInMilliseconds = totalSize / averageUploadSpeedInBytesPerSecond * 1000;
+
+  return uploadTimeInMilliseconds;
+}
 var dzEAdded = false
 document.addEventListener("input",function(e){    
     let t = e.target
@@ -677,19 +684,23 @@ document.addEventListener("input",function(e){
     }else{
         const checksums = uploadChecksumHandler(t.files)
         const f = {...t.files}
+        const uploadTime = calculateUploadTime(f);
+        console.log(`Estimated Upload Time: ${uploadTime/1000} ms`);
         let l = t.files.length
         let cF = 0
         let s = 0
-        pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished
+        pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums, uploadTime)}) //begin watching the upload tasks and process import when finished
     }
 })
 document.addEventListener("drop",function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
-     const checksums = uploadChecksumHandler(e.dataTransfer.files)
+    const checksums = uploadChecksumHandler(e.dataTransfer.files)
     const f = {...e.dataTransfer.files}
+    const uploadTime = calculateUploadTime(f);
+    console.log(`Estimated Upload Time: ${uploadTime/1000} ms`);
     let l = e.dataTransfer.files.length
     let cF = 0
     let s = 0
-    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,null,checksums)}) //begin watching the upload tasks and process import when finished 
+    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,null,checksums, uploadTime)}) //begin watching the upload tasks and process import when finished 
   }
 }) 
