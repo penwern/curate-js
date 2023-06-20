@@ -524,22 +524,34 @@ function hasEventListener(element, event, handler) {
   return eventListeners && eventListeners.some(listener => listener === handler);
 }
 const folderHandler=(e)=>{
-  if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
-    if (e.target.closest(".upload-loaded").querySelector(".mdi-chevron-down")){
-      return
-    }
-    setTimeout(function(){
-      tagUploads(comparison, [], [])  
-    },150)
-  }
+  
 }
-const removeHandler=(e)=>{
-    console.log("remove handling: ", e)
-   if (e.target.classList.contains("mdi-close-circle-outline")){
-    tagUploads(comparison, unloadedMatch, unloadedFail)
-  }
-}
+
 function tagUploads(comparison, unloadedMatch, unloadedFail){
+  const uploadAreaClickHandler=(e)=>{
+    console.log("click handling: ", e)
+    if(e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")){
+      if (e.target.closest(".upload-loaded").querySelector(".mdi-chevron-down")){
+        return
+      }
+      console.log("open folder")
+      setTimeout(function(){
+        tagUploads(comparison, [], [])  
+      },150)
+    }
+    if (e.target.classList.contains("mdi-close-circle-outline")){
+      console.log("closing one")
+      setTimeout(function(){
+        tagUploads(comparison, [], [])  
+      },150)
+    }
+    if (e.target.closest("mdi") && e.target.closest("mdi").classList.contains("mdi-plus-box-outline")){
+      console.log("load more")
+      setTimeout(function(){
+        tagUploads(comparison, [], [])  
+      },150)
+    }
+  }
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
     let pathLevels = match.Path.split("/").slice(1);
@@ -554,11 +566,7 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
       const matchPar = matchDivs.find((element) =>
         element.textContent.includes(level)
       )
-      if (matchPar.querySelector(".mdi-folder") && !matchPar.hasAttribute("listening")){
-        matchPar.setAttribute("listening", true)
-        matchPar.addEventListener("click", folderHandler)
-        return
-      }else if(matchPar.querySelector(".mdi-folder")){
+      if(matchPar.querySelector(".mdi-folder")){
         return
       }else if(!matchPar.textContent.includes("File verified")){
           const posTag = generateVerificationMessage(true)
@@ -593,16 +601,10 @@ function tagUploads(comparison, unloadedMatch, unloadedFail){
         })
     }, 200)
   });
-  if (document.querySelector(".mdi-plus-box-outline")){
-    document.querySelector(".mdi-plus-box-outline").parentElement.addEventListener("click", ()=>{
-      setTimeout(function(){
-        tagUploads(comparison,[],[])
-      },200)
-    })
-  }
+  
   let dz = document.querySelector(".transparent-dropzone");
   if (!dzEAdded) {
-    dz.addEventListener("click", removeHandler);
+    dz.addEventListener("click", uploadAreaClickHandler);
     
     dzEAdded = true
   }
