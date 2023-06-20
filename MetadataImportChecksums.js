@@ -534,6 +534,7 @@ const folderHandler=(e)=>{
   }
 }
 const removeHandler=(e)=>{
+    console.log("remove handling: ", e)
    if (e.target.classList.contains("mdi-close-circle-outline")){
     tagUploads(comparison, unloadedMatch, unloadedFail)
   }
@@ -541,45 +542,38 @@ const removeHandler=(e)=>{
 function tagUploads(comparison, unloadedMatch, unloadedFail){
   var uploadedElements = Array.from(document.querySelectorAll(".upload-loaded"))
   comparison.matches.forEach(match => {
-    setTimeout(e=>{
-      let pathLevels = match.Path.split("/").slice(1);
-      console.log("here doin adada match mang!: ", pathLevels)
-      pathLevels.forEach(level=>{
-        const matchingDiv = uploadedElements.find((element) =>
-          element.textContent.includes(level)
-        )
-        if (!matchingDiv){
-          console.log("yooo we bonked a match! haha! yo duuude!: ", level)
-          return
-        }
-        const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
-        const matchPar = matchDivs.find((element) =>
-          element.textContent.includes(level)
-        )
-        if (matchPar.querySelector(".mdi-folder") && !matchPar.hasAttribute("listening")){
-          matchPar.setAttribute("listening", true)
-          matchPar.addEventListener("click", folderHandler)
-          return
-        }else if(matchPar.querySelector(".mdi-folder")){
-          return
-        }else if(!matchPar.textContent.includes("File verified")){
-            const posTag = generateVerificationMessage(true)
-            Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
-        }          
-        })  
-    }, 200)
+    let pathLevels = match.Path.split("/").slice(1);
+    pathLevels.forEach(level=>{
+      const matchingDiv = uploadedElements.find((element) =>
+        element.textContent.includes(level)
+      )
+      if (!matchingDiv){
+        return
+      }
+      const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
+      const matchPar = matchDivs.find((element) =>
+        element.textContent.includes(level)
+      )
+      if (matchPar.querySelector(".mdi-folder") && !matchPar.hasAttribute("listening")){
+        matchPar.setAttribute("listening", true)
+        matchPar.addEventListener("click", folderHandler)
+        return
+      }else if(matchPar.querySelector(".mdi-folder")){
+        return
+      }else if(!matchPar.textContent.includes("File verified")){
+          const posTag = generateVerificationMessage(true)
+          Array.from(matchPar.querySelectorAll("div")).find((el) => el.textContent.trim() == (level)).after(posTag)
+      }          
+      })  
   });
   comparison.fails.forEach(match => {
     setTimeout(e=>{
-      console.log("here doin tha fails")
       let pathLevels = match.Path.split("/").slice(1);
-      console.log("da path split: ", pathLevels)
       pathLevels.forEach(level=>{
         const matchingDiv = uploadedElements.find((element) =>
           element.textContent.includes(level)
         )
         if (!matchingDiv){
-          console.log("bonked it: ", level)
           return
         }
         const matchDivs = Array.from(matchingDiv.querySelectorAll("div"))
@@ -667,7 +661,7 @@ function generateVerificationMessage(status){
         verEl.style.color = "red"
         verEl.textContent = "X  File compromised"
         verEl.title = "File compromised. Please reupload."
-        verEl.style.paddingLeft = "0.35em;"
+        verEl.style.paddingLeft = "0.35em !important"
     }
     verEl.addEventListener("mouseover", e=>{
         e.target.style.backgroundColor = "#e2e2e2";
@@ -679,13 +673,6 @@ function generateVerificationMessage(status){
     }) 
     return verEl
 }
-function calculateUploadTime(fileList) {
-  const totalSize = Array.from(fileList).reduce((sum, file) => sum + file.size, 0);
-  const averageUploadSpeedInBytesPerSecond = 20 * 1024 * 1024 / 8; // 20 Mbps in bytes per second
-  const uploadTimeInMilliseconds = totalSize / averageUploadSpeedInBytesPerSecond * 1000;
-
-  return uploadTimeInMilliseconds;
-}
 var dzEAdded = false
 document.addEventListener("input",function(e){    
     let t = e.target
@@ -694,23 +681,19 @@ document.addEventListener("input",function(e){
     }else{
         const checksums = uploadChecksumHandler(t.files)
         const f = {...t.files}
-        const uploadTime = calculateUploadTime(t.files);
-        console.log(`Estimated Upload Time: ${uploadTime/1000} s`);
         let l = t.files.length
         let cF = 0
         let s = 0
-        pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums, uploadTime)}) //begin watching the upload tasks and process import when finished
+        pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished
     }
 })
 document.addEventListener("drop",function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
     const checksums = uploadChecksumHandler(e.dataTransfer.files)
     const f = {...e.dataTransfer.files}
-    const uploadTime = calculateUploadTime(e.dataTransfer.files);
-    console.log(`Estimated Upload Time: ${uploadTime/1000} s`);
     let l = e.dataTransfer.files.length
     let cF = 0
     let s = 0
-    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,null,checksums, uploadTime)}) //begin watching the upload tasks and process import when finished 
+    pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,null,checksums)}) //begin watching the upload tasks and process import when finished 
   }
 }) 
