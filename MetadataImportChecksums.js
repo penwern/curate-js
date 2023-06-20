@@ -684,7 +684,7 @@ document.addEventListener("input",function(e){
     }else{
         const checksums = uploadChecksumHandler(t.files)
         const f = {...t.files}
-        const uploadTime = calculateUploadTime(f);
+        const uploadTime = calculateUploadTime(t.files);
         console.log(`Estimated Upload Time: ${uploadTime/1000} ms`);
         let l = t.files.length
         let cF = 0
@@ -696,7 +696,7 @@ document.addEventListener("drop",function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
     const checksums = uploadChecksumHandler(e.dataTransfer.files)
     const f = {...e.dataTransfer.files}
-    const uploadTime = calculateUploadTime(f);
+    const uploadTime = calculateUploadTime(e.dataTransfer.files);
     console.log(`Estimated Upload Time: ${uploadTime/1000} ms`);
     let l = e.dataTransfer.files.length
     let cF = 0
