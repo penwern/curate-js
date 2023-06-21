@@ -714,6 +714,7 @@ function clearMetadata(){
         if (!metadataPanel.id){
           metadataPanel.firstChild.addEventListener("click", e=>{
           if(metadataPanel.querySelector(".panelContent")){
+            metadataPanel.id = null
           }else{
             console.log("checking reopen")
             const collapseInterval = setInterval(()=>{
