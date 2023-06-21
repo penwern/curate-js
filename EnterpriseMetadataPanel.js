@@ -692,6 +692,7 @@ function clearMetadata(){
     
   }
   const metadataPanelCallback = (e,metadataObserver) => {
+    metadataObserver.disconnect()
     var p = false
 
     e.forEach(m=>{
@@ -712,6 +713,7 @@ function clearMetadata(){
         const metadataPanel = panel
         console.log("adding collapse sensor to: ", metadataPanel.firstChild)
         if (!metadataPanel.id){
+          metadataPanel.id = null
           metadataPanel.firstChild.addEventListener("click", e=>{
           if(metadataPanel.querySelector(".panelContent")){
             metadataPanel.id = null
@@ -746,6 +748,7 @@ function clearMetadata(){
         }
       }
     });
+    metadataObserver.observe(document.body, { subtree: true, childList: true });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
     if (!metadataPanel){
