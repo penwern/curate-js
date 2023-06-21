@@ -709,27 +709,25 @@ function clearMetadata(){
     }
     const panels = document.querySelectorAll('.panelCard');
     panels.forEach(panel =>{
-      if (panel.innerText.includes("Meta Data")){
+      if (panel.innerText.includes("Meta Data") && !panel.id){
         const metadataPanel = panel
+        metadataPanel.id = null
         console.log("adding collapse sensor to: ", metadataPanel.firstChild)
-        if (!metadataPanel.id){
+        metadataPanel.firstChild.addEventListener("click", e=>{
+        if(metadataPanel.querySelector(".panelContent")){
           metadataPanel.id = null
-          metadataPanel.firstChild.addEventListener("click", e=>{
-          if(metadataPanel.querySelector(".panelContent")){
-            metadataPanel.id = null
-          }else{
-            console.log("checking reopen")
-            const collapseInterval = setInterval(()=>{
-              if (metadataPanel.querySelector(".panelContent")){
-                clearInterval(collapseInterval)
-                modifyMetadataPanel(metadataPanel)
-                console.log("modified")
-              }
-            },10)
-
+        }else{
+          console.log("checking reopen")
+          const collapseInterval = setInterval(()=>{
+            if (metadataPanel.querySelector(".panelContent")){
+              clearInterval(collapseInterval)
+              modifyMetadataPanel(metadataPanel)
+              console.log("modified")
             }
-          })  
-        }
+          },10)
+
+          }
+        })  
         if(metadataPanel.querySelector(".panelContent") && metadataPanel.id !== "curateMdPanel"){
           const panelContent = metadataPanel.querySelector(".panelContent").firstChild
           if (!panelContent.children){
@@ -748,8 +746,7 @@ function clearMetadata(){
         }
       }
     });
-    metadataObserver.disconnect()
-    metadataObserver.observe(document.body, { subtree: true, childList: true });
+
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
     if (!metadataPanel){
