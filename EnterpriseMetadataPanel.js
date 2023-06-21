@@ -692,7 +692,7 @@ function clearMetadata(){
     
   }
   const metadataPanelCallback = (e,metadataObserver) => {
-    metadataObserver.disconnect()
+    
     var p = false
 
     e.forEach(m=>{
@@ -748,6 +748,7 @@ function clearMetadata(){
         }
       }
     });
+    metadataObserver.disconnect()
     metadataObserver.observe(document.body, { subtree: true, childList: true });
   }
   const retrieveSidecarInfo=(metadataPanel)=>{
