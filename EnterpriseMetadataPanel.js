@@ -711,7 +711,8 @@ function clearMetadata(){
       if (panel.innerText.includes("Meta Data")){
         const metadataPanel = panel
         console.log("adding collapse sensor to: ", metadataPanel.firstChild)
-        metadataPanel.firstChild.addEventListener("click", e=>{
+        if (!metadataPanel.id){
+          metadataPanel.firstChild.addEventListener("click", e=>{
           if(metadataPanel.querySelector(".panelContent")){
           }else{
             console.log("checking reopen")
@@ -719,14 +720,13 @@ function clearMetadata(){
               if (metadataPanel.querySelector(".panelContent")){
                 clearInterval(collapseInterval)
                 modifyMetadataPanel(metadataPanel)
-                metadataPanel.id = "curateMdPanel"
                 console.log("modified")
               }
             },10)
 
             }
-        })
-        
+          })  
+        }
         if(metadataPanel.querySelector(".panelContent") && metadataPanel.id !== "curateMdPanel"){
           const panelContent = metadataPanel.querySelector(".panelContent").firstChild
           if (!panelContent.children){
