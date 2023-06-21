@@ -679,6 +679,7 @@ function clearMetadata(){
         metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.overflowY = "auto"
         metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.maxHeight = "50em"
       }
+      metadataPanel.id = "curateMdPanel"
       panelContentParent.removeChild(panelContentParent.firstChild)
       panelContentParent.appendChild(metadataPanelTemplate)
       //if (!metadataPanel.id){
@@ -712,17 +713,14 @@ function clearMetadata(){
       if (panel.innerText.includes("Meta Data") && !panel.id){
         const metadataPanel = panel
         metadataPanel.id = null
-        console.log("adding collapse sensor to: ", metadataPanel.firstChild)
         metadataPanel.firstChild.addEventListener("click", e=>{
         if(metadataPanel.querySelector(".panelContent")){
           metadataPanel.id = null
         }else{
-          console.log("checking reopen")
           const collapseInterval = setInterval(()=>{
             if (metadataPanel.querySelector(".panelContent")){
               clearInterval(collapseInterval)
               modifyMetadataPanel(metadataPanel)
-              console.log("modified")
             }
           },10)
 
