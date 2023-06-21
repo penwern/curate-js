@@ -681,7 +681,7 @@ function clearMetadata(){
       }
       panelContentParent.removeChild(panelContentParent.firstChild)
       panelContentParent.appendChild(metadataPanelTemplate)
-     //if (metadataPanel.tagName == "DIV"){
+      //if (!metadataPanel.id){
        //metadataPanel.addEventListener("click", function(){this.id=null})
      //}
       
@@ -708,7 +708,7 @@ function clearMetadata(){
     }
     const panels = document.querySelectorAll('.panelCard');
     panels.forEach(panel =>{
-      if (panel.innerText.includes("Meta Data") && panel.id !== "curateMdPanel"){
+      if (panel.innerText.includes("Meta Data")){
         const metadataPanel = panel
         metadataPanel.firstChild.addEventListener("click", e=>{
           if(metadataPanel.querySelector(".panelContent")){
@@ -719,7 +719,7 @@ function clearMetadata(){
                 modifyMetadataPanel(metadataPanel)
                 metadataPanel.id = "curateMdPanel"
               }
-            },20)
+            },10)
 
             }
         })
