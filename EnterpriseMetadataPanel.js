@@ -710,14 +710,17 @@ function clearMetadata(){
     panels.forEach(panel =>{
       if (panel.innerText.includes("Meta Data")){
         const metadataPanel = panel
+        console.log("adding collapse sensor to: ", metadataPanel.firstChild)
         metadataPanel.firstChild.addEventListener("click", e=>{
           if(metadataPanel.querySelector(".panelContent")){
           }else{
+            console.log("checking reopen")
             const collapseInterval = setInterval(()=>{
               if (metadataPanel.querySelector(".panelContent")){
                 clearInterval(collapseInterval)
                 modifyMetadataPanel(metadataPanel)
                 metadataPanel.id = "curateMdPanel"
+                console.log("modified")
               }
             },10)
 
