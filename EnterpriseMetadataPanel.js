@@ -488,7 +488,6 @@ var accordionHeaders = document.querySelectorAll('.metadataPanel-accordion-heade
       'isad(g)-extent and medium of the unit of description': 'Identity Statement',
       'isad(g)-name of creator(s)': 'Context',
       'isad(g)-administrative/biographical history': 'Context',
-      
       'isad(g)-archival history': 'Context',
       'isad(g)-immediate source of acquisition or transfer': 'Context',
       'isad(g)-scope and content': 'Content And Structure',
@@ -667,6 +666,7 @@ function generateRedLabel(){
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
           }else if(fieldName.includes("isad(g)-")){
               var areaName = groupFieldsByArea(fieldName, isadFieldToAreaMapping).replaceAll(" ","")
+              console.log("alleged isad field: ", field)
               field.className = "dropdown-item"
               isadSection.querySelector("#isad"+areaName).querySelector(".metadataPanel-accordion-content").appendChild(field)
           }else if(fieldName.includes("import-")){
