@@ -660,7 +660,7 @@ function generateRedLabel(){
             e.target.querySelector("clear-field-label").style.opacity = "0.3"
             e.target.querySelector("clear-field-label").style.width = "1.2em"
           })
-          field.firstChild.appendChild(redLabel)
+          field.querySelector("input").parentElement.appendChild(redLabel)
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
