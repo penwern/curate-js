@@ -660,6 +660,7 @@ function generateRedLabel(){
             e.target.querySelector("clear-field-label").style.opacity = "0.3"
             e.target.querySelector("clear-field-label").style.width = "1.2em"
           })
+          field.appendChild(redLabel)
           const fieldName = field.textContent.toLowerCase()
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
@@ -678,6 +679,7 @@ function generateRedLabel(){
               tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
           }else if(fieldName.includes("enable-inheritence") && pydio._dataModel._bDir){
               metadataPanel.querySelector(".panelContent").before(field)
+              console.log(field)
           }else{
               field.remove()
           }
