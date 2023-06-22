@@ -654,19 +654,18 @@ function generateRedLabel(){
     
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
+          const fieldName = field.textContent.toLowerCase()
           var redLabel = generateRedLabel()
           field.addEventListener("hover",e=>{
             e.target.querySelector("clear-field-label").style.opacity = "0.3"
             e.target.querySelector("clear-field-label").style.width = "1.2em"
           })
           field.appendChild(redLabel)
-          const fieldName = field.textContent.toLowerCase()
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
           }else if(fieldName.includes("isad(g)-")){
               var areaName = groupFieldsByArea(fieldName, isadFieldToAreaMapping).replaceAll(" ","")
-              console.log("alleged isad field: ", field)
               field.className = "dropdown-item"
               isadSection.querySelector("#isad"+areaName).querySelector(".metadataPanel-accordion-content").appendChild(field)
           }else if(fieldName.includes("import-")){
