@@ -627,10 +627,19 @@ function generateRedLabel(){
   l.style = "position: absolute; display: flex; top: 0; right: 0; width: 0; height: 100%; background-color: #ff4848; transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1); overflow: hidden; opacity: 0; z-index: 2; border-radius: 4px 0px 0px 4px; color: white; font-size: 12pt; align-items: center; justify-content: center; cursor: pointer;"
   l.textContent = "&#10006;"
   l.addEventListener("hover",e=>{
+    console.log("hoverin a label!")
     e.target.style.opacity = "1"
   })
   l.addEventListener("click",e=>{
-    e.target.closest("input").value = ""
+    var p = e.target.parentElement
+    console.log("clickin a label!")
+    let i
+    if (p.querySelector("input")){
+      i = p.querySelector("input")
+    }else if(p.querySelector("textarea")){
+      i = p.querySelector("textarea")
+    }
+    e.target.parentElement.querySelector("input").value = ""
   })
   return l
 }
@@ -655,14 +664,15 @@ function generateRedLabel(){
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
-          var redLabel = generateRedLabel()
-          field.addEventListener("hover",e=>{
-            e.target.querySelector("clear-field-label").style.opacity = "0.3"
-            e.target.querySelector("clear-field-label").style.width = "1.2em"
+          if (field.querySelector("input") || field.querySelector("textarea")){
+            var redLabel = generateRedLabel()
+            field.addEventListener("hover",e=>{})
+            console.log("hoverin a field!")
+            e.target.querySelector(".clear-field-label").style.opacity = "0.3"
+            e.target.querySelector(".clear-field-label").style.width = "1.2em"
           })
-        console.log(field.firstChild)
-          field.firstChild.prepend(redLabel)
-          
+          field.firstChild.prepend(redLabel)  
+          }
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
               dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
