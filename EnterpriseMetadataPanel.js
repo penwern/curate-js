@@ -621,19 +621,7 @@ function clearMetadata(){
     field.value = ""
   })
 }
-function generateRedLabel(){
-  var l = document.createElement("div")
-  l.className = "clear-field-label"
-  l.style = "position: absolute; display: flex; top: 0; right: 0; width: 0; height: 100%; background-color: #ff4848; transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1); overflow: hidden; opacity: 0; z-index: 2; border-radius: 4px 0px 0px 4px; color: white; font-size: 12pt; align-items: center; justify-content: center; cursor: pointer;"
-  l.textContent = "&#10006;"
-  l.addEventListener("hover",e=>{
-    e.target.style.opacity = "1"
-  })
-  l.addEventListener("click",e=>{
-    e.target.closest("input").value = ""
-  })
-  return l
-}
+
   function modifyMetadataPanel(metadataPanel){
       if (metadataPanel.id == "curateMdPanel" || pydio._dataModel._selectedNodes.length == 0){
         return
@@ -655,13 +643,6 @@ function generateRedLabel(){
       for (let x=0; x<metadataFieldsClone.length; x++){
           var field = metadataFields[x]
           const fieldName = field.textContent.toLowerCase()
-          var redLabel = generateRedLabel()
-          field.addEventListener("hover",e=>{
-            e.target.querySelector("clear-field-label").style.opacity = "0.3"
-            e.target.querySelector("clear-field-label").style.width = "1.2em"
-          })
-        console.log(field.firstChild)
-          field.firstChild.prepend(redLabel)
           
           if (fieldName.includes("dc-")){
               field.className = "dropdown-item"
