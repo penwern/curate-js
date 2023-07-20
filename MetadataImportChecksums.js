@@ -330,46 +330,57 @@ function longtaskCounter(cF,l,f,type,checksums, uploadTime){
       },(l*10)) 
     }
 }
-function uploadChecksumHandler(files){
-  if(typeof(Worker) != 'undefined') {
-    const fileHashes = []
-    Array.from(files).forEach(function(file){
-      var blob = new Blob([document.querySelector('#hashWorker').textContent]);
-      var blobURL = window.URL.createObjectURL(blob);
-      var myWorker = new Worker(blobURL);
+function generateChecksum(file) {
+  return new Promise((resolve, reject) => {
+    if (typeof Worker !== "undefined") {
+      const blob = new Blob([document.querySelector("#hashWorker").textContent]);
+      const blobURL = window.URL.createObjectURL(blob);
+      const myWorker = new Worker(blobURL);
+
       const authSession = PydioApi._PydioRestClient.getAuthToken();
-      authSession.then(token => {
-        //const pathname = (pydio._dataModel._currentRep === "/") ? (getOpenWS() + "/" + file.name) : (getOpenWS() + pydio._dataModel._currentRep + "/" + file.name);
-        const basePath = getOpenWS() + (pydio._dataModel._currentRep !== "/" ? pydio._dataModel._currentRep + "/" : "");
-        const relativePath = (file.webkitRelativePath ? "/" + file.webkitRelativePath : "");
-        const pathname = basePath + relativePath + (relativePath ? "" : "/"+file.name);
-        const headers = {
-          "content-type": "application/json",
-          "accept-encoding": "gzip" 
-        };
-        getAvailableFilename(token, pathname, headers)
-          .then(availableFilename => {
-            //const relpath = (pydio._dataModel._currentRep === "/") ? (availableFilename) : (getOpenWS() + pydio._dataModel._currentRep + availableFilename.replace(getOpenWS(),""));
-            console.log('[Main]', 'Init Web Worker');
-            myWorker.onmessage = function(event) {
-              if (event.data.status == "complete"){
-                const aF = availableFilename.substring(availableFilename.lastIndexOf('/') + 1);
-                console.log("hash is: ",event.data.hash)
-                fileHashes.push({"file":file,"hash":event.data.hash, "name":aF, "relativePath":availableFilename})
-              }
-            }
-            myWorker.postMessage({file:file, msg:"begin hash"}) 
-          })
-          .catch(error => {
-            console.error("Error:", error);
-          });
-      });
-    })
-    return fileHashes
-  }else{
-    console.log("Browser does not support web-workers. Please update.")
-  }   
+      authSession
+        .then((token) => {
+          const basePath = getOpenWS() + (pydio._dataModel._currentRep !== "/" ? pydio._dataModel._currentRep + "/" : "");
+          const relativePath = file.webkitRelativePath ? "/" + file.webkitRelativePath : "";
+          const pathname = basePath + relativePath + (relativePath ? "" : "/" + file.name);
+          const headers = {
+            "content-type": "application/json",
+            "accept-encoding": "gzip",
+          };
+
+          getAvailableFilename(token, pathname, headers)
+            .then((availableFilename) => {
+              console.log("[Main]", "Init Web Worker");
+              myWorker.onmessage = function (event) {
+                if (event.data.status === "complete") {
+                  const aF = availableFilename.substring(availableFilename.lastIndexOf("/") + 1);
+                  console.log("hash is: ", event.data.hash);
+                  resolve({
+                    file: file,
+                    hash: event.data.hash,
+                    name: aF,
+                    relativePath: availableFilename,
+                  });
+                }
+              };
+              myWorker.postMessage({ file: file, msg: "begin hash" });
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              reject(error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          reject(error);
+        });
+    } else {
+      console.log("Browser does not support web-workers. Please update.");
+      reject("Web workers not supported.");
+    }
+  });
 }
+
 function updateMetaField(uuid,namespace,value){
   pydio.user.getIdmUser().then(pydUser => pydUser.Uuid) //make sure auth token is fresh
     .then(userId => {
@@ -689,10 +700,51 @@ document.addEventListener("input",function(e){
         pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,t.name,checksums)}) //begin watching the upload tasks and process import when finished
     }
 })
-document.addEventListener("drop",function(e){
+async function processEntry(entry, checksums) {
+  if (entry.isDirectory) {
+    var reader = entry.createReader();
+    var entries = await new Promise((resolve) => reader.readEntries(resolve));
+    await Promise.all(entries.map((subEntry) => processEntry(subEntry, checksums)));
+  } else {
+    // Read the file data from the FileEntry object
+    var file = await new Promise((resolve) => entry.file(resolve));
+    // generate checksum for file
+    try {
+      var result = await generateChecksum(file);
+      checksums.push(result); // The object with file, hash, name, and relativePath properties
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+}
+
+async function processItems(dt) {
+  var checksums = [];
+  var length = dt.items.length;
+
+  // Create a copy of the dt.items list to avoid any modifications during the loop
+  var itemsCopy = [];
+  for (var i = 0; i < length; i++) {
+    itemsCopy.push(dt.items[i]);
+  }
+
+  // Process each item in the copied list
+  await Promise.all(itemsCopy.map((item) => {
+    var entry = item.webkitGetAsEntry();
+    return processEntry(entry, checksums); // return the Promise from processEntry
+  }));
+
+  // All checksums are now available in the 'checksums' array.
+  return checksums;
+}
+document.addEventListener("drop", async function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
-    const checksums = uploadChecksumHandler(e.dataTransfer.files)
-    const f = {...e.dataTransfer.files}
+    var f
+    var dt = e.dataTransfer;
+    // Call this function and pass the 'dt' parameter when you have the DataTransfer object ready.
+    var checksums = await processItems(dt); // Wait for the checksums to be calculated
+    console.log(checksums);
+    f = {...e.dataTransfer.files}
     let l = e.dataTransfer.files.length
     let cF = 0
     let s = 0
