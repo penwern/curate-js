@@ -235,7 +235,3 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
   }
 });
 fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
-
-
-
-
