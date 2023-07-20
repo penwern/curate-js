@@ -18,6 +18,9 @@ function waitForElm(selector) {
     });
 }
 function getOpenWS(){
+	if(pydio._dataModel._rootNode._label.toLowerCase() == pydio.user.id.toLowerCase()){
+		return("personal-files")
+	}
 	return(pydio._dataModel._rootNode._label.toLowerCase())
 }
 function reqListener () {
