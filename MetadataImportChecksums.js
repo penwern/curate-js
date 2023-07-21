@@ -737,15 +737,38 @@ async function processItems(dt) {
   // All checksums are now available in the 'checksums' array.
   return checksums;
 }
+function getTotalTransferSize(dataTransfer) {
+  let totalSize = 0;
+
+  // Check if the dataTransfer object has the 'items' property
+  if (dataTransfer && dataTransfer.items) {
+    // Iterate through the items and sum up their sizes
+    for (let i = 0; i < dataTransfer.items.length; i++) {
+      const item = dataTransfer.items[i];
+      if (item.kind === 'file') {
+        const file = item.getAsFile();
+        totalSize += file.size;
+      }
+    }
+  }
+
+  // Return the total size in bytes
+  return totalSize;
+}
+
+
 document.addEventListener("drop", async function(e){
   if (e.dataTransfer && e.target.className !== "drop-zone dropzone-hover"){
     var f
     var dt = e.dataTransfer;
+    console.log(getTotalTransferSize(dt))
     // Call this function and pass the 'dt' parameter when you have the DataTransfer object ready.
     var checksums = await processItems(dt); // Wait for the checksums to be calculated
     console.log(checksums);
+    console.log(dt)
     f = {...e.dataTransfer.files}
     let l = e.dataTransfer.files.length
+    console.log(f, l)
     let cF = 0
     let s = 0
     pydio.observeOnce("longtask_finished",()=>{longtaskCounter(cF,l,f,null,checksums)}) //begin watching the upload tasks and process import when finished 
