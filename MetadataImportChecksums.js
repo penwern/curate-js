@@ -7,7 +7,7 @@ async function getAvailableFilename(token, pathname, headers) {
         const baseName = extIndex !== -1 ? pathname.slice(0, extIndex) : pathname;
         const extension = extIndex !== -1 ? pathname.slice(extIndex) : '';
         const incrementedPathname = increment === 0 ? pathname : `${baseName}-${increment}${extension}`;
-        const request = await fetch("https://www.curate.penwern.co.uk/a/tree/stats", {
+        const request = await fetch(window.location.origin+"/a/tree/stats", {
             method: "POST",
             headers: {
                 ...commonHeaders,
@@ -31,9 +31,9 @@ async function getAvailableFilename(token, pathname, headers) {
     function curateNotification(input, token) { //send a notification to a Curate user
         let url
         if (input.NodeId) {
-            url = "https://" + window.location.hostname + "/a/scheduler/hooks/notifynode"
+            url = window.location.origin + "/a/scheduler/hooks/notifynode"
         } else {
-            url = "https://" + window.location.hostname + "/a/scheduler/hooks/notify"
+            url = window.location.origin + "/a/scheduler/hooks/notify"
         }
         const fetchOptions = {
             method: 'POST',
@@ -49,7 +49,7 @@ async function getAvailableFilename(token, pathname, headers) {
             .catch(err => console.error('error', err));
     }
     function searchNodesWithTokens(bearerToken, body) { //get tree 
-        let url = "https://" + window.location.hostname + "/a/tree/stats";
+        let url = window.location.origin + "/a/tree/stats";
         const fetchOptions = {
             method: 'POST',
             headers: {
@@ -160,7 +160,7 @@ async function getAvailableFilename(token, pathname, headers) {
                                         return
                                     }
                                     const metadatas = convertMetadataArrayToObject(asc)
-                                    const url = "https://demo.curate.penwern.co.uk/a/user-meta/update";
+                                    const url = window.location.origin+"/a/user-meta/update";
                                     const authorizationHeader = `Bearer ${token}`;
                                     fetch(url, {
                                         method: "PUT",
@@ -230,7 +230,7 @@ async function getAvailableFilename(token, pathname, headers) {
                 return
             }
             const metadatas = convertMetadataArrayToObject(asc)
-            const url = "https://" + window.location.hostname + "/a/user-meta/update";
+            const url = window.location.origin + "/a/user-meta/update";
             const authorizationHeader = `Bearer ${token}`;
             fetch(url, {
                 method: "PUT",
@@ -387,7 +387,7 @@ async function getAvailableFilename(token, pathname, headers) {
                 return PydioApi._PydioRestClient.authentications.oauth2.accessToken
             })
             .then(token => {
-                const url = "https://" + window.location.hostname + "/a/user-meta/update";
+                const url = window.location.origin + "/a/user-meta/update";
                 const authorizationHeader = `Bearer ${token}`;
                 const metadatas = {
                     MetaDatas: [
