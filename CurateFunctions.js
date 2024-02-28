@@ -1,4 +1,4 @@
-const Curate = Curate || {};
+const Curate = {}; // Declare Curate
 Curate.aws = {
     createPresignedDownloadUrl: function(path) {
       return new Promise((resolve, reject) => {
