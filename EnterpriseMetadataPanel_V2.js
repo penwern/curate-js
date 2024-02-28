@@ -159,8 +159,11 @@
 
         for (let x = 0; x < metadataFieldsClone.length; x++) {
             var field = metadataFields[x]
-            const fieldName = field.textContent.toLowerCase()
-
+            if (!field.querySelector('label')){
+                field.remove()
+                continue //ignore non usermeta fields
+            }
+            const fieldName = field.querySelector('label').textContent.toLowerCase()
 
             if (fieldName.includes("dc-")) {
                 field.className = "dropdown-item"
@@ -179,7 +182,6 @@
                 tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
             } else if (fieldName.includes("enable-inheritence") && pydio._dataModel._bDir) {
                 metadataPanel.querySelector(".panelContent").before(field)
-                console.log(field)
             } else {
                 field.remove()
             }
