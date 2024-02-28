@@ -88,6 +88,7 @@ PydioApi.getRestClient().getOrUpdateJwt().then(jwt => {
                 return response.json();
             }).then(data => {
                 console.log(data);
+                //discover success of operation and tag records accordingly
             }).catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
             });
