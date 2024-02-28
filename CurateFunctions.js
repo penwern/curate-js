@@ -1,7 +1,7 @@
 const Curate = {}; // Declare Curate
 
 Curate.api = {} //API helpers
-Curate.api.fetchCurate = function(endpoint, method, body){
+Curate.api.fetchCurate = async function(endpoint, method, body){
      try {
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         const fetchProps = {
