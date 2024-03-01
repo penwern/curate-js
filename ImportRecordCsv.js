@@ -33,7 +33,7 @@ async function createTree(body) {
     }
 }
 
-function mapISADGToNodes(csvData) {
+async function mapISADGToNodes(csvData) {
   const results = Papa.parse(csvData, {
     header: true,  // Indicates your CSV has a header row
     dynamicTyping: true // Automatically converts values to appropriate data types 
@@ -83,74 +83,95 @@ function mapISADGToNodes(csvData) {
 }
 
 // Function to handle the file input
-function handleCSVData(csvData) {
-  const jsonData = mapISADGToNodes(csvData);
-  const treeData = {
-    Nodes: jsonData.Nodes.map(obj => {
-      const { IsadMetadata,RelationIds, ...rest } = obj; // Destructuring and rest syntax
-      return rest;
-    })
-  };
+async function handleCSVData(csvData) {
+  try {
+    const jsonData = await mapISADGToNodes(csvData);
+    const treeData = {
+      Nodes: jsonData.Nodes.map(obj => {
+        const { IsadMetadata, RelationIds, ...rest } = obj; // Destructuring and rest syntax
+        return rest;
+      })
+    };
 
-  Curate.api.fetchCurate("/a/tree/create", "POST", treeData)
-    .then(serverNodes => {
-      // Assign Curate UUID to source record JSON
-      jsonData.Nodes.forEach(item => {
-        item.Uuid = serverNodes.Children.find(obj => obj.Path == item.Path).Uuid;
-      });
-      return jsonData;
-    })
-    .then(jsonData => {
-      jsonData.Nodes.map(node => {
-        var propMap = [];
-        for (prop in node.IsadMetadata) {
-          if (!node.IsadMetadata[prop]) {
-            continue;
-          }
-          propMap.push({
-            NodeUuid: node.Uuid,
-            JsonValue: JSON.stringify(he.decode(node.IsadMetadata[prop].toString())),
-            Namespace: "usermeta-" + prop,
-            Policies: [
-              {
-                "Action": "READ",
-                "Effect": "allow",
-                "Subject": "*"
-              },
-              {
-                "Action": "WRITE",
-                "Effect": "allow",
-                "Subject": "*"
-              }
-            ]
-          });
-        }
-        for (prop in node.RelationIds){
-            if (!node.RelationIds[prop]) {
-                continue;
+    const serverNodes = await Curate.api.fetchCurate("/a/tree/create", "POST", treeData);
+
+    // Assign Curate UUID to source record JSON
+    jsonData.Nodes.forEach(item => {
+      item.Uuid = serverNodes.Children.find(obj => obj.Path === item.Path).Uuid;
+    });
+
+    jsonData.Nodes.forEach(node => {
+      // Your existing code here...
+      var propMap = [];
+      if (node.IsadMetadata){
+        for (let prop in node.IsadMetadata) {
+            if (!node.IsadMetadata[prop]) {
+              continue;
             }
             propMap.push({
-                NodeUuid: node.Uuid,
-                JsonValue: JSON.stringify(he.decode(node.RelationIds[prop].toString())),
-                Namespace: "usermeta-" + prop,
-                Policies: [
-                  {
-                    "Action": "READ",
-                    "Effect": "allow",
-                    "Subject": "*"
-                  },
-                  {
-                    "Action": "WRITE",
-                    "Effect": "allow",
-                    "Subject": "*"
-                  }
-                ]
+              NodeUuid: node.Uuid,
+              JsonValue: JSON.stringify(he.decode(node.IsadMetadata[prop].toString())),
+              Namespace: "usermeta-" + prop,
+              Policies: [
+                {
+                  "Action": "READ",
+                  "Effect": "allow",
+                  "Subject": "*"
+                },
+                {
+                  "Action": "WRITE",
+                  "Effect": "allow",
+                  "Subject": "*"
+                }
+              ]
             });
+        }  
+      }
+      
+      for (let prop in node.RelationIds) {
+        if (!node.RelationIds[prop]) {
+          continue;
         }
-        Curate.api.fetchCurate("/a/user-meta/update", "PUT", { MetaDatas: propMap, Operation: "PUT" });
+        propMap.push({
+          NodeUuid: node.Uuid,
+          JsonValue: JSON.stringify(he.decode(node.RelationIds[prop].toString())),
+          Namespace: "usermeta-" + prop,
+          Policies: [
+            {
+              "Action": "READ",
+              "Effect": "allow",
+              "Subject": "*"
+            },
+            {
+              "Action": "WRITE",
+              "Effect": "allow",
+              "Subject": "*"
+            }
+          ]
+        });
+      }
+      propMap.push({
+        NodeUuid: node.Uuid,
+        JsonValue: JSON.stringify("unconnected"),
+        Namespace: "usermeta-atom-connection",
+        Policies: [
+          {
+            "Action": "READ",
+            "Effect": "allow",
+            "Subject": "*"
+          },
+          {
+            "Action": "WRITE",
+            "Effect": "allow",
+            "Subject": "*"
+          }
+        ]
       });
-    })
-    .catch(error => console.error("Error associating UUIDs:", error));
+      Curate.api.fetchCurate("/a/user-meta/update", "PUT", { MetaDatas: propMap, Operation: "PUT" });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
 async function getCsvData(node) {
