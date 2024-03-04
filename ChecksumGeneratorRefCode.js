@@ -832,7 +832,7 @@ document.addEventListener("drop", async function (e) {
                     setTimeout(()=>{
                         console.log("All tasks finished");
                         verifyChecksums(checksums)
-                    },50*files.length)
+                    },100*files.length)
                     
                 }
             });
