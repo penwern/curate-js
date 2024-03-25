@@ -149,13 +149,13 @@
             let newinfodivScan2 = genNewRow("Second virus scan result", scan2)
             let newinfodivMime = genNewRow("Mimetype", mime)
             let newinfodivStatus = genNewRow("Status", status)
-
+            
             fileInfoPanel.querySelector(".panelContent").childNodes.forEach(row => {
                 if (row.innerText.includes('ETag')) {
                     row.firstChild.innerText = 'Checksum'
                 }
             })
-
+            
             let sepDiv = document.createElement("HR")
             let qInfo = document.createElement("div")
             let bCap = document.createElement("div")
@@ -200,6 +200,8 @@
         }
     }
     const selectHandler = (e, fileInfoPanel) => {
+        var fileInfoPanel = Array.from(document.querySelectorAll('.panelCard')).find(el => el.textContent.includes('File Info'));
+        
         if (!e.memo._selectedNodes || e.memo._selectedNodes.length == 0 || e.memo._selectedNodes[0] == selectedNode) {
             return
         }
@@ -219,7 +221,7 @@
 
                         // Check if "selectHandler" is in the observers array
                         if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
-                            pydio._dataModel.observe("selection_changed", e => { selectHandler(e, fileInfoPanel) })
+                            pydio._dataModel.observe("selection_changed", e => { selectHandler(e) })
                         }
                         fileInfoPanel.firstElementChild.addEventListener("click", e => {
                             if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")) {
