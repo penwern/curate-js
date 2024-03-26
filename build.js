@@ -5,7 +5,7 @@ const { execSync } = require('child_process');
 execSync('npx webpack --config ./webpack.config.js');
 
 // Read the generated HTML file
-const htmlFilePath = './dist/index.html'; // Adjust the path as necessary
+const htmlFilePath = './dist/curate_modules.html'; // Adjust the path as necessary
 let html = fs.readFileSync(htmlFilePath, 'utf8');
 
 // Remove the <head> element
