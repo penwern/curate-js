@@ -1,5 +1,4 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/js/index.js', // Assuming you have an index.js file as the entry point for your JavaScript
@@ -20,12 +19,5 @@ module.exports = {
         use: 'html-loader'
       }
     ]
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/external/externalPlugins.html', // Path to your HTML template
-      filename: 'curate_modules.html', // Output filename
-      scriptLoading: 'defer' // Add 'defer' attribute to script tags
-    })
-  ]
+  }
 };

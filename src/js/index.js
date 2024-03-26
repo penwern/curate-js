@@ -8,3 +8,7 @@ import '../js/core/OAIHarvestClient.js';
 import '../js/core/publicAccessModifier.js';
 import '../js/core/tourModifier.js';
 import '../js/core/UploadChecksumGenerator.js';
+import 'chart.js';
+import 'sweetalert2';
+import 'papaparse';
+import 'he';
