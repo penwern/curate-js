@@ -352,7 +352,7 @@ function generateChecksum(file) {
 
             const worker = new URL('../workers/hashWorker.js', import.meta.url).href;
             console.log("oioi: ",worker)
-            var scriptUrl = document.querySelector("#hashWorker").src; 
+            //var scriptUrl = document.querySelector("#hashWorker").src; 
             
             
 
@@ -360,6 +360,7 @@ function generateChecksum(file) {
             fetchScriptContent(worker)
                 .then(scriptContent => {
                     if (scriptContent) {
+                            console.log("script son: ", scriptContent)
                             // Create a Blob from the script content
                             var blob = new Blob([scriptContent], { type: 'application/javascript' });
             
