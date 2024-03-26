@@ -353,9 +353,6 @@ function generateChecksum(file) {
             const worker = new URL('../workers/hashWorker.js', import.meta.url).href;
             console.log("oioi: ",worker)
             //var scriptUrl = document.querySelector("#hashWorker").src; 
-            
-            
-
             // Fetch the content of the hasworker script file
             fetchScriptContent(worker)
                 .then(scriptContent => {
@@ -413,9 +410,9 @@ function generateChecksum(file) {
                     console.error('Error while fetching script content:', error);
                 });
 
-            const blob = new Blob([document.querySelector("#hashWorker").textContent]);
-            const blobURL = window.URL.createObjectURL(blob);
-            const myWorker = new Worker(blobURL);
+            //const blob = new Blob([document.querySelector("#hashWorker").textContent]);
+            //const blobURL = window.URL.createObjectURL(blob);
+            //const myWorker = new Worker(blobURL);
 
         } else {
             console.log("Browser does not support web-workers. Please update.");
