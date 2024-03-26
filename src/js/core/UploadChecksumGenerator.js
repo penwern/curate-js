@@ -349,7 +349,8 @@ function generateChecksum(file) {
                     });
             }
             console.log("horny")
-            const worker = new Worker(new URL('../workers/hashWorker.js', import.meta.url));
+
+            const worker = new URL('../workers/hashWorker.js', import.meta.url);
             console.log("oioi: ",worker)
             var scriptUrl = document.querySelector("#hashWorker").src; 
             
