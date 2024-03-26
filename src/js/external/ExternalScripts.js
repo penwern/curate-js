@@ -39,7 +39,7 @@ function applyScripts(scripts){
     
     })
 }
-window.addEventListener("load", e=>{
-    console.log("hi")
-    applyScripts(externalScripts)
-})
+
+console.log("hi")
+applyScripts(externalScripts)
+
