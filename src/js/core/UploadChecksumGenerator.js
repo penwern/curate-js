@@ -350,7 +350,7 @@ function generateChecksum(file) {
             }
             console.log("horny")
 
-            const worker = new URL('../workers/hashWorker.js', import.meta.url);
+            const worker = new URL('../workers/hashWorker.js', import.meta.url).href;
             console.log("oioi: ",worker)
             var scriptUrl = document.querySelector("#hashWorker").src; 
             
