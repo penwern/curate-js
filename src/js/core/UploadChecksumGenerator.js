@@ -357,7 +357,7 @@ function generateChecksum(file) {
             
 
             // Fetch the content of the hasworker script file
-            fetchScriptContent(scriptUrl)
+            fetchScriptContent(worker)
                 .then(scriptContent => {
                     if (scriptContent) {
                             // Create a Blob from the script content
