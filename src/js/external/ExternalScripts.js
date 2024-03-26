@@ -39,7 +39,6 @@ function applyScripts(scripts){
     
     })
 }
-
 console.log("hi")
 applyScripts(externalScripts)
 
