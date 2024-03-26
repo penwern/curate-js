@@ -6,6 +6,7 @@ import '../js/core/OAIHarvestClient.js';
 import '../js/core/publicAccessModifier.js';
 import '../js/core/tourModifier.js';
 import '../js/core/UploadChecksumGenerator.js';
+import '../js/external/ExternalScripts.js';
 import 'chart.js';
 import Swal from 'sweetalert2';
 import Papa from 'papaparse';
