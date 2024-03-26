@@ -348,8 +348,7 @@
         
         accHeaders.forEach(a=>{
             a.addEventListener("click", e=>{
-                var t=e.target
-                accordionHeader(t)
+                accordionHeader(a)
             })
         })
 
