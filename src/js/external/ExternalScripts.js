@@ -39,6 +39,7 @@ function applyScripts(scripts){
     
     })
 }
-document.addEventListener("DOMContentLoaded", e=>{
+window.addEventListener("load", e=>{
+    console.log("hi")
     applyScripts(externalScripts)
 })
