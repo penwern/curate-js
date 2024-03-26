@@ -1,4 +1,10 @@
 {
+  "dependencies": {
+    "chart.js": "^3.7.0",
+    "sweetalert2": "^11.0.20",
+    "papaparse": "^5.4.1",
+    "he": "^1.2.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.24.3",
     "@babel/preset-env": "^7.24.3",
