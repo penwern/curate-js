@@ -323,6 +323,8 @@
                 mainContent.style.maxHeight = parseInt(mainContentHeight) + heightChange + 'px';
             }
         }
+        //add accordion handlers
+        document.querySelectorAll(".metadataPanel-accordion-header").forEach(a=>{a.addEventListener("click",function(){accordionHeader})})
         //Select dropzone
         var dropzone = document.querySelector(".drop-zone")
         dropzone.addEventListener("dragenter", function () {
