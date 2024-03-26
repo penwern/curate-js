@@ -199,7 +199,7 @@
         if (!e.memo._selectedNodes || e.memo._selectedNodes.length == 0 || e.memo._selectedNodes[0] == selectedNode) {
             return
         }
-        if (fileInfoPanel.querySelector(".panelContent")) {
+        if (fileInfoPanel && fileInfoPanel.querySelector(".panelContent")) {
             addFileInfo(fileInfoPanel)
             selectedNode = e.memo._selectedNodes[0]
         }
