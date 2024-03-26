@@ -12,11 +12,6 @@ module.exports = {
         test: /\.js$/,
         include: path.resolve(__dirname, 'src/js/core'),
         use: 'babel-loader' // Add any other loaders you need for JavaScript files
-      },
-      {
-        test: /\.html$/,
-        include: path.resolve(__dirname, 'src/templates'),
-        use: 'html-loader'
       }
     ]
   }

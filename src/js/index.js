@@ -1,5 +1,3 @@
-import '../templates/CurateMetadataPanelTemplate.html';
-import '../templates/sidecarFileTemplate.html';
 import '../js/core/CurateFunctions.js';
 import '../js/core/EnterpriseMetadataPanel_V2.js';
 import '../js/core/fileInfoModifier.js';
