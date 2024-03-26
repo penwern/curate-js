@@ -1,7 +1,7 @@
 import '../js/core/CurateFunctions.js';
 import '../js/core/EnterpriseMetadataPanel_V2.js';
 import '../js/core/fileInfoModifier.js';
-import '../js/core/hashWorker.js';
+import './workers/hashWorker.worker.js';
 import '../js/core/OAIHarvestClient.js';
 import '../js/core/publicAccessModifier.js';
 import '../js/core/tourModifier.js';

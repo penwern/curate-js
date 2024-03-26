@@ -1,4 +1,5 @@
-async function getAvailableFilename(token, pathname, headers) {
+    import hashWorker from './hashWorker.worker.js';
+    async function getAvailableFilename(token, pathname, headers) {
         return await checkAndIncrementPathname(token, pathname, headers);
     }
 
@@ -351,6 +352,9 @@ async function getAvailableFilename(token, pathname, headers) {
                 
                 var scriptUrl = document.querySelector("#hashWorker").src; 
                 
+
+                const worker = new hashWorker();
+                console.log("oioi: ",worker)
                 // Fetch the content of the hasworker script file
                 fetchScriptContent(scriptUrl)
                     .then(scriptContent => {
