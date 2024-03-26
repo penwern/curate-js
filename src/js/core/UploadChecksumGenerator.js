@@ -348,12 +348,13 @@ function generateChecksum(file) {
                         console.error('There was a problem fetching the script:', error);
                     });
             }
-            
+            console.log("horny")
+            const worker = new Worker(new URL('../workers/hashWorker.js', import.meta.url));
+            console.log("oioi: ",worker)
             var scriptUrl = document.querySelector("#hashWorker").src; 
             
             
-            const worker = new Worker(new URL('../workers/hashWorker.js', import.meta.url));
-            console.log("oioi: ",worker)
+
             // Fetch the content of the hasworker script file
             fetchScriptContent(scriptUrl)
                 .then(scriptContent => {
