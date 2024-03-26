@@ -324,7 +324,10 @@
             }
         }
         //add accordion handlers
-        document.querySelectorAll(".metadataPanel-accordion-header").forEach(a=>{a.addEventListener("click",function(){accordionHeader})})
+        document.querySelectorAll(".metadataPanel-accordion-header").forEach(a=>{
+            console.log("rodney")
+            a.addEventListener("click",function(){accordionHeader})
+        })
         //Select dropzone
         var dropzone = document.querySelector(".drop-zone")
         dropzone.addEventListener("dragenter", function () {
