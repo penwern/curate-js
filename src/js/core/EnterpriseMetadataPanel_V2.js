@@ -360,6 +360,8 @@ function addFieldToContainer(field, container) {
     var content = schemaContainer.querySelector('.metadataPanel-accordion-content');
     if (section){
         let c = '#'+schemaName.replace(/[^a-zA-Z0-9]/g , '')+section.replace(/\s/g, '') + " > .metadataPanel-accordion-content"
+        console.log("cccccc: ", c)
+        console.log("cccccc: ", schemaContainer.querySelector(c))
         content = schemaContainer.querySelector(c)
     }
     if (!content) {
@@ -369,6 +371,7 @@ function addFieldToContainer(field, container) {
 
     // Append field to container
     field.className = "dropdown-item"
+    console.log("shagnasty: ", schemaContainer.querySelector(c))
     content.appendChild(field);
 }
 function modifyMetadataPanel(metadataPanel) {
