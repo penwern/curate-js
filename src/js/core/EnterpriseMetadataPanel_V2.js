@@ -352,58 +352,55 @@
             })
         })
 
-        for (let x = 0; x < metadataFieldsClone.length; x++) {
-            var field = metadataFields[x]
-            if (!field.querySelector('label')){
-                field.remove()
-                continue //ignore non usermeta fields
-            }
-            const fieldName = field.querySelector('label').textContent.toLowerCase()
-
-            if (fieldName.includes("dc-")) {
-                field.className = "dropdown-item"
-                dcSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
-            } else if (fieldName.includes("isad(g)-")) {
-                var areaName = groupFieldsByArea(fieldName, isadFieldToAreaMapping).replaceAll(" ", "")
-                field.className = "dropdown-item"
-                isadSection.querySelector("#isad" + areaName).querySelector(".metadataPanel-accordion-content").appendChild(field)
-            } else if (fieldName.includes("import-")) {
-                field.className = "dropdown-item"
-                importSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
-            } else if (fieldName.includes("export-")) {
-                field.className = "dropdown-item"
-                exportSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
-            } else if (fieldName.includes("tags")) {
-                tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
-            } else if (fieldName.includes("enable-inheritence") && pydio._dataModel._bDir) {
-                metadataPanel.querySelector(".panelContent").before(field)
-            } else {
-                field.remove()
-            }
+    for (let x = 0; x < metadataFieldsClone.length; x++) {
+        var field = metadataFields[x]
+        if (!field.querySelector('label')){
+            field.remove()
+            continue //ignore non usermeta fields
         }
-        //create OAI harvest button
-        const harvestBtn = document.createElement("button")
-        harvestBtn.id = "harvestBtn"
-        harvestBtn.innerHTML = '<i class="icon-link menu-icons" style="color:gray;margin-left:0 !important";></i>'
-        harvestBtn.className = "harvestBtn"
-        harvestBtn.addEventListener("click", harvestOaiHandler)
-        let harvestBtnText = document.createElement("text")
-        harvestBtnText.textContent = "Harvest from OAI link ID"
-        harvestBtnText.className = "cwT"
-        harvestBtn.append(harvestBtnText)
-        let harvestBtnDiv = document.createElement("div")
-        harvestBtnDiv.append(harvestBtn)
-        importSection.querySelector(".metadataPanel-accordion-content").appendChild(harvestBtnDiv)
-        if (metadataPanel.parentElement.childElementCount == 1) {
-            metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.overflowY = "auto"
-            metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.maxHeight = "50em"
+        const schemaName = field.querySelector('label').textContent.split("-")[0]
+        const fieldName = field.querySelector('label').textContent.split("-")[1]
+        console.log("field", field)
+        console.log("field label", field.querySelector('label').textContent)
+        if (fieldName.includes("import-")) {
+            field.className = "dropdown-item"
+            importSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
+        } else if (fieldName.includes("export-")) {
+            field.className = "dropdown-item"
+            exportSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
+        } else if (fieldName.includes("tags")) {
+            tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
+        } else if (fieldName.includes("enable-inheritence") && pydio._dataModel._bDir) {
+            metadataPanel.querySelector(".panelContent").before(field)
+        } else if (schemaName in hierarchies){
+            addFieldToContainer(field, schemaContainer);
+        } else {
+            field.remove()
         }
-        metadataPanel.id = "curateMdPanel"
-        panelContentParent.removeChild(panelContentParent.firstChild)
-        panelContentParent.appendChild(metadataPanelTemplate)
-        //if (!metadataPanel.id){
-        //metadataPanel.addEventListener("click", function(){this.id=null})
-        //}
+    }
+    //create OAI harvest button
+    const harvestBtn = document.createElement("button")
+    harvestBtn.id = "harvestBtn"
+    harvestBtn.innerHTML = '<i class="icon-link menu-icons" style="color:gray;margin-left:0 !important";></i>'
+    harvestBtn.className = "harvestBtn"
+    harvestBtn.addEventListener("click", harvestOaiHandler)
+    let harvestBtnText = document.createElement("text")
+    harvestBtnText.textContent = "Harvest from OAI link ID"
+    harvestBtnText.className = "cwT"
+    harvestBtn.append(harvestBtnText)
+    let harvestBtnDiv = document.createElement("div")
+    harvestBtnDiv.append(harvestBtn)
+    importSection.querySelector(".metadataPanel-accordion-content").appendChild(harvestBtnDiv)
+    if (metadataPanel.parentElement.childElementCount == 1) {
+        metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.overflowY = "auto"
+        metadataPanelTemplate.querySelector(".metadataPanel-accordion").style.maxHeight = "50em"
+    }
+    metadataPanel.id = "curateMdPanel"
+    panelContentParent.removeChild(panelContentParent.firstChild)
+    panelContentParent.appendChild(metadataPanelTemplate)
+    //if (!metadataPanel.id){
+    //metadataPanel.addEventListener("click", function(){this.id=null})
+    //}
 
 
         darkModeModify()
