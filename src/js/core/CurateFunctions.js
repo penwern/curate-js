@@ -1,3 +1,4 @@
+import getMetadataHierarchies from './MetadataHierarchies.js';
 const Curate = (function() {
     const api = {};
 
@@ -83,7 +84,8 @@ const Curate = (function() {
      * @module modals Create and control modal elements
      */
     const ui = {
-        modals:{}
+        modals:{},
+        metadataPanel:{}
     };
 
     /**
@@ -176,6 +178,16 @@ const Curate = (function() {
         return {
             fire: fire
         };
+    };
+
+    /**
+     * Gets global mappings from flat list of metadata fields to nested hierarchies in cases where descriptive schemas
+     * have sub-areas or groups of elements.
+     * @returns {object} Object of 
+     * 
+     */
+    ui.metadataPanel.transforms = function(schema){
+        return getMetadataHierarchies(schema)
     }
 
     // Expose public methods

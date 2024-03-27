@@ -1,3 +1,5 @@
+ const dilbee = Curate.ui.metadataPanel.transforms.isadFieldToAreaMapping
+ console.log("oyoyo: ", dilbee)
  const isadFieldToAreaMapping = {
         'isad(g)-reference code(s)': 'Identity Statement',
         'isad(g)-title': 'Identity Statement',
