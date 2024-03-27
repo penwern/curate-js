@@ -277,7 +277,7 @@ function convertSchemasToDivs(schemas) {
         const schemaSections = schemas[schemaKey];
         const schemaDiv = document.createElement('div');
         schemaDiv.classList.add('metadataPanel-accordion-item');
-        schemaDiv.id = `${schemaKey.replace(/\s+/g, '')}Section`; // Use schema title as ID
+        schemaDiv.id = `${schemaKey.replace(/[^a-zA-Z0-9]/g, '')}Section`; // Use schema title as ID
 
         const headerDiv = document.createElement('div');
         headerDiv.classList.add('metadataPanel-accordion-header');
@@ -294,7 +294,7 @@ function convertSchemasToDivs(schemas) {
 
         if (schemaSections.sections) {
             schemaSections.sections.forEach((section, subIndex) => {
-                const sectionId = `${schemaKey.replace(/\s+/g, '')}${section.title}`;
+                const sectionId = `${schemaKey.replace(/[^a-zA-Z0-9]/g, '')}${section.title}`;
                 const sectionDiv = document.createElement('div');
                 sectionDiv.classList.add('metadataPanel-accordion-subfield');
                 sectionDiv.id = sectionId;
