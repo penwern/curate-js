@@ -1,4 +1,5 @@
-<template id="curateMetadataPanel">
+export default `
+<div id="curateMetadataPanel">
     <style>
         /*move this to brand css*/
 
@@ -140,8 +141,6 @@
             color: #5cccff;
         }
 
-        .sidecar-list {}
-
         .sidecar-open {
             margin-left: auto;
         }
@@ -165,80 +164,20 @@
                 <!-- Dropdown content for DC section -->
             </div>
         </div>
-        <div class="metadataPanel-accordion-item" id="isadSection">
+        <div class="metadataPanel-accordion-item" id="nestedSchemaTemplate">
             <div class="metadataPanel-accordion-header" >
-                <span class="metadataPanel-accordion-title">ISAD(G)</span>
+                <span class="metadataPanel-accordion-title"></span>
                 <span class="metadataPanel-accordion-icon"></span>
             </div>
             <div class="metadataPanel-accordion-content">
-                <!-- Dropdown content for ISAD section -->
-                <div class="metadataPanel-accordion-subfield" id="isadIdentityStatement">
+                <!-- Dropdown content for nested sections -->
+                <div class="metadataPanel-accordion-subfield" id="nestedSchemaSubfield">
                     <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Identity Statement</span>
+                        <span class="metadataPanel-accordion-title"></span>
                         <span class="metadataPanel-accordion-icon"></span>
                     </div>
                     <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Identity Statement -->
-
-                    </div>
-                </div>
-                <div class="metadataPanel-accordion-subfield" id="isadContext">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Context</span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Context -->
-
-                    </div>
-                </div>
-                <div class="metadataPanel-accordion-subfield" id="isadContentAndStructure">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Content And Structure</span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Content And Structure -->
-
-                    </div>
-                </div>
-                <div class="metadataPanel-accordion-subfield" id="isadConditionsOfAccessAndUse">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Conditions Of Access And Use</span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Conditions Of Access And Use -->
-
-                    </div>
-                </div>
-                <div class="metadataPanel-accordion-subfield" id="isadAlliedMaterials">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Allied Materials</span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Allied Materials -->
-
-                    </div>
-                </div>
-                <div class="metadataPanel-accordion-subfield" id="isadNotes">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Notes</span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Notes -->
-
-                    </div>
-                </div>
-                <div class="metadataPanel-accordion-subfield" id="isadDescriptionControl">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title">Description Control</span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for ISAD Description Control -->
+                        <!-- Dropdown content for nested section -->
 
                     </div>
                 </div>
@@ -481,4 +420,5 @@
             return requestObject;
         }
     </script>
-</template>
+</div>
+`
