@@ -339,7 +339,7 @@ function addFieldToContainer(field, container) {
     // Find corresponding section, if any
     let section = null;
     if (schema.sections) {
-        console.log(field.toLowerCase())
+        console.log(fieldName)
         for (const sec of schema.sections) {
             console.log(sec.fields)
             if (sec.fields.includes(field.toLowerCase())) {
