@@ -294,7 +294,7 @@ function convertSchemasToDivs(schemas) {
 
         if (schemaSections.sections) {
             schemaSections.sections.forEach((section, subIndex) => {
-                const sectionId = `${schemaKey.replace(/[^a-zA-Z0-9]/g, '').replaceAll(" ", "")}${section.title}`;
+                const sectionId = `${schemaKey.replace(/[^a-zA-Z0-9]/g, '')}${section.title.replaceAll(" ", "")}`;
                 const sectionDiv = document.createElement('div');
                 sectionDiv.classList.add('metadataPanel-accordion-subfield');
                 sectionDiv.id = sectionId;
