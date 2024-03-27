@@ -45,6 +45,26 @@ const Curate = (function() {
         }
     };
 
+    api.getFileData = async function(node,type="text") {
+        try {
+          const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+          const downloadUrl = await pydio.ApiClient.buildPresignedGetUrl(node);
+          const response = await fetch(downloadUrl);
+      
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          switch(type){
+              case "text":
+                  data = await response.text();
+          }
+          return data; 
+        } catch (error) {
+          console.error("Error fetching object:", error);
+          throw error; 
+        }
+      }
+
     const workspaces = {};
 
     /**
