@@ -1,36 +1,93 @@
 const getMetadataHierarchies = (schema) => {
     const metadataHierarchies = {
-        isadg: {}
+        "ISAD(G)": {},
+        "DC": {}
     };
-
-    metadataHierarchies.isadg = {
-        'isad(g)-reference code(s)': 'Identity Statement',
-        'isad(g)-title': 'Identity Statement',
-        'isad(g)-date(s)': 'Identity Statement',
-        'isad(g)-level of description': 'Identity Statement',
-        'isad(g)-extent and medium of the unit of description': 'Identity Statement',
-        'isad(g)-name of creator(s)': 'Context',
-        'isad(g)-administrative/biographical history': 'Context',
-        'isad(g)-archival history': 'Context',
-        'isad(g)-immediate source of acquisition or transfer': 'Context',
-        'isad(g)-scope and content': 'Content And Structure',
-        'isad(g)-appraisal, destruction and scheduling information': 'Content And Structure',
-        'isad(g)-accruals': 'Content And Structure',
-        'isad(g)-system of arrangement': 'Content And Structure',
-        'isad(g)-conditions governing access': 'Conditions Of Access And Use',
-        'isad(g)-conditions governing reproduction': 'Conditions Of Access And Use',
-        'isad(g)-language/scripts of material': 'Conditions Of Access And Use',
-        'isad(g)-physical characteristics and technical requirements': 'Conditions Of Access And Use',
-        'isad(g)-finding aids': 'Conditions Of Access And Use',
-        'isad(g)-existence and location of originals': 'Allied Materials',
-        'isad(g)-existence and location of copies': 'Allied Materials',
-        'isad(g)-related units of description': 'Allied Materials',
-        'isad(g)-publication note': 'Allied Materials',
-        'isad(g)-note': 'Notes',
-        'isad(g)-archivists note': 'Description Control',
-        'isad(g)-rules or conventions': 'Description Control',
-        'isad(g)-date(s) of descriptions': 'Description Control',
+    metadataHierarchies["DC"] = {
+        fields: [
+            "contributor",
+            "coverage",
+            "creator",
+            "date",
+            "description",
+            "format",
+            "identifier",
+            "language",
+            "publisher",
+            "relation",
+            "rights",
+            "source",
+            "subject",
+            "title",
+            "type"
+        ]
     };
+    metadataHierarchies["ISAD(G)"] = {
+        sections: [
+            {
+                title: "Identity Statement",
+                fields: [
+                    "reference code(s)",
+                    "title",
+                    "date(s)",
+                    "level of description",
+                    "extent and medium of the unit of description"
+                ]
+            },
+            {
+                title: "Context",
+                fields: [
+                    "name of creator(s)",
+                    "administrative/biographical history",
+                    "archival history",
+                    "immediate source of acquisition or transfer"
+                ]
+            },
+            {
+                title: "Content And Structure",
+                fields: [
+                    "scope and content",
+                    "appraisal, destruction and scheduling information",
+                    "accruals",
+                    "system of arrangement"
+                ]
+            },
+            {
+                title: "Conditions Of Access And Use",
+                fields: [
+                    "conditions governing access",
+                    "conditions governing reproduction",
+                    "language/scripts of material",
+                    "physical characteristics and technical requirements",
+                    "finding aids"
+                ]
+            },
+            {
+                title: "Allied Materials",
+                fields: [
+                    "existence and location of originals",
+                    "existence and location of copies",
+                    "related units of description",
+                    "publication note"
+                ]
+            },
+            {
+                title: "Notes",
+                fields: [
+                    "note"
+                ]
+            },
+            {
+                title: "Description Control",
+                fields: [
+                    "archivists note",
+                    "rules or conventions",
+                    "date(s) of descriptions"
+                ]
+            }
+        ]
+    };
+      
     if (schema && schema in metadataHierarchies){
         return metadataHierarchies[schema]
     }else if(schema){

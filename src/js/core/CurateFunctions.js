@@ -180,13 +180,17 @@ const Curate = (function() {
         };
     };
 
+    const metadata = {
+        schemas:{}
+    }
+
     /**
-     * Gets global mappings from flat list of metadata fields to nested hierarchies in cases where descriptive schemas
-     * have sub-areas or groups of elements.
-     * @returns {object} Object of 
+     * Gets globally supported descriptive schemas 
+     * @returns {object} Object containing objects that describe the fields and structure of a schema
+     * @param {string} schema Specific schema to get
      * 
      */
-    ui.metadataPanel.transforms = function(schema){
+    metadata.schemas.getSchemas = function(schema){
         return getMetadataHierarchies(schema)
     }
 
@@ -194,7 +198,8 @@ const Curate = (function() {
     return {
         api: api,
         workspaces: workspaces,
-        ui: ui
+        ui: ui,
+        metadata
     };
 })();
 
