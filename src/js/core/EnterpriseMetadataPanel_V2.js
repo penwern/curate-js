@@ -342,7 +342,7 @@ function addFieldToContainer(field, container) {
         console.log(fieldName)
         for (const sec of schema.sections) {
             console.log(sec.fields)
-            if (sec.fields.includes(field.toLowerCase())) {
+            if (sec.fields.includes(fieldName)) {
                 console.log("goober: ", sec.title)
                 section = sec.title;
                 break;
