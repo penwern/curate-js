@@ -433,7 +433,7 @@ function modifyMetadataPanel(metadataPanel) {
             continue //ignore non usermeta fields
         }
         const schemaName = field.querySelector('label').textContent.split("-")[0]
-        const fieldName = field.querySelector('label').textContent
+        const fieldName = field.querySelector('label').textContent.toLowerCase()
         console.log("field", field)
         console.log("field label", field.querySelector('label').textContent)
         if (fieldName.includes("import-")) {
@@ -443,6 +443,7 @@ function modifyMetadataPanel(metadataPanel) {
             field.className = "dropdown-item"
             exportSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
         } else if (fieldName.includes("tags")) {
+            console.log("taggies")
             tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
         } else if (fieldName.includes("enable-inheritence") && pydio._dataModel._bDir) {
             metadataPanel.querySelector(".panelContent").before(field)
