@@ -1,4 +1,5 @@
 import '../js/core/CurateFunctions.js';
+import '../js/core/CustomPreservationConfigs.js';
 import '../js/core/EnterpriseMetadataPanel_V2.js';
 import '../js/core/fileInfoModifier.js';
 import '../js/core/OAIHarvestClient.js';
