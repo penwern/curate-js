@@ -17,7 +17,6 @@ function createPresignedDownloadUrl(path) {
                 const s3 = new AWS.S3({ endpoint: url });
                 const signed = s3.getSignedUrl('getObject', params);
                 const output = signed + '&pydio_jwt=' + jwt;
-                console.log("Generated URL:", output); // Log the generated URL
                 resolve(output); // Resolve the Promise with the generated URL 
             })
         }).catch(error => {

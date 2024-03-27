@@ -21,7 +21,6 @@ async function harvestOAI({ baseUrl, verb, identifier, metadataPrefix, oaiVersio
   }
   const encodedMetadataPrefix = encodeURIComponent(metadataPrefix)
   const requestUrl = `${baseUrl}?verb=${encodedVerb}&metadataPrefix=${encodedMetadataPrefix}&identifier=${encodedIdentifier}`;
-  console.log(requestUrl)
   const response = await fetch(requestUrl);
   if (!response.ok) {
     throw new Error(`Failed to fetch ${requestUrl}: ${response.statusText}`);
@@ -132,7 +131,6 @@ function xmlToJson(xml, prefix) {
         }else{
           json[isadVar] = ""
         }
-        //console.log(v)
       }
       return json
     }

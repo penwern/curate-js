@@ -169,28 +169,25 @@ function createStringArray(arr, prop) {
    return result;
 }
 function check(){
-	//console.log("rep", repSize)
-  //console.log(counter)
+
   if (lastcount==counter && counter>0){
   	if(repSize==lastRep){
-    	//console.log("brr", (repSize/1000))
+
     	noChanges = noChanges+ (2 - (repSize/1000))
     }
-    //console.log("nochanges", noChanges)
+
     if(noChanges >= 15){
-    	//console.log("no change instances: ", noChanges)
-    	//var finish = setTimeout(getty, 30);
-    	//clearInterval(checky);
+
      }
   }else{
     	noChanges=0
-      //console.log("nochanges", noChanges)
+
     }
-  //console.log("nochanges 2", noChanges)
+
   lastcount = counter
   lastRep = repSize
   numChecks = numChecks+1
-  //noChanges=0
+
 }
 
 function getty(){

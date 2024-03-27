@@ -285,7 +285,6 @@ function drawLineAnimated(ctx, rect1, rect2) {
           const destinationHeadLabel = document.createElement("div")
           destinationHeadLabel.textContent = "Destination Schema: "+destinationMap[0].field.split("-")[0]
           destinationHeadLabel.style="margin-right: auto;margin-left: auto;width: 50%;position: relative;left: 15%;"
-          console.log("feee: ", destinationMap)
           destinationListHead.appendChild(destinationHeadLabel)
         destinationList.appendChild(destinationListHead)
           // Create nodes for source list based on column headings
@@ -307,7 +306,6 @@ function drawLineAnimated(ctx, rect1, rect2) {
               deleteConnections.style.visibility = "hidden"
               deleteConnections.addEventListener('click', e=>{
                 document.querySelectorAll("#connectorCanvas canvas").forEach(c=>{
-                  console.log(c.getAttribute("fromNode"))
                   if(c.getAttribute("fromNode") == sourceItem.id){
                     document.getElementById(c.getAttribute("toNode")).parentElement.querySelector(".nodeConnector").classList.remove("connected")
                     c.remove()
@@ -334,7 +332,6 @@ function drawLineAnimated(ctx, rect1, rect2) {
                         n.textContent = "+"
                     } 
                 })
-                console.log("nuts")
                 nodeConnector.classList.add('chooseConnection')
                 nodeConnector.textContent = ""
                 document.querySelectorAll('#destinationList .nodeConnector').forEach(n=>{
@@ -382,7 +379,6 @@ function drawLineAnimated(ctx, rect1, rect2) {
           });
 
           // Append source list and destination list to container
-          console.log(container)
             container.textContent = ""
           container.appendChild(sourceList);
           container.appendChild(destinationList);
@@ -419,7 +415,6 @@ function drawLineAnimated(ctx, rect1, rect2) {
         });
 
         // Code that depends on the fetched data
-        console.log(destinationSchemas);
 
         const mapper = document.querySelector('#metadata-mapper');
         const csvInput = document.querySelector('#file-input');
@@ -487,7 +482,6 @@ const metdataMapperPopup = new Curate.ui.modals.curatePopup(
     { title: "Metadata Mappings" },
     {
         afterLoaded: function(popup) {
-            console.log("Popup loaded", popup);
             let p = document.createElement("div");
             p.innerHTML = '<div id="metadata-mapper" class="metadata-mapper-main-containers"><div class="config-text-label">Create or Edit Mappings</div><div id="map-nodes-container" class="map-nodes-container">Choose a source schema CSV to get started.</div><div id="connectorCanvas"></div><div id="metadata-mapper-dropzone" class="drop-zone" style="background-color: rgb(245, 245, 245);margin-bottom:0.5em;"><p>Drop a Source Schema CSV, or Browse</p><input type="file" id="file-input"></div></div><div id="saved-mappings" class="metadata-mapper-main-containers"><div class="config-text-label">Saved Mappings</div></div>';
             p.style.width = "100%";
@@ -498,8 +492,7 @@ const metdataMapperPopup = new Curate.ui.modals.curatePopup(
             p.querySelector("#metadata-mapper-dropzone").addEventListener("click", e => {activateDropZone(e)});
             setupCSV();
         },
-        afterClose: function() {
-            console.log("Popup closed");
+        afterClosed: function() {
         }
     }
 );

@@ -27,18 +27,13 @@ function applyScripts(scripts){
     
         // Set the source attribute to the CDN URL of the library
         s.src = script.url
-    
-        // Define a callback function to execute once the script is loaded
-        s.onload = function() {
-            // Code to execute after the library is loaded
-            console.log('Loaded external library: ', script.name);
-        };
-    
+        s.onerror = function() {
+            console.error('Failed to load external library: ', script.name, "please reload the page or contact your admin if the issue persists.")
+        }
         // Append the <script> element to the <head> section of the document
         document.head.appendChild(s);
     
     })
 }
-console.log("hi")
 applyScripts(externalScripts)
 

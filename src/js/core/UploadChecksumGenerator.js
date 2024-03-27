@@ -142,7 +142,6 @@ function metadataReaderHandler(e, userId, parentId, token, cNodes, metaOnly) { /
                             } else {
                                 var asc
                                 try {
-                                    console.log("assssss: ", rjs)
                                     asc = associateNodes(parsedMeta, rjs.Nodes)
                                 } catch (err) {
                                     console.error("Association Error: ", err)
@@ -348,16 +347,13 @@ function generateChecksum(file) {
                         console.error('There was a problem fetching the script:', error);
                     });
             }
-            console.log("horny")
 
             const worker = new URL('../workers/hashWorker.js', import.meta.url).href;
-            console.log("oioi: ",worker)
             //var scriptUrl = document.querySelector("#hashWorker").src; 
             // Fetch the content of the hasworker script file
             fetchScriptContent(worker)
                 .then(scriptContent => {
                     if (scriptContent) {
-                            console.log("script son: ", scriptContent)
                             // Create a Blob from the script content
                             var blob = new Blob([scriptContent], { type: 'application/javascript' });
             
@@ -580,24 +576,20 @@ const folderHandler = (e) => {
 
 function tagUploads(comparison, unloadedMatch, unloadedFail) {
     const uploadAreaClickHandler = (e) => {
-        console.log("click handling: ", e)
         if (e.target.closest(".upload-loaded") && e.target.closest(".upload-loaded").querySelector(".mdi-folder")) {
             if (e.target.closest(".upload-loaded").querySelector(".mdi-chevron-down")) {
                 return
             }
-            console.log("open folder")
             setTimeout(function () {
                 tagUploads(comparison, [], [])
             }, 150)
         }
         if (e.target.classList.contains("mdi-close-circle-outline")) {
-            console.log("closing one")
             setTimeout(function () {
                 tagUploads(comparison, [], [])
             }, 150)
         }
         if (e.target.closest("mdi") && e.target.closest("mdi").classList.contains("mdi-plus-box-outline")) {
-            console.log("load more")
             setTimeout(function () {
                 tagUploads(comparison, [], [])
             }, 150)
@@ -798,7 +790,6 @@ async function uploadFiles(files) {
     try {
         // Map each file to a promise representing the upload operation
         const uploadPromises = files.map(file => {
-            console.log("Uploading file: ", file);
             return PydioApi.getClient().uploadPresigned(file, getFullPath(file.name));
         });
 

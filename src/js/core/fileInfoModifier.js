@@ -18,7 +18,6 @@
         });
     }
     function reqListener() {
-        //console.log(this.responseText);
     }
     function getMetaMime() {
         try {
@@ -48,7 +47,6 @@
             let tag = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata).etag
             return tag
         } catch (err) {
-            //console.log("no etag")
             let tag = "Checksum could not be located"
             return tag
         }
@@ -71,7 +69,6 @@
             let pid = Object.fromEntries(window.pydio._dataModel._selectedNodes[0]._metadata).files[0].matches[0].id
             return pid
         } catch (err) {
-            //console.log("no pronom id")
             let pid = "File has not been characterised"
             return pid
         }

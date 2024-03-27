@@ -90,14 +90,14 @@ const Curate = (function() {
      * Create a Curate popup. Add content in the afterLoaded callback. 
      * clickAway, standard action buttons and base styling provided.
      * 
-     * afterClose callback also provided.
+     * afterClosed callback also provided.
      * 
      * @usage const myPopup = new Curate.ui.modals.curatePopup(props, callbacks)
      * @param {object} props An object of popup parameters
      * @function fire() Initiates the popup in the DOM
      * @param {Object} callbacks Functions hooked to new popup
      * @property {function} callbacks.afterLoaded - Fires after the popup is spawned in the DOM
-     * @property {function} callbacks.afterClose - Fires after the popup is removed from the DOM
+     * @property {function} callbacks.afterClosed - Fires after the popup is removed from the DOM
      * 
      */
     ui.modals.curatePopup = function(props, callbacks) {
@@ -106,7 +106,7 @@ const Curate = (function() {
     
         // Extracting callbacks or defaulting to empty objects
         var afterLoaded = callbacks && callbacks.afterLoaded ? callbacks.afterLoaded : function(){};
-        var afterClose = callbacks && callbacks.afterClose ? callbacks.afterClose : function(){};
+        var afterClosed = callbacks && callbacks.afterClosed ? callbacks.afterClosed : function(){};
     
         // Define fire method
         function fire() {
@@ -157,8 +157,8 @@ const Curate = (function() {
     
             function closePopup() {
                 container.remove();
-                // Call afterClose callback
-                afterClose();
+                // Call afterClosed callback
+                afterClosed();
             }
     
             function clickAway(e, t) {
