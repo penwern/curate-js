@@ -433,7 +433,7 @@ function modifyMetadataPanel(metadataPanel) {
             continue //ignore non usermeta fields
         }
         const schemaName = field.querySelector('label').textContent.split("-")[0]
-        const fieldName = field.querySelector('label').textContent.split("-")[1]
+        const fieldName = field.querySelector('label').textContent
         console.log("field", field)
         console.log("field label", field.querySelector('label').textContent)
         if (fieldName.includes("import-")) {
