@@ -481,24 +481,28 @@ function drawLineAnimated(ctx, rect1, rect2) {
           return {"field":from, "mapsTo":to}
       })
     }
+
 // Usage
-curatePopup(
+const metdataMapperPopup = new Curate.ui.modals.curatePopup(
     { title: "Metadata Mappings" },
     {
         afterLoaded: function(popup) {
             console.log("Popup loaded", popup);
-            let p = document.createElement("div")
-            p.innerHTML = '<div id="metadata-mapper" class="metadata-mapper-main-containers"><div class="config-text-label">Create or Edit Mappings</div><div id="map-nodes-container" class="map-nodes-container">Choose a source schema CSV to get started.</div><div id="connectorCanvas"></div><div id="metadata-mapper-dropzone" class="drop-zone" style="background-color: rgb(245, 245, 245);margin-bottom:0.5em;"><p>Drop a Source Schema CSV, or Browse</p><input type="file" id="file-input"></div></div><div id="saved-mappings" class="metadata-mapper-main-containers"><div class="config-text-label">Saved Mappings</div></div>'
-            p.style.width="100%"
-            p.style.maxHeight = "inherit"
-            p.style.display = "flex"
-            p.style.justifyContent = "space-between"
-            popup.querySelector(".config-main-options-container").appendChild(p)
-            p.querySelector("#metadata-mapper-dropzone").addEventListener("click",e=>{activateDropZone(e)})
-            setupCSV()
+            let p = document.createElement("div");
+            p.innerHTML = '<div id="metadata-mapper" class="metadata-mapper-main-containers"><div class="config-text-label">Create or Edit Mappings</div><div id="map-nodes-container" class="map-nodes-container">Choose a source schema CSV to get started.</div><div id="connectorCanvas"></div><div id="metadata-mapper-dropzone" class="drop-zone" style="background-color: rgb(245, 245, 245);margin-bottom:0.5em;"><p>Drop a Source Schema CSV, or Browse</p><input type="file" id="file-input"></div></div><div id="saved-mappings" class="metadata-mapper-main-containers"><div class="config-text-label">Saved Mappings</div></div>';
+            p.style.width = "100%";
+            p.style.maxHeight = "inherit";
+            p.style.display = "flex";
+            p.style.justifyContent = "space-between";
+            popup.querySelector(".config-main-options-container").appendChild(p);
+            p.querySelector("#metadata-mapper-dropzone").addEventListener("click", e => {activateDropZone(e)});
+            setupCSV();
         },
         afterClose: function() {
             console.log("Popup closed");
         }
     }
 );
+
+// To spawn the popup
+metdataMapperPopup.fire();

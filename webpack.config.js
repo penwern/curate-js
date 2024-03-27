@@ -15,6 +15,9 @@ module.exports = {
           path.resolve(__dirname, 'src/js/external'),
           path.resolve(__dirname, 'src/js/workers')
         ],
+        exclude: [
+          path.resolve(__dirname, 'src/js/core/CurateFunctions.js'),
+        ],
         use: 'babel-loader' // Add any other loaders you need for JavaScript files
       }
     ]
