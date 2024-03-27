@@ -330,7 +330,7 @@ function addFieldToContainer(field, container) {
     const [schemaName, fieldName] = fieldText.split('-');
 
     // Look up schema definition
-    const schema = schemas[schemaName];
+    const schema = Curate.metadata.schemas.getSchemas()[schemaName];
     if (!schema) {
         console.error(`Schema "${schemaName}" not found.`);
         return;
