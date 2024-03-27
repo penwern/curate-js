@@ -1,3 +1,4 @@
+export default `
 <div id="curateMetadataPanel">
     <style>
         /*move this to brand css*/
@@ -420,3 +421,4 @@
         }
     </script>
 </div>
+`

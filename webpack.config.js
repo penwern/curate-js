@@ -13,19 +13,13 @@ module.exports = {
         include: [
           path.resolve(__dirname, 'src/js/core'),
           path.resolve(__dirname, 'src/js/external'),
-          path.resolve(__dirname, 'src/js/workers')
+          path.resolve(__dirname, 'src/js/workers'),
+          path.resolve(__dirname, 'src/js/templates')
         ],
         exclude: [
           path.resolve(__dirname, 'src/js/core/CurateFunctions.js'),
         ],
         use: 'babel-loader' // Add any other loaders you need for JavaScript files
-      },
-      {
-        test: /\.html$/,
-        include: [
-          path.resolve(__dirname, 'src/templates')
-        ],
-        use: 'html-loader'
       }
     ]
   }
