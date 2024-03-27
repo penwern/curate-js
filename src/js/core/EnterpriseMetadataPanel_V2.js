@@ -338,7 +338,9 @@ function addFieldToContainer(field, container) {
 
     // Find corresponding section, if any
     let section = null;
+    console.log("my hairy schema!: ", schema)
     if (schema.sections) {
+        console.log("my hairy cock!")
         console.log(fieldName)
         for (const sec of schema.sections) {
             console.log(sec.fields)
