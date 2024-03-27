@@ -371,7 +371,7 @@ function addFieldToContainer(field, container) {
 
     // Append field to container
     field.className = "dropdown-item"
-    console.log("shagnasty: ", schemaContainer.querySelector(c))
+    console.log("shagnasty: ", content)
     content.appendChild(field);
 }
 function modifyMetadataPanel(metadataPanel) {
