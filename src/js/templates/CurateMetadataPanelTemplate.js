@@ -155,34 +155,6 @@ export default `
                 <!-- Dropdown content for Tags section -->
             </div>
         </div>
-        <div class="metadataPanel-accordion-item" id="dcSection">
-            <div class="metadataPanel-accordion-header" >
-                <span class="metadataPanel-accordion-title">DC</span>
-                <span class="metadataPanel-accordion-icon"></span>
-            </div>
-            <div class="metadataPanel-accordion-content">
-                <!-- Dropdown content for DC section -->
-            </div>
-        </div>
-        <div class="metadataPanel-accordion-item" id="nestedSchemaTemplate">
-            <div class="metadataPanel-accordion-header" >
-                <span class="metadataPanel-accordion-title"></span>
-                <span class="metadataPanel-accordion-icon"></span>
-            </div>
-            <div class="metadataPanel-accordion-content">
-                <!-- Dropdown content for nested sections -->
-                <div class="metadataPanel-accordion-subfield" id="nestedSchemaSubfield">
-                    <div class="metadataPanel-accordion-header" >
-                        <span class="metadataPanel-accordion-title"></span>
-                        <span class="metadataPanel-accordion-icon"></span>
-                    </div>
-                    <div class="metadataPanel-accordion-content">
-                        <!-- Dropdown content for nested section -->
-
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="metadataPanel-accordion-item" id="importSection">
             <div class="metadataPanel-accordion-header" >
                 <span class="metadataPanel-accordion-title">IMPORT</span>
