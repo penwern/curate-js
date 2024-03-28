@@ -48,7 +48,38 @@ const Curate = (function() {
 
     api.files = {}
     
-    api.files.createFile = async function (nodes) {
+    /**
+     * Function to create one or more files in Curate and update their metadata at the same time.
+     * @param {object} nodes Object of nodes to create
+     * @example Example usage:
+     *             Curate.api.files.createFiles({
+     *               nodes: [
+     *                   {
+     *                       path: "quarantine/file1.txt",
+     *                       dc: [
+     *                           { field: "title", value: "test" },
+     *                           { field: "description", value: "test" }
+     *                       ],
+     *                       isadg: [
+     *                           { field: "title", value: "test" },
+     *                           { field: "reference-codes", value: "test" }
+     *                       ]
+     *                   },
+     *                   {
+     *                       path: "quarantine/file2.txt",
+     *                       dc: [
+     *                           { field: "title", value: "test" },
+     *                           { field: "description", value: "test" }
+     *                       ],
+     *                       isadg: [
+     *                           { field: "title", value: "test" },
+     *                           { field: "reference-codes", value: "test" }
+     *                       ]
+     *                  }
+     *               ]
+     *           });
+     */
+    api.files.createFiles = async function (nodes) {
         async function convertObject(inputObj, uuid) {
             const outputObj = {
                 MetaDatas: [],
