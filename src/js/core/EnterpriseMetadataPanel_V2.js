@@ -93,7 +93,7 @@ const harvestOaiHandler = async () => {
     };
     //perform the operation
     const metadata = await harvestOAI(harvest);
-    console.log(metadata);
+
     if (!metadata) {
         document.querySelector("#loader").remove();
         console.log("harvest error, please check linking parameters.");
@@ -338,14 +338,9 @@ function addFieldToContainer(field, container) {
 
     // Find corresponding section, if any
     let section = null;
-    console.log("my hairy schema!: ", schema)
     if (schema.sections) {
-        console.log("my hairy cock!")
-        console.log(fieldName)
         for (const sec of schema.sections) {
-            console.log(sec.fields)
             if (sec.fields.includes(fieldName.toLowerCase())) {
-                console.log("goober: ", sec.title)
                 section = sec.title;
                 break;
             }
@@ -362,8 +357,6 @@ function addFieldToContainer(field, container) {
     var content = schemaContainer.querySelector('.metadataPanel-accordion-content');
     if (section){
         let c = '#'+schemaName.replace(/[^a-zA-Z0-9]/g , '')+section.replace(/\s/g, '') + " > .metadataPanel-accordion-content"
-        console.log("cccccc: ", c)
-        console.log("cccccc: ", schemaContainer.querySelector(c))
         content = schemaContainer.querySelector(c)
     }
     if (!content) {
@@ -373,7 +366,6 @@ function addFieldToContainer(field, container) {
 
     // Append field to container
     field.className = "dropdown-item"
-    console.log("shagnasty: ", content)
     content.appendChild(field);
 }
 function modifyMetadataPanel(metadataPanel) {
@@ -439,8 +431,6 @@ function modifyMetadataPanel(metadataPanel) {
         }
         const schemaName = field.querySelector('label').textContent.split("-")[0]
         const fieldName = field.querySelector('label').textContent.toLowerCase()
-        console.log("field", field)
-        console.log("field label", field.querySelector('label').textContent)
         if (fieldName.includes("import-")) {
             field.className = "dropdown-item"
             importSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
@@ -448,7 +438,6 @@ function modifyMetadataPanel(metadataPanel) {
             field.className = "dropdown-item"
             exportSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
         } else if (fieldName.includes("tags")) {
-            console.log("taggies")
             tagsSection.querySelector(".metadataPanel-accordion-content").appendChild(field)
         } else if (fieldName.includes("enable-inheritence") && pydio._dataModel._bDir) {
             metadataPanel.querySelector(".panelContent").before(field)

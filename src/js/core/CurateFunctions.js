@@ -46,7 +46,60 @@ const Curate = (function() {
         }
     };
 
-    api.getFileData = async function(node,type="text") {
+    api.files = {}
+    
+    api.files.createFile = async function (nodes) {
+        async function convertObject(inputObj, uuid) {
+            const outputObj = {
+                MetaDatas: [],
+                Operation: "PUT"
+            };
+    
+            for (const key in inputObj) {
+                if (key !== "path") {
+                    inputObj[key].forEach(item => {
+                        const namespace = `usermeta-${key}-${item.field}`;
+                        const metaData = {
+                            NodeUuid: uuid,
+                            Namespace: namespace,
+                            JsonValue: JSON.stringify(item.value),
+                            Policies: [
+                                { Action: "READ", Effect: "allow", Subject: "*" },
+                                { Action: "WRITE", Effect: "allow", Subject: "*" }
+                            ]
+                        };
+                        outputObj.MetaDatas.push(metaData);
+                    });
+                }
+            }
+    
+            return outputObj;
+        }
+    
+        // Step 1: Create the file
+        const promises = nodes.nodes.map(async node => {
+            const filename = node.path.split('/').pop(); // Extract filename from path
+            const createData = await Curate.api.fetchCurate("/a/tree/create", "POST", {
+                Nodes: [{ Path: node.path, Type: "LEAF" }],
+                TemplateUUID: ""
+            });
+    
+            const path = createData.Children[0].Path; // Path of the created file
+            const getData = await Curate.api.fetchCurate("/a/meta/bulk/get", "POST", { Limit: 200, NodePaths: [path] }); // Use the path of the created file
+    
+            const uuid = getData.Nodes[0].Uuid; // UUID of the created file
+            return { filename, uuid, node };
+        });
+    
+        const uuids = await Promise.all(promises);
+        // Step 2: Update nodes
+        for (const { filename, uuid, node } of uuids) {
+            const updatedObject = await convertObject(node, uuid);
+            const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", updatedObject);
+        }
+    }
+
+    api.files.getFileData = async function(node,type="text") {
         try {
           const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
           const downloadUrl = await pydio.ApiClient.buildPresignedGetUrl(node);
