@@ -7,8 +7,10 @@ import '../js/core/OAIHarvestClient.js';
 import '../js/core/publicAccessModifier.js';
 import '../js/core/tourModifier.js';
 import '../js/core/UploadChecksumGenerator.js';
+import '../js/core/PermissionEnforcers.js'
 import '../js/external/ExternalScripts.js';
 import '../js/templates/CurateMetadataPanelTemplate.js';
+
 import 'chart.js';
 import Swal from 'sweetalert2';
 import Papa from 'papaparse';
