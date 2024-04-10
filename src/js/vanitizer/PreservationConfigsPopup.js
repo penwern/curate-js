@@ -198,6 +198,29 @@ function createCuratePopup(title, inputs) {
     }, 200)
 
 }
+function setPreservationConfig(config) {
+    const url = `${window.location.origin}:6900/set_data`;
+    return fetch(url, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(config)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else if (response.status == 200) {
+                //save configs to session
+                console.info("config saved successfully")
+                return response.json();
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+}
 function createConfigsBox(target, configs) {
     configs.forEach(config => {
         const configItem = document.createElement('div')
