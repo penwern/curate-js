@@ -150,7 +150,7 @@
     }
     function addPreservationWorkflows(menu) {
         const savedConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-        const standardPreserveKeyw = "Archivematica Preserve"
+        const standardPreserveKeyw = "Preserve"
         setTimeout(() => {
             for (const a of menu.querySelectorAll("div")) {
                 if (a.innerText == standardPreserveKeyw) {

@@ -1,7 +1,7 @@
 async function createTree(body) {
     try {
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
-        const response = await fetch("https://www.curate.penwern.co.uk/a/tree/create", {
+        const response = await fetch("https://"+window.location.hostname+"/a/tree/create", {
             method: "POST",
             headers: {
                 "accept": "application/json",
