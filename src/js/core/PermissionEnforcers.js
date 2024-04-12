@@ -6,7 +6,7 @@ const permissionHandlers = {
             description: "enforce workspace upload permissions for standard users",
             handler: (e)=>{
                 if (!['quarantine', 'personal-files', 'common files'].includes(Curate.workspaces.getOpenWorkspace()) && pydio.user.idmUser.Roles.find(r=>r.Label = "Standard User")){
-                e.stopImmediatePropagation()
+                    e.stopImmediatePropagation()
             }}
         }  
     }

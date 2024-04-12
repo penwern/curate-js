@@ -198,6 +198,23 @@ function createCuratePopup(title, inputs) {
     }, 200)
 
 }
+function getPreservationConfigs() {
+    const url = `${window.location.origin}:6900/get_data`;
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            //save configs to session
+            sessionStorage.setItem("preservationConfigs", JSON.stringify(data))
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+}
 function setPreservationConfig(config) {
     const url = `${window.location.origin}:6900/set_data`;
     return fetch(url, {
@@ -220,6 +237,31 @@ function setPreservationConfig(config) {
         .catch(error => {
             console.error('Fetch error:', error);
         });
+}
+function deletePreservationConfig(id) {
+    const url = `${window.location.origin}:6900/delete_data/${id}`;
+    return fetch(url, {
+        method: "DELETE",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Check if the delete was successful based on the response data or status
+            if (data) {
+                getPreservationConfigs()
+                return data; // Return the response data
+            } else {
+                throw new Error('Delete operation failed.');
+            }
+        })
 }
 function createConfigsBox(target, configs) {
     configs.forEach(config => {
