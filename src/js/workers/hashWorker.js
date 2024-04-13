@@ -13,7 +13,11 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
   fileReader.onload = event => {
       spark.append(event.target.result); // Append array buffer
       ++currentChunk;
-      currentChunk < chunks ? loadNext() : resolve(spark.end()); // Compute hash
+      if (currentChunk < chunks) {
+          loadNext();
+      } else {
+          resolve(spark.end()); // Compute hash
+      }
   };
   
   fileReader.addEventListener("progress", event => {
@@ -42,12 +46,9 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
 });
 
 self.onmessage = async function(event) {
-    if (event.data.file && (event.data.msg == "begin hash")) {
+  if (event.data.file && (event.data.msg == "begin hash")) {
       const gmd5 = await incrementalMD5(event.data.file);
       postMessage({ status: "complete", hash: gmd5 });
-      self.close();
-    }
-  };
-  
-  // Send a 'ready' message to the main thread when the worker is initialized
-  postMessage({ status: 'ready' });
+      // Removed self.close() to keep the worker alive
+  }
+};
