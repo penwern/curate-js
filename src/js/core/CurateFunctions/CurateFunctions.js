@@ -8,13 +8,13 @@ const Curate = (function() {
     const workspaces = CurateWorkspaces;
     const ui = CurateUi;
     const metadata = CurateMetadata;
-    const workermanager = CurateWorkerManager
+    const WorkerManager = CurateWorkerManager
     return {
         api,
         workspaces,
         ui,
         metadata,
-        workermanager
+        WorkerManager
     };
 })();
 // Export Curate so it's accessible globally
