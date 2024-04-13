@@ -1,5 +1,5 @@
-import getMetadataHierarchies from './MetadataHierarchies.js';
-import WorkerManager from './WorkerManager.js';
+import getMetadataHierarchies from '../core/MetadataHierarchies.js';
+import WorkerManager from '../core/WorkerManager.js';
 const Curate = (function() {
     
     /**
