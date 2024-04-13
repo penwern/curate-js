@@ -1,19 +1,12 @@
 class CurateWorkerManager {
-    constructor() {
-        // Define the base URL for the worker script within the class
-        this.workerScriptUrl = new URL('../workers/hashWorker.js', import.meta.url);
-        this.worker = null;
+    constructor(scriptUrl) {
+        this.scriptUrl = scriptUrl;
         this.initWorker();
     }
 
     initWorker() {
-        fetch(this.workerScriptUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load worker script.');
-                }
-                return response.text();
-            })
+        fetch(this.scriptUrl)
+            .then(response => response.ok ? response.text() : Promise.reject('Failed to load worker script.'))
             .then(scriptContent => {
                 const blob = new Blob([scriptContent], { type: 'application/javascript' });
                 const blobURL = URL.createObjectURL(blob);
@@ -48,4 +41,5 @@ class CurateWorkerManager {
         });
     }
 }
+
 export default CurateWorkerManager
