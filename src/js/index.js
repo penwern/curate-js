@@ -8,6 +8,7 @@ import '../js/core/publicAccessModifier.js';
 import '../js/core/tourModifier.js';
 import '../js/core/UploadChecksumGenerator.js';
 import '../js/core/PermissionEnforcers.js'
+import '../js/core/WorkerManager.js'
 import '../js/external/ExternalScripts.js';
 import '../js/templates/CurateMetadataPanelTemplate.js';
 

@@ -1,7 +1,7 @@
 import getMetadataHierarchies from './MetadataHierarchies.js';
+import WorkerManager from './WorkerManager.js';
 const Curate = (function() {
-    const api = {};
-
+    
     /**
      * Generic Curate fetch helper to make API interactions simple.
      *
