@@ -1,4 +1,4 @@
-class WorkerManager {
+class CurateWorkerManager {
     constructor() {
         // Define the base URL for the worker script within the class
         this.workerScriptUrl = new URL('../workers/hashWorker.js', import.meta.url);
@@ -48,4 +48,4 @@ class WorkerManager {
         });
     }
 }
-export default WorkerManager
+export default CurateWorkerManager
