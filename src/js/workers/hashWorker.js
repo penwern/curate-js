@@ -42,10 +42,12 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
 });
 
 self.onmessage = async function(event) {
-  // console.log(event.data)
-  if (event.data.file && (event.data.msg == "begin hash")) {
+    if (event.data.file && (event.data.msg == "begin hash")) {
       const gmd5 = await incrementalMD5(event.data.file);
       postMessage({ status: "complete", hash: gmd5 });
       self.close();
-  }
-};
+    }
+  };
+  
+  // Send a 'ready' message to the main thread when the worker is initialized
+  postMessage({ status: 'ready' });

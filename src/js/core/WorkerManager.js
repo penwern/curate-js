@@ -56,15 +56,36 @@ class CurateWorkerManager {
 
     processNextTask() {
         if (this.taskQueue.length > 0) {
-            const task = this.taskQueue.shift();
-            this.currentResolve = task.resolve;
-            this.currentReject = task.reject;
-            this.currentFile = task.file;
-            this.isProcessing = true;
+          const task = this.taskQueue.shift();
+          this.currentResolve = task.resolve;
+          this.currentReject = task.reject;
+          this.currentFile = task.file;
+          this.isProcessing = true;
+      
+          // Terminate the previous worker if it exists
+          if (this.worker) {
+            this.worker.terminate();
+          }
+      
+          // Create a new worker for the current task
+          this.initWorker();
+      
+          // Wait for the worker to be ready before posting the message
+          const workerReadyPromise = new Promise(resolve => {
+            this.worker.addEventListener('message', function onMessage(event) {
+              if (event.data.status === 'ready') {
+                this.worker.removeEventListener('message', onMessage);
+                resolve();
+              }
+            });
+          });
+      
+          workerReadyPromise.then(() => {
             this.worker.postMessage({ file: task.file, msg: "begin hash" });
+          });
         } else {
-            this.isProcessing = false;
+          this.isProcessing = false;
         }
-    }
+      }
 }
 export default CurateWorkerManager;
