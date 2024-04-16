@@ -9,7 +9,7 @@ import '../js/core/tourModifier.js';
 //import './deprecated/UploadChecksumGenerator.js';
 import '../js/core/PermissionEnforcers.js'
 import '../js/external/ExternalScripts.js';
-//import '../js/templates/CurateMetadataPanelTemplate.js';
+//import '../js/templates/CurateMetadataPanelTemplate.js'
 
 import 'chart.js';
 import Swal from 'sweetalert2';
