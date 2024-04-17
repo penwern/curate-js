@@ -12,34 +12,43 @@ window.addEventListener("load", () => {
         // Save the original uploadPresigned method to call it later
         const originalUploadPresigned = UploaderModel.UploadItem.prototype.uploadPresigned;
 
-        // Monkey patch the uploadPresigned method to include checksum generation and further processing
+        // Override the uploadPresigned method
         UploaderModel.UploadItem.prototype.uploadPresigned = function() {
-            console.log('Quarantine Upload: ', this);
+            console.log('Starting upload for:', this);
 
-            // Generate the checksum for the file
-            return workerManager.generateChecksum(this._file)
-                .then(checksumData => {
-                    console.log('Generated checksum data:', checksumData);
+            // Execute the original method
+            const originalPromise = originalUploadPresigned.apply(this, arguments);
 
-                    // Calculate a delay based on the file's size, with a maximum delay limit
-                    const delay = Math.min(5000, Math.max(500, this._file.size * 0.01)); // 10 milliseconds per KB, max 5 seconds, min 500 milliseconds
+            // Attach an event listener to monitor when the upload status changes to complete
+            const observer = status => {
+                if (status === 'complete') {
+                    // Remove the status observer to prevent memory leaks
+                    this._observers.status.forEach((obs, index) => {
+                        if (obs === observer) this._observers.status.splice(index, 1);
+                    });
 
-                    // Use a timeout to delay the fetch stats call
-                    setTimeout(() => {
-                        // Construct the file path for the stats fetching
-                        const p = this._targetNode._path;
-                        const pathSuffix = p.endsWith('/') ? '' : '/';
-                        const parentLabelPart = this._parent._label ? `${this._parent._label}/` : '';
-                        const filename = `quarantine${p}${pathSuffix}${parentLabelPart}${this._label}`;
-                        fetchCurateStats(filename, checksumData.hash, 0); // Add initial retry count as 0
-                    }, delay);
-                })
-                .catch(error => {
-                    console.error('Checksum generation failed:', error);
-                });
+                    // Start checksum generation
+                    workerManager.generateChecksum(this._file).then(checksumData => {
+                        console.log('Generated checksum data:', checksumData);
+                        // Fetch stats after a delay
+                        const delay = Math.min(5000, Math.max(500, this._file.size * 0.01));
+                        setTimeout(() => {
+                            const p = this._targetNode._path;
+                            const pathSuffix = p.endsWith('/') ? '' : '/';
+                            const parentLabelPart = this._parent._label ? `${this._parent._label}/` : '';
+                            const filename = `quarantine${p}${pathSuffix}${parentLabelPart}${this._label}`;
+                            fetchCurateStats(filename, checksumData.hash, 0);
+                        }, delay);
+                    }).catch(error => {
+                        console.error('Checksum generation failed:', error);
+                    });
+                }
+            };
 
-            // Continue with the original uploadPresigned behavior
-            return originalUploadPresigned.apply(this, arguments);
+            // Subscribe to the status updates
+            this._observers.status.push(observer);
+
+            return originalPromise;
         };
 
         // Function to fetch stats from Curate API
