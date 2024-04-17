@@ -21,6 +21,7 @@ window.addEventListener("load", () => {
 
             // Attach an event listener to monitor when the upload status changes to complete
             const observer = status => {
+                console.log(status)
                 if (status === 'loaded') {
                     // Remove the status observer to prevent memory leaks
                     this._observers.status.forEach((obs, index) => {
