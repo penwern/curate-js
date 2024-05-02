@@ -1,6 +1,6 @@
   async function submitPreservationRequest(configId) {
         const token = PydioApi.getRestClient().authentications.oauth2.accessToken
-        const url = `${window.location.origin}/a/scheduler/hooks/a3m-transfer`;
+        const url = `${window.location.protocol}//${window.location.hostname}/a/scheduler/hooks/a3m-transfer`;
         const paths = pydio._dataModel._selectedNodes.map(n => Curate.workspaces.getOpenWorkspace() + n._path);
         const bodyData = JSON.stringify({ "Paths": paths, "JobParameters": { "ConfigId": configId.toString() } })
         const headers = {
@@ -38,7 +38,7 @@
 
     }
     function getPreservationConfigs() {
-        const url = `${window.location.origin}:6900/get_data`;
+        const url = `${window.location.protocol}//${window.location.hostname}:6900/get_data`;
         return fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -746,7 +746,7 @@
         }
     }
     function deletePreservationConfig(id) {
-        const url = `${window.location.origin}:6900/delete_data/${id}`;
+        const url = `${window.location.protocol}//${window.location.hostname}:6900/delete_data/${id}`;
         return fetch(url, {
             method: "DELETE",
             headers: {
@@ -771,7 +771,7 @@
             })
     }
     function setPreservationConfig(config) {
-        const url = `${window.location.origin}:6900/set_data`;
+        const url = `${window.location.protocol}//${window.location.hostname}:6900/set_data`;
         return fetch(url, {
             method: "POST",
             headers: {
