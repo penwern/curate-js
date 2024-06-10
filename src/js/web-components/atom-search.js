@@ -50,7 +50,6 @@ class AtoMSearchInterface extends HTMLElement {
       this.shadowRoot.innerHTML = `
         <style>
           .container {
-            max-width: 40%;
             margin: 20px auto;
             padding: 20px;
             border-radius: 8px;
