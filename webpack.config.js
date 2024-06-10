@@ -15,7 +15,8 @@ module.exports = {
           path.resolve(__dirname, 'src/js/core/CurateFunctions'),
           path.resolve(__dirname, 'src/js/external'),
           path.resolve(__dirname, 'src/js/workers'),
-          path.resolve(__dirname, 'src/js/templates')
+          path.resolve(__dirname, 'src/js/templates'),
+          path.resolve(__dirname, 'src/js/web-components'),
         ],
         exclude: [
           path.resolve(__dirname, 'src/js/core/CurateFunctions/CurateFunctions.js'),
