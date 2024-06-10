@@ -10,7 +10,7 @@ class ConnectToAtom extends HTMLElement {
       e.preventDefault(); 
       localStorage.setItem('atom_api_key', this.apiKey);
       console.log('Saving API Key: ', this.apiKey);
-      window.location.reload();
+      this.render();
     }
   
     handleInputChange(event) {
@@ -36,7 +36,6 @@ class ConnectToAtom extends HTMLElement {
           .label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
             font-size: 16px;
           }
           .input {
@@ -74,13 +73,12 @@ class ConnectToAtom extends HTMLElement {
           }
         </style>
         <div class="container">
-          <h2 class="heading">AtoM Connection Settings</h2>
           <div class="api-key-display">
             <p style="font-size: 16px;">Current API Key: <span class="current-api-key" id="current-api-key">${localStorage.getItem('atom_api_key') || ''}</span></p>
           </div>
           <form id="api-key-form">
             <div class="form-group">
-              <label class="label" for="api-key">API Key:</label>
+              <label class="label" for="api-key">Enter an API Key:</label>
               <input class="input" type="text" id="api-key" name="api-key" placeholder="Enter a New API key" required>
             </div>
             <button class="save-btn" type="submit">Save</button>
