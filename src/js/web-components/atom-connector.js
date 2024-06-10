@@ -9,10 +9,17 @@ class ConnectToAtom extends HTMLElement {
   
     saveDetails(e) {
       e.preventDefault();
-      localStorage.setItem('atom_api_key', this.apiKey);
-      localStorage.setItem('atom_url', this.atomUrl);
-      console.log('Saving API Key:', this.apiKey);
-      console.log('Saving Atom URL:', this.atomUrl);
+  
+      if (this.apiKey !== '') {
+        localStorage.setItem('atom_api_key', this.apiKey);
+        console.log('Saving API Key:', this.apiKey);
+      }
+  
+      if (this.atomUrl !== '') {
+        localStorage.setItem('atom_url', this.atomUrl);
+        console.log('Saving Atom URL:', this.atomUrl);
+      }
+  
       this.render();
     }
   
@@ -87,11 +94,11 @@ class ConnectToAtom extends HTMLElement {
           <form id="details-form">
             <div class="form-group">
               <label class="label" for="api-key">Enter an API Key:</label>
-              <input class="input" type="text" id="api-key" name="api-key" placeholder="Enter a New API key" required>
+              <input class="input" type="text" id="api-key" name="api-key" placeholder="Enter a New API key">
             </div>
             <div class="form-group">
               <label class="label" for="atom-url">Enter Atom Site URL:</label>
-              <input class="input" type="url" id="atom-url" name="atom-url" placeholder="https://atom.penwern.co.uk/" required>
+              <input class="input" type="url" id="atom-url" name="atom-url" placeholder="https://atom.penwern.co.uk/">
             </div>
             <button class="save-btn" type="submit">Save</button>
           </form>
@@ -104,5 +111,4 @@ class ConnectToAtom extends HTMLElement {
     }
   }
   
-  customElements.define('connect-to-atom', ConnectToAtom);
-  
+  customElements.define('connect-to-atom', ConnectToAtom);  
