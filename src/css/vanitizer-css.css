@@ -629,6 +629,7 @@ line {
 .config-main-options-container{
   max-height:73vh;
   display:flex;
+  justify-content: center;
   gap:1em;
   margin-top: 1em !important;
   margin-bottom: 1em !important;
