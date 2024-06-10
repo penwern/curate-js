@@ -1,7 +1,22 @@
   async function submitPreservationRequest(configId) {
         const token = PydioApi.getRestClient().authentications.oauth2.accessToken
         const url = `${window.location.protocol}//${window.location.hostname}/a/scheduler/hooks/a3m-transfer`;
-        const paths = pydio._dataModel._selectedNodes.map(n => Curate.workspaces.getOpenWorkspace() + n._path);
+        const paths = pydio._dataModel._selectedNodes.map(n => ({
+            path: Curate.workspaces.getOpenWorkspace() + n._path,
+            slug: n._metadata.get("usermeta-atom-linked-description") || ""
+        }));
+        const config = JSON.parse(sessionStorage.getItem("preservationConfigs")).find(obj => obj.id == configId)
+        if (config["enable_dip"] === true) {
+            const dipWithoutSlugs = [];
+            paths.forEach(path => {
+                if (!path.slug || path.slug === ""){
+                    dipWithoutSlugs.push(paths[slugs.indexOf(slug)])
+                }
+            })
+            if (dipWithoutSlugs.length > 0) {
+                // throw up a modal with a list of the DIPs without slugs and ask the user if they want to add them
+            }
+        }
         const bodyData = JSON.stringify({ "Paths": paths, "JobParameters": { "ConfigId": configId.toString() } })
         const headers = {
             "accept": "application/json",

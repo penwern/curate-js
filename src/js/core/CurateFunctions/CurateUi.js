@@ -25,7 +25,7 @@ const CurateUi = {
             // Define fire method
             function fire() {
                 // Create the container element
-                var container = document.createElement('div');
+                const container = document.createElement('div');
                 container.classList.add('config-modal-container');
                 container.style.display = 'flex';
                 container.addEventListener("click", function (e) {
