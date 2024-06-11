@@ -411,6 +411,7 @@
         closeButton.classList.add('config-modal-close-button')
         closeButton.textContent = 'Close';
         closeButton.addEventListener('click', () => {
+            console.log("modal closed1")
             document.body.removeChild(modalContainer);
         });
         closeButtonContainer.appendChild(closeButton)
@@ -422,7 +423,7 @@
             // Add document click listener to close modal when clicked off
             document.addEventListener("click", e => {
                 if (e.target === modalContainer) {
-                    console.log("modal closed")
+                    console.log("modal closed2")
                     modalContainer.remove()
                 }
                 
@@ -432,6 +433,7 @@
                 if (e.keyCode !== 27) {
                     return
                 }
+                console.log("modal closed3")
                 modalContainer.remove()
             })
         }, 200)
