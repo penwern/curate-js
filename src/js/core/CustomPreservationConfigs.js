@@ -58,7 +58,7 @@
     async function getPreservationConfigs() {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/get_data`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
-        return fetch(url, {"Authorization": `Bearer ${token}`})
+        return fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
