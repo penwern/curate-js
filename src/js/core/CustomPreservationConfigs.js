@@ -421,10 +421,10 @@
         setTimeout(() => {
             // Add document click listener to close modal when clicked off
             document.addEventListener("click", e => {
-                if (e.target == modalContent || modalContent.contains(e.target)) {
-                    return
+                if (e.target === modalContainer) {
+                    modalContainer.remove()
                 }
-                modalContainer.remove()
+                
             })
             // Add document listener to close modal when escape key is pressed
             document.addEventListener("keyup", e => {
