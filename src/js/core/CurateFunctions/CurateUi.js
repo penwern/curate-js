@@ -31,6 +31,7 @@ const CurateUi = {
                 container.addEventListener("click", function (e) {
                     clickAway(e, container);
                 }, { once: true });
+                
         
                 // Create the content element
                 var content = document.createElement('div');
@@ -54,7 +55,8 @@ const CurateUi = {
                 var closeButton = document.createElement('button');
                 closeButton.classList.add('config-modal-close-button');
                 closeButton.textContent = 'Close';
-                closeButton.addEventListener('click', closePopup);
+                closeButton.addEventListener('click', closePopup.bind(null, container));
+
         
                 // Append elements to their respective parents
                 actionButtons.appendChild(closeButton);
@@ -69,23 +71,23 @@ const CurateUi = {
                 // Call afterLoaded callback with the created popup
                 afterLoaded(container);
         
-                function closePopup() {
-                    container.remove();
-                    // Call afterClosed callback
-                    afterClosed();
+                function closePopup(container) {
+                    container.remove();  
+                    afterClosed();       
                 }
+                
         
-                function clickAway(e, t) {
-                    console.log("click away: ", e.target)
+                function clickAway(e, container) {
                     if (e.target === container) {
-                        console.log("closed????")
-                        closePopup();
+                        closePopup(container);  // Calls closePopup specifically for this container
                     } else {
-                        t.addEventListener("click", function (e) {
-                            clickAway(e, t);
+                        // Reattach the listener if the click wasn't on the container
+                        container.addEventListener("click", function (e) {
+                            clickAway(e, container);
                         }, { once: true });
                     }
                 }
+                
             }
         
             // Return an object with the fire method
