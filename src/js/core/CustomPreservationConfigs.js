@@ -6,7 +6,7 @@
             slug: n._metadata.get("usermeta-atom-linked-description") || ""
         }));
         const config = JSON.parse(sessionStorage.getItem("preservationConfigs")).find(obj => obj.id == configId)
-        if (config["enable_dip"] === true) {
+        if (config["dip_enabled"] === true) {
             const dipWithoutSlugs = [];
             paths.forEach(path => {
                 if (!path.slug || path.slug === ""){
