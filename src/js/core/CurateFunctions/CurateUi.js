@@ -78,6 +78,7 @@ const CurateUi = {
                 function clickAway(e, t) {
                     console.log("click away: ", e.target)
                     if (e.target === container) {
+                        console.log("closed????")
                         closePopup();
                     } else {
                         t.addEventListener("click", function (e) {
