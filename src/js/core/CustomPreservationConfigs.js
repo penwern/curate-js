@@ -418,22 +418,6 @@
         document.body.appendChild(modalContainer);
         // Display the modal
         modalContainer.style.display = 'flex';
-        setTimeout(() => {
-            // Add document click listener to close modal when clicked off
-            document.addEventListener("click", e => {
-                if (e.target === modalContent || modalContent.contains(e.target)) {
-                    return
-                }
-                modalContainer.remove()
-            })
-            // Add document listener to close modal when escape key is pressed
-            document.addEventListener("keyup", e => {
-                if (e.keyCode !== 27) {
-                    return
-                }
-                modalContainer.remove()
-            })
-        }, 200)
 
     }
     function createConfigsBox(target, configs) {

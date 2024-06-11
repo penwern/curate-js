@@ -1,190 +1,189 @@
 function createCuratePopup(title, inputs) {
-    const configPopup = Curate.CurateUi.modals.curatePopup({"title":title}, {afterLoaded:c=>{
-        //  add main controls container
-        const mainOptionsContainer = c
+    // Create modal container
+    const modalContainer = document.createElement('div');
+    modalContainer.classList.add('config-modal-container');
+    const modalScrollContainer = document.createElement('div')
+    modalScrollContainer.classList.add('config-modal-scroll-container')
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('config-modal-content');
+    // Create title
+    const titleElement = document.createElement('div');
+    titleElement.textContent = title;
+    titleElement.classList.add('config-popup-title');
 
-        // Create inputs based on the input objects
-        inputs.forEach((category) => {
-            const catDiv = document.createElement("div")
-            catDiv.classList.add('config-input-category')
-            catDiv.id = category.category.replaceAll(" ", "_")
-            const catLabel = document.createElement("div")
-            catLabel.classList.add('config-text-label')
-            catLabel.textContent = category.category
-            catDiv.appendChild(catLabel)
-            category.inputs.forEach(input => {
-                createInput(input, catDiv)
-            })
-            modalScrollContainer.appendChild(catDiv)
+    // Add title to modal content
+    modalContent.appendChild(titleElement);
+    //  add main controls container
+    const mainOptionsContainer = document.createElement('div')
+    mainOptionsContainer.classList.add('config-main-options-container')
+    modalContent.appendChild(mainOptionsContainer)
+    // Create inputs based on the input objects
+    inputs.forEach((category) => {
+        const catDiv = document.createElement("div")
+        catDiv.classList.add('config-input-category')
+        catDiv.id = category.category.replaceAll(" ", "_")
+        const catLabel = document.createElement("div")
+        catLabel.classList.add('config-text-label')
+        catLabel.textContent = category.category
+        catDiv.appendChild(catLabel)
+        category.inputs.forEach(input => {
+            createInput(input, catDiv)
+        })
+        modalScrollContainer.appendChild(catDiv)
+    });
+    //create and add clear form button 
+    const clearButton = document.createElement("button")
+    clearButton.classList.add("config-clear-form")
+    clearButton.textContent = "Clear Form"
+    clearButton.addEventListener("click", e => {
+        modalScrollContainer.querySelectorAll("input").forEach(input => {
+            if (input.type == "text") {
+                input.value = ""
+            }
+            else if (input.type == "checkbox") {
+                input.checked = false
+            } else {
+                input.value = 0
+            }
+            input.dispatchEvent(new CustomEvent('change', { bubbles: true }))
+            input.dispatchEvent(new CustomEvent('input', { bubbles: true }))
+        })
+
+
+    })
+    modalScrollContainer.appendChild(clearButton)
+    const optionsContainer = document.createElement('div')
+    optionsContainer.classList.add('config-options-container')
+    optionsContainer.style = "display: flex;align-items: center;flex-wrap: nowrap;flex-direction: column;"
+    //create and add title to modify/create area
+    const modifyTitle = document.createElement('div')
+    modifyTitle.classList.add("config-text-label")
+    modifyTitle.textContent = "Create or Edit Configs"
+    modifyTitle.style = "padding-bottom: 1em !important"
+    optionsContainer.appendChild(modifyTitle)
+    optionsContainer.appendChild(modalScrollContainer)
+
+    const savedScrollContainer = document.createElement('div')
+    savedScrollContainer.classList.add('config-modal-scroll-container')
+    //create and append save button to config options area
+    const saveConfig = document.createElement('button')
+    saveConfig.classList.add('config-save-button')
+    saveConfig.textContent = "Save Config"
+    saveConfig.addEventListener("click", e => {
+        //validate save
+        const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+        const saveName = optionsContainer.querySelector("#name").value
+
+        // Flatten the input labels
+        const inputIds = inputs.flatMap(category => {
+            return category.inputs.map(input => input.name)
+                .concat(category.inputs.flatMap(input => {
+                    if (input.suboptions) {
+                        return input.suboptions.map(suboption => suboption.name); // Use suboption.name here
+                    }
+                    return [];
+                }));
         });
-        //create and add clear form button 
-        const clearButton = document.createElement("button")
-        clearButton.classList.add("config-clear-form")
-        clearButton.textContent = "Clear Form"
-        clearButton.addEventListener("click", e => {
-            modalScrollContainer.querySelectorAll("input").forEach(input => {
-                if (input.type == "text") {
-                    input.value = ""
-                }
-                else if (input.type == "checkbox") {
-                    input.checked = false
+        const curConfig = {}
+        const matchingObj = curConfigs.find(obj => obj.name == saveName);
+        if (matchingObj) {
+            curConfig["id"] = matchingObj.id;
+        } else {
+            curConfig["user"] = pydio.user.id //created user is this one
+        }
+        inputIds.forEach(id => {
+            const input = document.querySelector("#" + id)
+            if (!input) {
+                return
+            }
+            if (input.type == "submit") { //do not add "go to atom config" button
+                return
+            }
+            if (input.disabled) {
+                curConfig[id.toLowerCase()] = false
+            }
+            if (input.type == "checkbox") {
+                curConfig[id.toLowerCase()] = +input.checked
+            } else if (input.querySelector("input[type='range']")) {
+                curConfig[id.toLowerCase()] = input.querySelector("input[type='range']").value
+            }
+            else if (id == "name") {
+                curConfig["name"] = input.value
+            } else if (id == "image_normalization_tiff") {
+                curConfig[id.toLowerCase()] = (input.value === "TIFF") ? 1 : 0;
+            }
+            else {
+                if (typeof input.value == "string") {
+                    curConfig[id.toLowerCase()] = input.value.toLowerCase()
                 } else {
-                    input.value = 0
+                    curConfig[id.toLowerCase()] = input.value
                 }
-                input.dispatchEvent(new CustomEvent('change', { bubbles: true }))
-                input.dispatchEvent(new CustomEvent('input', { bubbles: true }))
-            })
-
-
-        })
-        modalScrollContainer.appendChild(clearButton)
-        const optionsContainer = document.createElement('div')
-        optionsContainer.classList.add('config-options-container')
-        optionsContainer.style = "display: flex;align-items: center;flex-wrap: nowrap;flex-direction: column;"
-        //create and add title to modify/create area
-        const modifyTitle = document.createElement('div')
-        modifyTitle.classList.add("config-text-label")
-        modifyTitle.textContent = "Create or Edit Configs"
-        modifyTitle.style = "padding-bottom: 1em !important"
-        optionsContainer.appendChild(modifyTitle)
-        optionsContainer.appendChild(modalScrollContainer)
-
-        const savedScrollContainer = document.createElement('div')
-        savedScrollContainer.classList.add('config-modal-scroll-container')
-        //create and append save button to config options area
-        const saveConfig = document.createElement('button')
-        saveConfig.classList.add('config-save-button')
-        saveConfig.textContent = "Save Config"
-        saveConfig.addEventListener("click", e => {
-            //validate save
-            const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-            const saveName = optionsContainer.querySelector("#name").value
-
-            // Flatten the input labels
-            const inputIds = inputs.flatMap(category => {
-                return category.inputs.map(input => input.name)
-                    .concat(category.inputs.flatMap(input => {
-                        if (input.suboptions) {
-                            return input.suboptions.map(suboption => suboption.name); // Use suboption.name here
-                        }
-                        return [];
-                    }));
-            });
-            const curConfig = {}
-            const matchingObj = curConfigs.find(obj => obj.name == saveName);
-            if (matchingObj) {
-                curConfig["id"] = matchingObj.id;
-            } else {
-                curConfig["user"] = pydio.user.id //created user is this one
-            }
-            inputIds.forEach(id => {
-                const input = document.querySelector("#" + id)
-                if (!input) {
-                    return
-                }
-                if (input.type == "submit") { //do not add "go to atom config" button
-                    return
-                }
-                if (input.disabled) {
-                    curConfig[id.toLowerCase()] = false
-                }
-                if (input.type == "checkbox") {
-                    curConfig[id.toLowerCase()] = +input.checked
-                } else if (input.querySelector("input[type='range']")) {
-                    curConfig[id.toLowerCase()] = input.querySelector("input[type='range']").value
-                }
-                else if (id == "name") {
-                    curConfig["name"] = input.value
-                } else if (id == "image_normalization_tiff") {
-                    curConfig[id.toLowerCase()] = (input.value === "TIFF") ? 1 : 0;
-                }
-                else {
-                    if (typeof input.value == "string") {
-                        curConfig[id.toLowerCase()] = input.value.toLowerCase()
-                    } else {
-                        curConfig[id.toLowerCase()] = input.value
-                    }
-                }
-            })
-            setPreservationConfig(curConfig)
-                .then(r => {
-                    if (r) {
-                        const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-                        getPreservationConfigs()
-                            .then(r => {
-                                const newConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-                                if (curConfig.id) {
-                                    document.querySelector("#config-" + curConfig.id).remove()
-                                    createConfigsBox(savedScrollContainer, [newConfigs.find(obj => obj.id === curConfig.id)])
-                                } else {
-                                    const newObject = newConfigs.find(newObj => !curConfigs.some(curObj => curObj.id === newObj.id));
-                                    createConfigsBox(savedScrollContainer, [newObject])
-                                }
-                            })
-                    }
-                })
-        })
-        optionsContainer.appendChild(saveConfig)
-        mainOptionsContainer.appendChild(optionsContainer)
-        optionsContainer.addEventListener("input", e => {
-            let cname = optionsContainer.querySelector("#name").value
-            if (cname.length == 0) {
-                saveConfig.style.display = "none"
-            } else if (cname.trim().length < 3) {
-                saveConfig.textContent = "Add a name 3 characters or longer"
-                saveConfig.style.display = "block"
-            } else {
-                saveConfig.textContent = "Save Config"
-                saveConfig.style.display = "block"
             }
         })
-        //create and add the saved configs area
-        const savedConfigsContainer = document.createElement('div')
-        savedConfigsContainer.classList.add('config-options-container')
-        savedConfigsContainer.style = "display:flex;align-items:center;justify-content:flex-start;flex-direction:column;"
-        //create and add title to saved configs area
-        const savedTitle = document.createElement('div')
-        savedTitle.classList.add("config-text-label")
-        savedTitle.style = "padding-bottom: 1em; !important"
-        savedTitle.textContent = "Saved Configs"
-        savedConfigsContainer.appendChild(savedTitle)
-        const savedConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-        createConfigsBox(savedScrollContainer, savedConfigs)
-        savedConfigsContainer.appendChild(savedScrollContainer)
-        mainOptionsContainer.appendChild(savedConfigsContainer);
-        // Append modal container to the body
-        modalContainer.appendChild(modalContent);
-        // Create close button
-        const closeButtonContainer = document.createElement('div');
-        closeButtonContainer.classList.add('action-buttons');
-        const closeButton = document.createElement('button');
-        closeButton.classList.add('config-modal-close-button')
-        closeButton.textContent = 'Close';
-        closeButton.addEventListener('click', () => {
-            document.body.removeChild(modalContainer);
-        });
-        closeButtonContainer.appendChild(closeButton)
-        modalContent.appendChild(closeButtonContainer);
-        document.body.appendChild(modalContainer);
-        // Display the modal
-        modalContainer.style.display = 'flex';
-        setTimeout(() => {
-            // Add document click listener to close modal when clicked off
-            document.addEventListener("click", e => {
-                if (e.target == modalContent || modalContent.contains(e.target)) {
-                    return
+        setPreservationConfig(curConfig)
+            .then(r => {
+                if (r) {
+                    const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+                    getPreservationConfigs()
+                        .then(r => {
+                            const newConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+                            if (curConfig.id) {
+                                document.querySelector("#config-" + curConfig.id).remove()
+                                createConfigsBox(savedScrollContainer, [newConfigs.find(obj => obj.id === curConfig.id)])
+                            } else {
+                                const newObject = newConfigs.find(newObj => !curConfigs.some(curObj => curObj.id === newObj.id));
+                                createConfigsBox(savedScrollContainer, [newObject])
+                            }
+                        })
                 }
-                modalContainer.remove()
             })
-            // Add document listener to close modal when escape key is pressed
-            document.addEventListener("keyup", e => {
-                if (e.keyCode !== 27) {
-                    return
-                }
-                modalContainer.remove()
-            })
-        }, 200)
-    }})
+    })
+    optionsContainer.appendChild(saveConfig)
+    mainOptionsContainer.appendChild(optionsContainer)
+    optionsContainer.addEventListener("input", e => {
+        let cname = optionsContainer.querySelector("#name").value
+        if (cname.length == 0) {
+            saveConfig.style.display = "none"
+        } else if (cname.trim().length < 3) {
+            saveConfig.textContent = "Add a name 3 characters or longer"
+            saveConfig.style.display = "block"
+        } else {
+            saveConfig.textContent = "Save Config"
+            saveConfig.style.display = "block"
+        }
+    })
+    //create and add the saved configs area
+    const savedConfigsContainer = document.createElement('div')
+    savedConfigsContainer.classList.add('config-options-container')
+    savedConfigsContainer.style = "display:flex;align-items:center;justify-content:flex-start;flex-direction:column;"
+    //create and add title to saved configs area
+    const savedTitle = document.createElement('div')
+    savedTitle.classList.add("config-text-label")
+    savedTitle.style = "padding-bottom: 1em; !important"
+    savedTitle.textContent = "Saved Configs"
+    savedConfigsContainer.appendChild(savedTitle)
+    const savedConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+    createConfigsBox(savedScrollContainer, savedConfigs)
+    savedConfigsContainer.appendChild(savedScrollContainer)
+    mainOptionsContainer.appendChild(savedConfigsContainer);
+    // Append modal container to the body
+    modalContainer.appendChild(modalContent);
+    // Create close button
+    const closeButtonContainer = document.createElement('div');
+    closeButtonContainer.classList.add('action-buttons');
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('config-modal-close-button')
+    closeButton.textContent = 'Close';
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modalContainer);
+    });
+    closeButtonContainer.appendChild(closeButton)
+    modalContent.appendChild(closeButtonContainer);
+    document.body.appendChild(modalContainer);
+    // Display the modal
+    modalContainer.style.display = 'flex';
+
 }
 function getPreservationConfigs() {
     const url = `${window.location.origin}:6900/get_data`;
