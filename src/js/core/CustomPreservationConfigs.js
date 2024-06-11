@@ -772,8 +772,9 @@
                 }
             })
     }
-    function setPreservationConfig(config) {
+    async function setPreservationConfig(config) {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/set_data`;
+        const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "POST",
             headers: {
