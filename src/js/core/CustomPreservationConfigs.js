@@ -1,5 +1,5 @@
   async function submitPreservationRequest(configId) {
-        const token = PydioApi.getRestClient().authentications.oauth2.accessToken
+        const token = await PydioApi.getRestClient().authentications.oauth2.accessToken
         const url = `${window.location.protocol}//${window.location.hostname}/a/scheduler/hooks/a3m-transfer`;
         const paths = pydio._dataModel._selectedNodes.map(n => ({
             path: Curate.workspaces.getOpenWorkspace() + n._path,
@@ -55,8 +55,9 @@
             });
 
     }
-    function getPreservationConfigs() {
+    async function getPreservationConfigs() {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/get_data`;
+        const token = await PydioApi.getRestClient().authentications.oauth2.accessToken
         return fetch(url, {"Authorization": `Bearer ${token}`})
             .then(response => {
                 if (!response.ok) {
@@ -747,13 +748,15 @@
             })
         }
     }
-    function deletePreservationConfig(id) {
+    async function deletePreservationConfig(id) {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/delete_data/${id}`;
+        const token = await PydioApi.getRestClient().authentications.oauth2.accessToken
         return fetch(url, {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         })
             .then(response => {
