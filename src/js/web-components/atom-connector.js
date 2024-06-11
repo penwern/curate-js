@@ -5,11 +5,31 @@ class ConnectToAtom extends HTMLElement {
       this.apiKey = '';
       this.atomUrl = '';
       this.render();
+      this.retrieveDetails();
     }
-  
+    retrieveDetails() {
+      Curate.api.fetchCurate('/atom/config', 'GET')
+      .then(response => {
+        this.apiKey = response.apiKey;
+        this.atomUrl = response.atomUrl;
+        this.render();
+      })
+      .catch(error => {
+        console.error('Error retrieving details from Atom:', error);
+      });
+    }
     saveDetails(e) {
       e.preventDefault();
-  
+      Curate.api.fetchCurate('/atom/config', 'PUT', {
+        apiKey: this.apiKey,
+        atomUrl: this.atomUrl
+      })
+      .then(response => {
+        console.log('Saved Atom details:', response);
+      })
+      .catch(error => {
+        console.error('Error saving Atom details:', error);
+      });
       if (this.apiKey !== '') {
         localStorage.setItem('atom_api_key', this.apiKey);
         console.log('Saving API Key:', this.apiKey);

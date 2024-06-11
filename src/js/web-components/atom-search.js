@@ -2,14 +2,16 @@ class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-
     this.criteria = [{ id: 0, query: '', field: '', operator: '' }];
     this.results = [];
     this.criterionIndex = 1;
-
+    this.node = null;
     this.render();
   }
-
+  setNode(node) {
+    this.node = node;
+    this.render();
+  }
   addCriterion() {
     this.criteria.push({ id: this.criterionIndex, query: '', field: '', operator: 'and' });
     this.criterionIndex++;
@@ -58,6 +60,28 @@ class AtoMSearchInterface extends HTMLElement {
 
   handleResultClick(slug) {
     console.log('Result clicked:', slug);
+    var propMap = [];
+    if (!this.node) {
+      throw new Error('No node set');
+    }
+    propMap.push({
+      NodeUuid: this.node.Uuid,
+      JsonValue: JSON.stringify(slug),
+      Namespace: "usermeta-atom-linked-description",
+      Policies: [
+        {
+          "Action": "READ",
+          "Effect": "allow",
+          "Subject": "*"
+        },
+        {
+          "Action": "WRITE",
+          "Effect": "allow",
+          "Subject": "*"
+        }
+      ]
+    });
+    Curate.api.fetchCurate("/a/user-meta/update", "PUT", { MetaDatas: propMap, Operation: "PUT" });
     // Perform desired action with the slug, such as navigating to a different page or displaying more details
   }
 
@@ -162,9 +186,10 @@ class AtoMSearchInterface extends HTMLElement {
 
         <div id="results" class="results">
           ${this.results.length === 0 ? `<p>No results found.</p>` : this.results.map(result => `
-            <div class="result-item" data-slug="${result.slug}" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">
+            <div class="result-item" data-slug="${result.slug}">
               <h4>${result.title}</h4>
               <p>${result.reference_code}</p>
+              <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
             </div>
           `).join('')}
         </div>

@@ -4,12 +4,12 @@ class DipSlugResolver extends HTMLElement {
     constructor() {
       super();
       this.attachShadow({ mode: 'open' });
-      this.files = [];
+      this.nodes = [];
       this.render();
     }
   
-    set fileList(files) {
-      this.files = files;
+    set nodes(nodes) {
+      this.nodes = nodes;
       this.render();
     }
   
@@ -102,7 +102,9 @@ class DipSlugResolver extends HTMLElement {
       this.shadowRoot.querySelectorAll('.link-button').forEach(button => {
         button.addEventListener('click', () => {
           console.log(`Add description for ${button.getAttribute('data-file')}`);
-          this.shadowRoot.appendChild(document.createElement("atom-search-interface"))
+          const searchInterface = document.createElement("atom-search-interface");
+          searchInterface.setNode(node);
+          this.shadowRoot.appendChild()
         });
       });
   

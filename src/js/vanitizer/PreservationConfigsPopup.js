@@ -185,9 +185,14 @@ function createCuratePopup(title, inputs) {
     modalContainer.style.display = 'flex';
 
 }
-function getPreservationConfigs() {
+async function getPreservationConfigs() {
     const url = `${window.location.origin}:6900/get_data`;
-    return fetch(url)
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+    return fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -202,13 +207,15 @@ function getPreservationConfigs() {
             console.error('Fetch error:', error);
         });
 }
-function setPreservationConfig(config) {
+async function setPreservationConfig(config) {
     const url = `${window.location.origin}:6900/set_data`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(config)
     })
@@ -225,13 +232,15 @@ function setPreservationConfig(config) {
             console.error('Fetch error:', error);
         });
 }
-function deletePreservationConfig(id) {
+async function deletePreservationConfig(id) {
     const url = `${window.location.origin}:6900/delete_data/${id}`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "DELETE",
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     })
         .then(response => {
