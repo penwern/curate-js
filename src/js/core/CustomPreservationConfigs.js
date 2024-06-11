@@ -422,6 +422,7 @@
             // Add document click listener to close modal when clicked off
             document.addEventListener("click", e => {
                 if (e.target === modalContainer) {
+                    console.log("modal closed")
                     modalContainer.remove()
                 }
                 
