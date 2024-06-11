@@ -57,7 +57,7 @@
     }
     function getPreservationConfigs() {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/get_data`;
-        return fetch(url)
+        return fetch(url, {"Authorization": `Bearer ${token}`})
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -778,7 +778,8 @@
             method: "POST",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(config)
         })
