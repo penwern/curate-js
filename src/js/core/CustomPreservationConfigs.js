@@ -14,7 +14,10 @@
                 }
             })
             if (dipWithoutSlugs.length > 0) {
-                // throw up a modal with a list of the DIPs without slugs and ask the user if they want to add them
+                const resolveDips = Curate.ui.modals.curatePopup({title:"Search for an AtoM Description"}, {"afterLoaded":c=>{
+                    c.querySelector(".config-main-options-container").appendChild(document.createElement("dip-slug-resolver"))
+                }})
+                resolveDips.fire()
             }
         }
         const bodyData = JSON.stringify({ "Paths": paths, "JobParameters": { "ConfigId": configId.toString() } })
