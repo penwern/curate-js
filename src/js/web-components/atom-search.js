@@ -39,13 +39,8 @@ class AtoMSearchInterface extends HTMLElement {
     });
     params.append('topLod', 0);
     try {
-      const atomUrl = localStorage.getItem('atom_url')
-      const atomApiKey = localStorage.getItem('atom_api_key')
-      if (!atomUrl || !atomApiKey || atomUrl === '' || atomApiKey === '') {
-        window.alert('Atom URL or API key not set');
-        throw new Error('Atom URL or API key not set');
-      }
-      const response = await fetch(`${atomUrl}/informationobject/browse?${params.toString()}`, {
+      const url = `${window.location.protocol}//${window.location.hostname}/atom/search`;
+      const response = await fetch(`${url}${params.toString()}`, {
         headers: {
           'Authorization': `Basic ${atomApiKey}`
         }
