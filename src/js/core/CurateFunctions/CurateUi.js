@@ -56,8 +56,7 @@ const CurateUi = {
                 closeButton.classList.add('config-modal-close-button');
                 closeButton.textContent = 'Close';
                 closeButton.addEventListener('click', e=>{
-                    console.log("closed here: ", container)
-                    closePopup.bind(null, container)
+                    closePopup(container)
                 });
 
         
