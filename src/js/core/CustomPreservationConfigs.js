@@ -856,7 +856,26 @@
     ];
 
     window.addEventListener("load", e => {
-        getPreservationConfigs()
+        (async function() {
+            const waitForGlobalVariable = (varName, interval = 50) => {
+              return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                  if (window[varName] !== undefined) {
+                    clearInterval(checkInterval);
+                    resolve(window[varName]);
+                  }
+                }, interval);
+              });
+            };
+          
+            try {
+              const glob = await waitForGlobalVariable('PydioApi');
+              getPreservationConfigs()
+            } catch (error) {
+              console.error('An error occurred:', error);
+            }
+          })();
+        
         setTimeout(() => {
             document.addEventListener("mousedown", e => {
                 if (document.querySelector('.context-menu [role="menu"]') && document.querySelector('.context-menu [role="menu"]').contains(e.target)) {
