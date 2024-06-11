@@ -55,7 +55,10 @@ const CurateUi = {
                 var closeButton = document.createElement('button');
                 closeButton.classList.add('config-modal-close-button');
                 closeButton.textContent = 'Close';
-                closeButton.addEventListener('click', closePopup.bind(null, container));
+                closeButton.addEventListener('click', e=>{
+                    console.log("closed here: ", container)
+                    closePopup.bind(null, container)
+                });
 
         
                 // Append elements to their respective parents
@@ -72,6 +75,7 @@ const CurateUi = {
                 afterLoaded(container);
         
                 function closePopup(container) {
+                    console.log("closed here: ", container)
                     container.remove();  
                     afterClosed();       
                 }
@@ -79,6 +83,7 @@ const CurateUi = {
         
                 function clickAway(e, container) {
                     if (e.target === container) {
+                        console.log("closed here: ", container)
                         closePopup(container);  // Calls closePopup specifically for this container
                     } else {
                         // Reattach the listener if the click wasn't on the container
