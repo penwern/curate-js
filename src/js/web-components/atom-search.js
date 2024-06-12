@@ -60,6 +60,7 @@ class AtoMSearchInterface extends HTMLElement {
     if (!this.node) {
       throw new Error('No node set');
     }
+    console.log("node to link to:", this.node);
     propMap.push({
       NodeUuid: this.node.Uuid,
       JsonValue: JSON.stringify(slug),
@@ -138,10 +139,6 @@ class AtoMSearchInterface extends HTMLElement {
           border-radius: 4px;
           background-color: #f9f9f9;
           margin-bottom: 10px;
-          cursor: pointer;
-        }
-        .result-item:hover {
-          background-color: #e0e0e0;
         }
         .glass {
           background: rgba(255, 255, 255, 0.2);
@@ -151,10 +148,11 @@ class AtoMSearchInterface extends HTMLElement {
           border: 1px solid rgba(255, 255, 255, 0.3);
           border-radius: 15px;
           padding: 20px;
-          max-width: 600px;
           color: #333;
           margin-bottom: 2em;
           text-align: left;
+          max-height: 25em;
+          overflow-y: scroll;
       }
       .info {
           margin-bottom: 2em;
