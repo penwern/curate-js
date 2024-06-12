@@ -18,9 +18,10 @@ if(selection.length <= 0){
     Curate.ui.modals.curatePopup({"title": "Connect Selected Nodes to AtoM Descriptions"},{
         "afterLoaded":(c)=>{
             const t = document.createElement("dip-slug-resolver")
-            t.querySelector(".message").innerHTML = "Connect each item in your selection to an AtoM description"
+            
             t.setNodes(selection)
             c.querySelector(".config-main-options-container").appendChild(t)
+            t.querySelector(".message").textContent = "Connect each item in your selection to an AtoM description"
         }
     }).fire()
 }
