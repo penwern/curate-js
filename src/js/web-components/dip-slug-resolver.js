@@ -88,10 +88,10 @@ class DipSlugResolver extends HTMLElement {
             The selected preservation configuration has DIP generation enabled. The following items do not have a linked AtoM description, which will cause DIP generation to fail.
           </div>
           <div class="file-list">
-            ${this.files.map(file => `
+            ${this.nodes.map(node => `
               <div class="file-item">
-                <span class="file-name">${file}</span>
-                <button class="link-button" data-file="${file}">Add Description</button>
+                <span class="file-name">${node._path}</span>
+                <button class="link-button" data-path="${node._path}">Add Description</button>
               </div>
             `).join('')}
           </div>
@@ -101,10 +101,10 @@ class DipSlugResolver extends HTMLElement {
   
       this.shadowRoot.querySelectorAll('.link-button').forEach(button => {
         button.addEventListener('click', () => {
-          console.log(`Add description for ${button.getAttribute('data-file')}`);
+          console.log(`Add description for ${button.getAttribute('data-path')}`);
           const searchInterface = document.createElement("atom-search-interface");
-          searchInterface.setNode(node);
-          this.shadowRoot.appendChild()
+          searchInterface.setNode(this.nodes.find(node => node._path == button.getAttribute('data-path')));
+          this.shadowRoot.appendChild(searchInterface)
         });
       });
   
