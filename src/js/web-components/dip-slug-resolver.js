@@ -115,10 +115,6 @@ class DipSlugResolver extends HTMLElement {
           }).fire()
         });
       });
-  
-      this.shadowRoot.querySelector('.continue-btn').addEventListener('click', () => {
-        console.log('Continue button clicked');
-      });
     }
   }
   
