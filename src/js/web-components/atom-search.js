@@ -46,7 +46,7 @@ class AtoMSearchInterface extends HTMLElement {
           'Authorization': `Bearer ${token}`
         }
       });
-      const results = await response.json().results;
+      const results = await response.json();
       console.log("retrieve results: ", results)
       this.results = results;
     } catch (error) {

@@ -102,9 +102,18 @@ class DipSlugResolver extends HTMLElement {
       this.shadowRoot.querySelectorAll('.link-button').forEach(button => {
         button.addEventListener('click', () => {
           console.log(`Add description for ${button.getAttribute('data-path')}`);
-          const searchInterface = document.createElement("atom-search-interface");
-          searchInterface.setNode(this.nodes.find(node => node._path == button.getAttribute('data-path')));
-          this.shadowRoot.appendChild(searchInterface)
+          Curate.ui.modals.curatePopup({"title": "Connect Selected Node to an AtoM Description"},{
+            "afterLoaded":(c)=>{
+                const t = document.createElement("atom-search-interface")
+                t.setNode(this.nodes.find(node => node._path == button.getAttribute('data-path')));
+                c.querySelector(".config-main-options-container").appendChild(t)
+            },
+            "afterClosed":()=>{
+                const linked = document.createElement("div")
+                linked.innerHTML = "<div class='linked-item'>Linked<span class='linked-item-name'></span></div>"
+                button.closest('.file-item').appendChild(linked)
+            }
+          }).fire()
         });
       });
   
