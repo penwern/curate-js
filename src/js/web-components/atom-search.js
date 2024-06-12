@@ -41,7 +41,7 @@ class AtoMSearchInterface extends HTMLElement {
     try {
       const url = `${window.location.protocol}//${window.location.hostname}/atom/search`;
       const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
-      const response = await fetch(`${url}${params.toString()}`, {
+      const response = await fetch(`${url}?${params.toString()}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -143,8 +143,30 @@ class AtoMSearchInterface extends HTMLElement {
         .result-item:hover {
           background-color: #e0e0e0;
         }
+        .info {
+          background: rgba(255, 255, 255, 0.2);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 15px;
+          padding: 20px;
+          max-width: 600px;
+          color: #333;
+          text-align: left;
+      }
+      .info p {
+          margin: 0 0 10px;
+      }
       </style>
       <div class="container">
+        <div class="info">
+          <p>This interface allows you to search for descriptions in your AtoM instance using a set of search criteria.</p>
+          <p>You can add as many search criteria as you like, and then perform a search to find descriptions that match your criteria.</p>
+          <p>Once you have found a description, you can link it to your selected node in Curate.</p>
+
+          <p>Please note: only the top-level linked description will be considered when associating your dissemination package with AtoM. For example, if you create an AIP from a folder containing multiple files, only the folder itself will be checked for a linked description. AtoM automatically links the sub-files or folders as child level descendants of the top-level linked description.</p>
+        </div>
         <div id="criteriaContainer">
           ${this.criteria.map((criterion, index) => `
             <div class="criterion">

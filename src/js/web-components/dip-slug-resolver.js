@@ -8,7 +8,7 @@ class DipSlugResolver extends HTMLElement {
       this.render();
     }
   
-    set nodes(nodes) {
+    setNodes(nodes) {
       this.nodes = nodes;
       this.render();
     }
