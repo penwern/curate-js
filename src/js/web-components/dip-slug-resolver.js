@@ -20,11 +20,8 @@ class DipSlugResolver extends HTMLElement {
             border: 1px solid #ccc;
             padding: 16px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background: #f9f9f9;
             max-width: 600px;
             margin: 0 auto;
-            font-family: Arial, sans-serif;
           }
           .header {
             font-size: 18px;
@@ -83,7 +80,6 @@ class DipSlugResolver extends HTMLElement {
           }
         </style>
         <div class="container">
-          <div class="header">DIP Generation Warning</div>
           <div class="message">
             The selected preservation configuration has DIP generation enabled. The following items do not have a linked AtoM description, which will cause DIP generation to fail.
           </div>
@@ -95,7 +91,6 @@ class DipSlugResolver extends HTMLElement {
               </div>
             `).join('')}
           </div>
-          <button class="continue-btn">Continue</button>
         </div>
       `;
   
@@ -107,11 +102,15 @@ class DipSlugResolver extends HTMLElement {
                 const t = document.createElement("atom-search-interface")
                 t.setNode(this.nodes.find(node => node._path == button.getAttribute('data-path')));
                 c.querySelector(".config-main-options-container").appendChild(t)
+                t.addEventListener('description-linked', (e) => {
+                    console.log('description linked');
+                    c.remove();
+                });
             },
             "afterClosed":()=>{
                 const linked = document.createElement("div")
-                linked.innerHTML = "<div class='linked-item'>Linked<span class='linked-item-name'></span></div>"
-                button.closest('.file-item').appendChild(linked)
+                linked.innerHTML = "<div class='linked-item'><span class='linked-item-name'>🔗</span></div>"
+                button.closest('.file-name').after(linked)
             }
           }).fire()
         });
