@@ -63,7 +63,7 @@ class AtoMSearchInterface extends HTMLElement {
     console.log("node to link to:", this.node);
     propMap.push({
       NodeUuid: this.node._metadata.get('uuid'),
-      JsonValue: slug,
+      JsonValue: JSON.stringify(slug),
       Namespace: "usermeta-atom-linked-description",
       Policies: [
         {
