@@ -62,8 +62,8 @@ class AtoMSearchInterface extends HTMLElement {
     }
     console.log("node to link to:", this.node);
     propMap.push({
-      NodeUuid: this.node.Uuid,
-      JsonValue: JSON.stringify(slug),
+      NodeUuid: this.node._metadata.get('uuid'),
+      JsonValue: slug,
       Namespace: "usermeta-atom-linked-description",
       Policies: [
         {
@@ -79,7 +79,6 @@ class AtoMSearchInterface extends HTMLElement {
       ]
     });
     Curate.api.fetchCurate("/a/user-meta/update", "PUT", { MetaDatas: propMap, Operation: "PUT" });
-    // Perform desired action with the slug, such as navigating to a different page or displaying more details
   }
 
   render() {
