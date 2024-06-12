@@ -110,7 +110,8 @@ class DipSlugResolver extends HTMLElement {
             "afterClosed":()=>{
                 const linked = document.createElement("div")
                 linked.innerHTML = "<div class='linked-item'><span class='linked-item-name'>🔗</span></div>"
-                button.closest('.file-name').after(linked)
+                button.parentElement.querySelector('.file-name').after(linked)
+                //button.closest('.file-name').after(linked)
             }
           }).fire()
         });
