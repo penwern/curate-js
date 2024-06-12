@@ -6,16 +6,13 @@
             slug: n._metadata.get("usermeta-atom-linked-description") || ""
         }));
         const config = JSON.parse(sessionStorage.getItem("preservationConfigs")).find(obj => obj.id == configId)
-        if (config["dip_enabled"] === true) {
-            const dipWithoutSlugs = [];
-            paths.forEach(path => {
-                if (!path.slug || path.slug === ""){
-                    dipWithoutSlugs.push(paths[slugs.indexOf(slug)])
-                }
-            })
-            if (dipWithoutSlugs.length > 0) {
+        if (config["dip_enabled"] == 1) {
+            const dipWithoutSlugs = pydio._dataModel._selectedNodes.filter(n=>!n._metadata.get("usermeta-atom-linked-description"))
+            if (dipWithoutSlugs?.length > 0) {
                 const resolveDips = Curate.ui.modals.curatePopup({title:"Search for an AtoM Description"}, {"afterLoaded":c=>{
-                    c.querySelector(".config-main-options-container").appendChild(document.createElement("dip-slug-resolver"))
+                    const s = document.createElement("dip-slug-resolver")
+                    c.querySelector(".config-main-options-container").appendChild(s)
+                    s.setNodes(dipWithoutSlugs)
                 }})
                 resolveDips.fire()
             }
