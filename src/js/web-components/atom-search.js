@@ -47,6 +47,7 @@ class AtoMSearchInterface extends HTMLElement {
         }
       });
       const results = await response.json().results;
+      console.log("retrieve results: ", results)
       this.results = results;
     } catch (error) {
       console.error('Error performing search:', error);
