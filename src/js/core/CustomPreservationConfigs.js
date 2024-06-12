@@ -6,6 +6,7 @@
             slug: n._metadata.get("usermeta-atom-linked-description") || ""
         }));
         const config = JSON.parse(sessionStorage.getItem("preservationConfigs")).find(obj => obj.id == configId)
+        console.log("here's tha config boiiiiii", config)
         if (config["dip_enabled"] == 1) {
             const dipWithoutSlugs = pydio._dataModel._selectedNodes.filter(n=>!n._metadata.get("usermeta-atom-linked-description"))
             if (dipWithoutSlugs?.length > 0) {
