@@ -8,6 +8,7 @@ import '../js/core/tourModifier.js';
 import '../js/core/ChecksumValidation.js';
 import '../js/web-components/atom-search.js';
 import '../js/web-components/atom-connector.js';
+import '../js/web-components/dip-slug-resolver.js';
 //import './deprecated/UploadChecksumGenerator.js';
 import '../js/core/PermissionEnforcers.js'
 import '../js/external/ExternalScripts.js';

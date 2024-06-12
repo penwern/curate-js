@@ -114,5 +114,5 @@ class DipSlugResolver extends HTMLElement {
     }
   }
   
-  customElements.define('dip-slug-resolver', FileSelector);
+  customElements.define('dip-slug-resolver', DipSlugResolver);
   
