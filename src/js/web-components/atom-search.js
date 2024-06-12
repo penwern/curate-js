@@ -39,7 +39,7 @@ class AtoMSearchInterface extends HTMLElement {
     });
     params.append('topLod', 0);
     try {
-      const url = `${window.location.protocol}//${window.location.hostname}/atom/search`;
+      const url = `${window.location.protocol}//${window.location.hostname}:6900/atom/search`;
       const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
       const response = await fetch(`${url}?${params.toString()}`, {
         headers: {
