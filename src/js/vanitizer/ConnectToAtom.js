@@ -1,25 +1,7 @@
-const selection = pydio._dataModel._selectedNodes
-if(selection.length <= 0){
-    Curate.ui.modals.curatePopup({"title": "Select a node to connect to your AtoM instance"},{   
-        "afterLoaded":(c)=>{
-            c.querySelector(".config-main-options-container").innerHTML = "<p>Please select a node to connect to your AtoM instance</p>"
-        }
-    }).fire()
-}else if(selection.length == 1){
-    const node = selection[0]
-    Curate.ui.modals.curatePopup({"title": "Connect Selected Node to an AtoM Description"},{
-        "afterLoaded":(c)=>{
-            const t = document.createElement("atom-search-interface")
-            t.setNode(node)
-            c.querySelector(".config-main-options-container").appendChild(t)
-        }
-    }).fire()
-}else{
-    Curate.ui.modals.curatePopup({"title": "Connect Selected Nodes to AtoM Descriptions"},{
-        "afterLoaded":(c)=>{
-            const t = document.createElement("dip-slug-resolver")
-            t.setNodes(selection)
-            c.querySelector(".config-main-options-container").appendChild(t)
-        }
-    }).fire()
-}
+const p = Curate.ui.modals.curatePopup({"title": "Connect to Your AtoM Instance"},{
+    "afterLoaded":(c)=>{
+        const t = document.createElement("connect-to-atom")
+        c.querySelector(".config-main-options-container").appendChild(t)
+    }
+})
+p.fire()
