@@ -81,7 +81,7 @@ class AtoMSearchInterface extends HTMLElement {
     });
     Curate.api.fetchCurate("/a/user-meta/update", "PUT", { MetaDatas: propMap, Operation: "PUT" });
     this.dispatchEvent(new CustomEvent('description-linked', { detail: slug }));
-    //this.remove()
+    this.remove()
   }
 
   render() {

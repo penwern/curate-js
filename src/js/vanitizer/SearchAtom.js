@@ -7,13 +7,13 @@ if(selection.length <= 0){
     }).fire()
 }else if(selection.length == 1){
     const node = selection[0]
-    const p = Curate.ui.modals.curatePopup({"title": "Connect Selected Node to an AtoM Description"},{
+    Curate.ui.modals.curatePopup({"title": "Connect Selected Node to an AtoM Description"},{
         "afterLoaded":(c)=>{
             const t = document.createElement("atom-search-interface")
             t.setNode(node)
             c.querySelector(".config-main-options-container").appendChild(t)
             t.addEventListener('description-linked', (e) => {
-                p.remove()
+                c.remove()
             })
         }
     }).fire()
@@ -24,7 +24,7 @@ if(selection.length <= 0){
             
             t.setNodes(selection)
             c.querySelector(".config-main-options-container").appendChild(t)
-            t.querySelector(".message").textContent = "Connect each item in your selection to an AtoM description"
+            t.shadowRoot.querySelector(".message").textContent = "Connect each item in your selection to an AtoM description"
         }
     }).fire()
 }

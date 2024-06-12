@@ -74,7 +74,6 @@ const CurateUi = {
                 afterLoaded(container);
         
                 function closePopup(container) {
-                    console.log("closed here: ", container)
                     container.remove();  
                     afterClosed();       
                 }
