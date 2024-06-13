@@ -28,8 +28,7 @@ function createPresignedDownloadUrl(path) {
 PydioApi.getRestClient().getOrUpdateJwt().then(jwt => {
     var paths = pydio._dataModel._selectedNodes.map(node => Curate.workspaces.getOpenWorkspace() + node._path);
     var uploadData = {}; // Array to aggregate data from Promise.all
-    uploadData.Children = []
-    // Promises array to track all fetchCurate Promises
+    uploadData.Children = [] // Promises array to track all fetchCurate Promises
     var fetchPromises = paths.map(path => {
         return Curate.api.fetchCurate("/a/tree/admin/list", "POST", {
             Node: {

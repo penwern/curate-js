@@ -108,6 +108,7 @@ class DipSlugResolver extends HTMLElement {
                     const linked = document.createElement("div")
                     linked.innerHTML = "<div class='linked-item'><span class='linked-item-name'>🔗</span></div>"
                     button.parentElement.querySelector('.file-name').after(linked)
+                    button.ariaDisabled = true;
                 });
             },
             "afterClosed":()=>{

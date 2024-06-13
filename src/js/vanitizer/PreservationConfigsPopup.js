@@ -88,7 +88,7 @@ function createCuratePopup(title, inputs) {
         const curConfig = {}
         const matchingObj = curConfigs.find(obj => obj.name == saveName);
         if (matchingObj) {
-            curConfig["id"] = matchingObj.id;
+            curConfig["id"] = matchingObj.id; // we're editing an already saved config
         } else {
             curConfig["user"] = pydio.user.id //created user is this one
         }
@@ -121,7 +121,10 @@ function createCuratePopup(title, inputs) {
                 }
             }
         })
-        setPreservationConfig(curConfig)
+        if (matchingObj){ //edit existing config
+            editPreservationConfig(curConfig)
+        }else{
+            setPreservationConfig(curConfig) //save new config
             .then(r => {
                 if (r) {
                     const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
@@ -138,6 +141,8 @@ function createCuratePopup(title, inputs) {
                         })
                 }
             })
+        }
+
     })
     optionsContainer.appendChild(saveConfig)
     mainOptionsContainer.appendChild(optionsContainer)
@@ -186,9 +191,10 @@ function createCuratePopup(title, inputs) {
 
 }
 async function getPreservationConfigs() {
-    const url = `${window.location.origin}:6900/get_data`;
+    const url = `${window.location.origin}:6900/preservation`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
+        method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -207,8 +213,8 @@ async function getPreservationConfigs() {
             console.error('Fetch error:', error);
         });
 }
-async function setPreservationConfig(config) {
-    const url = `${window.location.origin}:6900/set_data`;
+async function editPreservationConfig(config) {
+    const url = `${window.location.origin}:6900/preservation/${config.id}`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
@@ -221,7 +227,32 @@ async function setPreservationConfig(config) {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error while updating config, Status: ${response.status}`);
+            }else if (response.status == 200) {
+                //save configs to session
+                console.info("config saved successfully")
+                return response.json();
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+async function setPreservationConfig(config) {
+    const url = `${window.location.origin}:6900/preservation`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+    return fetch(url, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(config)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error while creating config, Status: ${response.status}`);
             } else if (response.status == 200) {
                 //save configs to session
                 console.info("config saved successfully")
@@ -233,7 +264,7 @@ async function setPreservationConfig(config) {
         });
 }
 async function deletePreservationConfig(id) {
-    const url = `${window.location.origin}:6900/delete_data/${id}`;
+    const url = `${window.location.origin}:6900/preservation/${id}`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "DELETE",
