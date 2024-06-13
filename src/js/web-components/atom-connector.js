@@ -56,6 +56,7 @@ class ConnectToAtom extends HTMLElement {
         <style>
           .container {
             max-width: 500px;
+            min-width: 30em;
             margin: 0 auto;
             padding: 20px;
           }
