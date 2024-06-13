@@ -21,6 +21,7 @@ class DipSlugResolver extends HTMLElement {
             padding: 16px;
             border-radius: 8px;
             max-width: 600px;
+            width:30em;
             margin: 0 auto;
           }
           .header {

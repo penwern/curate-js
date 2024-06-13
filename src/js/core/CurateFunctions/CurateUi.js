@@ -69,6 +69,11 @@ const CurateUi = {
         
                 // Append the container to the document body or any other desired parent element
                 document.body.appendChild(container);
+
+                // Add keystroke event listener that stops propagation of key events to the main UI to prevent triggering quick actions
+                container.addEventListener("keydown", function (e) {
+                    e.stopPropagation();
+                });
         
                 // Call afterLoaded callback with the created popup
                 afterLoaded(container);
