@@ -8,7 +8,7 @@ class ConnectToAtom extends HTMLElement {
       this.retrieveDetails();
     }
     retrieveDetails() {
-      Curate.api.fetchCurate('/atom/config', 'GET')
+      Curate.api.fetchCurate(':6900/atom', 'GET')
       .then(response => {
         this.apiKey = response.apiKey;
         this.atomUrl = response.atomUrl;
