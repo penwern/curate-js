@@ -507,6 +507,8 @@ line {
   width:80%;
   display:flex;
   margin:auto !important;
+  margin-top: 1em;
+  position:relative;
   justify-content:space-around;
 }
 .config-popup-title {

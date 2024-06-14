@@ -183,7 +183,7 @@ class AtoMSearchInterface extends HTMLElement {
         align-items: center;
       }
       .accordion-header::after {
-        content: "\F0142";
+        content: "\F0142"; /* chevron-down */
         margin-left: auto;
         transition: transform 0.2s;
       }
@@ -204,8 +204,8 @@ class AtoMSearchInterface extends HTMLElement {
       }
       </style>
       <div class="accordion">
-        <div class="accordion-header collapsed" onclick="toggleAccordion(this)">
-          <i class="fas fa-exclamation-triangle"></i> Warning: Click to view essential information
+        <div class="accordion-header collapsed" onclick="this.getRootNode().host.toggleAccordion(this)">
+          <i class="mdi mdi-information-outline"></i> Warning: Click to view essential information
         </div>
         <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
           <div class="info">
