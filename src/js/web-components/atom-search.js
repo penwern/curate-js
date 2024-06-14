@@ -83,6 +83,17 @@ class AtoMSearchInterface extends HTMLElement {
     this.dispatchEvent(new CustomEvent('description-linked', { detail: slug }));
     this.remove()
   }
+  toggleAccordion(header) {
+    header.classList.toggle('collapsed');
+    const body = header.nextElementSibling;
+    if (body.classList.contains('show')) {
+      body.classList.remove('show');
+      localStorage.setItem('accordionState', 'true');
+    } else {
+      body.classList.add('show');
+      localStorage.setItem('accordionState', 'false');
+    }
+  }
 
   render() {
     this.shadowRoot.innerHTML = `
@@ -159,17 +170,54 @@ class AtoMSearchInterface extends HTMLElement {
       .info {
           margin-bottom: 2em;
       }
+      .accordion {
+        margin: 10px 0;
+      }
+      .accordion-header {
+        cursor: pointer;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+      }
+      .accordion-header::after {
+        content: "\F0142";
+        margin-left: auto;
+        transition: transform 0.2s;
+      }
+      .accordion-header.collapsed::after {
+        transform: rotate(-90deg);
+      }
+      .accordion-body {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-top: none;
+        display: none;
+      }
+      .accordion-body.show {
+        display: block;
+      }
+      .accordion-header i {
+        margin-right: 10px;
+      }
       </style>
-      <div class="container">
-        <div class="info">
-          <p>This interface allows you to search for descriptions in your AtoM instance using a set of search criteria.</p>
-          <p>You can add as many search criteria as you like, and then perform a search to find descriptions that match your criteria.</p>
-          <p>Once you have found a description, you can link it to your selected node in Curate.</p>
-
-          <p>Please note: only the top-level linked description will be considered when associating your dissemination package with AtoM.</p>
-          <p>For example, if you create an AIP from a folder containing multiple files, only the folder itself will be checked for a linked description.</p>
-          <p>AtoM automatically links the sub-files or folders as child level descendants of the top-level linked description.</p>
+      <div class="accordion">
+        <div class="accordion-header collapsed" onclick="toggleAccordion(this)">
+          <i class="fas fa-exclamation-triangle"></i> Warning: Click to view essential information
         </div>
+        <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
+          <div class="info">
+            <p>This interface allows you to search for descriptions in your AtoM instance using a set of search criteria.</p>
+            <p>You can add as many search criteria as you like, and then perform a search to find descriptions that match your criteria.</p>
+            <p>Once you have found a description, you can link it to your selected node in Curate.</p>
+            <p>Please note: only the top-level linked description will be considered when associating your dissemination package with AtoM.</p>
+            <p>For example, if you create an AIP from a folder containing multiple files, only the folder itself will be checked for a linked description.</p>
+            <p>AtoM automatically links the sub-files or folders as child level descendants of the top-level linked description.</p>
+          </div>
+        </div>
+      </div>
         <div class="glass">
           <div id="criteriaContainer">
             ${this.criteria.map((criterion, index) => `

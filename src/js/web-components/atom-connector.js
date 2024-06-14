@@ -99,7 +99,7 @@ class ConnectToAtom extends HTMLElement {
             margin-top: 20px;
             margin-bottom: 20px;
             padding: 15px;
-            background-color: #f2f2f2;
+            background-color: var(--md-sys-color-inverse-on-surface);
             border-radius: 4px;
           }
           .current-details {
