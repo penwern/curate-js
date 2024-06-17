@@ -8,7 +8,7 @@ class ConnectToAtom extends HTMLElement {
       this.retrieveDetails();
     }
     retrieveDetails() {
-      Curate.api.fetchCurate('/atom/config', 'GET')
+      Curate.api.fetchCurate(':6900/atom', 'GET')
       .then(response => {
         this.apiKey = response.apiKey;
         this.atomUrl = response.atomUrl;
@@ -56,6 +56,7 @@ class ConnectToAtom extends HTMLElement {
         <style>
           .container {
             max-width: 500px;
+            min-width: 30em;
             margin: 0 auto;
             padding: 20px;
           }
@@ -98,7 +99,7 @@ class ConnectToAtom extends HTMLElement {
             margin-top: 20px;
             margin-bottom: 20px;
             padding: 15px;
-            background-color: #f2f2f2;
+            background-color: var(--md-sys-color-inverse-on-surface);
             border-radius: 4px;
           }
           .current-details {

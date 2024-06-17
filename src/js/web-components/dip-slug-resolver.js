@@ -21,6 +21,7 @@ class DipSlugResolver extends HTMLElement {
             padding: 16px;
             border-radius: 8px;
             max-width: 600px;
+            width:30em;
             margin: 0 auto;
           }
           .header {
@@ -108,6 +109,7 @@ class DipSlugResolver extends HTMLElement {
                     const linked = document.createElement("div")
                     linked.innerHTML = "<div class='linked-item'><span class='linked-item-name'>🔗</span></div>"
                     button.parentElement.querySelector('.file-name').after(linked)
+                    button.ariaDisabled = true;
                 });
             },
             "afterClosed":()=>{
