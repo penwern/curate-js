@@ -1,4 +1,3 @@
-import "@iconify/iconify"
 class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
@@ -184,14 +183,6 @@ class AtoMSearchInterface extends HTMLElement {
         display: flex;
         align-items: center;
       }
-      .accordion-header::after {
-        content: "v"; 
-        margin-left: auto;
-        transition: transform 0.2s;
-      }
-      .accordion-header.collapsed::after {
-        transform: rotate(-90deg);
-      }
       .accordion-body {
         padding: 10px;
         border: 1px solid #ddd;
@@ -207,7 +198,7 @@ class AtoMSearchInterface extends HTMLElement {
       </style>
       <div class="accordion">
         <div class="accordion-header collapsed" onclick="this.getRootNode().host.toggleAccordion(this)">
-          <iconify-icon icon="mdi:home"></iconify-icon> Warning: Click to view essential information
+          Warning: Click to view essential information
         </div>
         <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
           <div class="info">
