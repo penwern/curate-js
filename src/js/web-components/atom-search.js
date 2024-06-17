@@ -162,6 +162,7 @@ class AtoMSearchInterface extends HTMLElement {
           border-radius: 15px;
           padding: 20px;
           color: #333;
+          min-width: 60vw;
           margin-bottom: 2em;
           text-align: left;
           max-height: 25em;
@@ -183,7 +184,7 @@ class AtoMSearchInterface extends HTMLElement {
         align-items: center;
       }
       .accordion-header::after {
-        content: "\F0142"; /* chevron-down */
+        content: "V"; 
         margin-left: auto;
         transition: transform 0.2s;
       }
