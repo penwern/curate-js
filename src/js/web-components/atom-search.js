@@ -1,3 +1,4 @@
+import "@iconify/iconify"
 class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
