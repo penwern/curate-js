@@ -1,14 +1,11 @@
 class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: 'open' });
     this.criteria = [{ id: 0, query: '', field: '', operator: '' }];
     this.results = [];
     this.criterionIndex = 1;
     this.node = null;
-    // this.attachShadow({ mode: 'open' });
-  }
-  connectedCallback() {
-
     this.render();
   }
   setNode(node) {
@@ -99,7 +96,7 @@ class AtoMSearchInterface extends HTMLElement {
   }
 
   render() {
-    this.innerHTML = `
+    this.shadowRoot.innerHTML = `
       <style>
         .container {
           margin: 20px auto;
@@ -187,7 +184,7 @@ class AtoMSearchInterface extends HTMLElement {
         align-items: center;
       }
       .accordion-header::after {
-        content: "\F0140";
+        content: "v"; 
         margin-left: auto;
         transition: transform 0.2s;
       }
@@ -208,8 +205,8 @@ class AtoMSearchInterface extends HTMLElement {
       }
       </style>
       <div class="accordion">
-        <div class="accordion-header collapsed" onclick="this.toggleAccordion(this)">
-          <i class="mdi mdi-information-outline"></i> Warning: Click to view essential information
+        <div class="accordion-header collapsed" onclick="this.getRootNode().host.toggleAccordion(this)">
+          <iconify-icon icon="mdi:home"></iconify-icon> Warning: Click to view essential information
         </div>
         <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
           <div class="info">
@@ -227,14 +224,14 @@ class AtoMSearchInterface extends HTMLElement {
             ${this.criteria.map((criterion, index) => `
               <div class="criterion">
                 ${index > 0 ? `
-                  <select class="select" value="${criterion.operator}" onchange="this.handleInputChange(${criterion.id}, 'operator', this.value)">
+                  <select class="select" value="${criterion.operator}" onchange="this.getRootNode().host.handleInputChange(${criterion.id}, 'operator', this.value)">
                     <option value="and" ${criterion.operator === 'and' ? 'selected' : ''}>and</option>
                     <option value="or" ${criterion.operator === 'or' ? 'selected' : ''}>or</option>
                     <option value="not" ${criterion.operator === 'not' ? 'selected' : ''}>not</option>
                   </select>
                 ` : ''}
-                <input type="text" class="input" value="${criterion.query}" placeholder="Search query" onchange="this.handleInputChange(${criterion.id}, 'query', this.value)">
-                <select class="select" value="${criterion.field}" onchange="this.handleInputChange(${criterion.id}, 'field', this.value)">
+                <input type="text" class="input" value="${criterion.query}" placeholder="Search query" onchange="this.getRootNode().host.handleInputChange(${criterion.id}, 'query', this.value)">
+                <select class="select" value="${criterion.field}" onchange="this.getRootNode().host.handleInputChange(${criterion.id}, 'field', this.value)">
                   <option value="">Any field</option>
                   <option value="title" ${criterion.field === 'title' ? 'selected' : ''}>Title</option>
                   <option value="archivalHistory" ${criterion.field === 'archivalHistory' ? 'selected' : ''}>Archival history</option>
@@ -251,19 +248,19 @@ class AtoMSearchInterface extends HTMLElement {
                   <option value="findingAidTranscript" ${criterion.field === 'findingAidTranscript' ? 'selected' : ''}>Finding aid text</option>
                   <option value="allExceptFindingAidTranscript" ${criterion.field === 'allExceptFindingAidTranscript' ? 'selected' : ''}>Any field except finding aid text</option>
                 </select>
-                <button type="button" class="remove-button" style="${criterion.id === 0 ? 'display:none;' : ''}" onclick="this.removeCriterion(${criterion.id})">Remove</button>
+                <button type="button" class="remove-button" style="${criterion.id === 0 ? 'display:none;' : ''}" onclick="this.getRootNode().host.removeCriterion(${criterion.id})">Remove</button>
               </div>
             `).join('')}
           </div>
-          <button type="button" class="button" onclick="this.addCriterion()">Add Another Criterion</button>
-          <button type="button" class="button" onclick="this.performSearch()">Search</button>
+          <button type="button" class="button" onclick="this.getRootNode().host.addCriterion()">Add Another Criterion</button>
+          <button type="button" class="button" onclick="this.getRootNode().host.performSearch()">Search</button>
 
           <div id="results" class="results">
             ${this.results.length === 0 ? `<p>No results found.</p>` : this.results.map(result => `
               <div class="result-item" data-slug="${result.slug}">
                 <h4>${result.title}</h4>
                 <p>${result.reference_code}</p>
-                <button type="button" class="button" onclick="this.handleResultClick('${result.slug}')">Link to this result</button>
+                <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
               </div>
             `).join('')}
           </div>
