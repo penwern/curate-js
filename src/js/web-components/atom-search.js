@@ -96,7 +96,7 @@ class AtoMSearchInterface extends HTMLElement {
   }
 
   render() {
-    this.shadowRoot.innerHTML = `
+    this.innerHTML = `
       <style>
         .container {
           margin: 20px auto;
