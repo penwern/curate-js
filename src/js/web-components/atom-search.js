@@ -2,6 +2,8 @@ class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
     // this.attachShadow({ mode: 'open' });
+  }
+  connectedCallback() {
     this.criteria = [{ id: 0, query: '', field: '', operator: '' }];
     this.results = [];
     this.criterionIndex = 1;
