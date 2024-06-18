@@ -514,6 +514,8 @@ line {
 .config-popup-title {
   width:70%;
   text-align: center;
+  position: relative;
+  margin-top: 1em !important;
 }
 /* Stylish Toggle Switch Styles */
 .tgl {

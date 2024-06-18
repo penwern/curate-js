@@ -95,7 +95,6 @@ class ConnectToAtom extends HTMLElement {
        .container {
           max-width: 500px;
           min-width: 30em;
-          margin: 40px auto;
           padding: 20px;
           font-family: 'Roboto', sans-serif;
         }
@@ -181,7 +180,6 @@ class ConnectToAtom extends HTMLElement {
         }
       </style>
       <div class="container">
-        <div class="heading">Connect to AtoM</div>
         <div class="details-display">
           <div class="detail-item">
             <span class="label">Current API Key:</span>
