@@ -1,6 +1,6 @@
 const selection = pydio._dataModel._selectedNodes
 if(selection.length <= 0){
-    Curate.ui.modals.curatePopup({"title": "Select a node to connect to your AtoM instance"},{   
+    Curate.ui.modals.curatePopup({"title": "Invalid Selection"},{   
         "afterLoaded":(c)=>{
             c.querySelector(".config-main-options-container").innerHTML = "<p>Please select a node to connect to your AtoM instance</p>"
         }

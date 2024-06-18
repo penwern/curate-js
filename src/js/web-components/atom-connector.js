@@ -95,8 +95,6 @@ class ConnectToAtom extends HTMLElement {
        .container {
           max-width: 500px;
           min-width: 30em;
-          padding: 20px;
-          font-family: 'Roboto', sans-serif;
         }
         .heading {
           text-align: center;
