@@ -7,8 +7,10 @@ const getMetaItem = (item) => {
 }
 
 const removeRows = () => {
-    const info = Array.from(document.querySelectorAll(".panelCard")).find(c=>c.textContent.includes("File Info"));
-    if (!info.querySelector(".panelContent")) info.querySelector("#curateAdditionalInfo")?.remove();
+    document.querySelectorAll(".panelCard") // get all panelCards
+        .find(c => c.textContent.includes("File Info")) // find fileInfoPanel
+        ?.querySelector("#curateAdditionalInfo") // if fileInfoPanel exists, get #curateAdditionalInfo
+        ?.remove(); // if curateAdditionalInfo exists, remove it
 }
 
 const getQuarantineStatus = (scan, scan2) => {
