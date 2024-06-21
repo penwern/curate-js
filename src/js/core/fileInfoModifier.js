@@ -122,7 +122,10 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
                     }
                     console.log("adding the ting")
                     fileInfoPanel.firstElementChild.addEventListener("click", e => {
-                        console.log("click")
+                        console.log("click: ", fileInfoPanel)
+                        console.log("click: ", fileInfoPanel.querySelector(".mdi"))
+                        console.log("click: ", fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up"))
+                        console.log("click: ", fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down"))
                         if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")) {
                             console.log("up")
                             fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
