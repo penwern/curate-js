@@ -55,8 +55,8 @@ function addFileInfo(fileInfoPanel) {
         newRows.style.marginTop = "-11px"
         newRows.id = "curateAdditionalInfo"
         let newinfodivPronom = genNewRow("Pronom ID", pid)
-        let newinfodivScan = genNewRow("First virus scan result", scan)
-        let newinfodivScan2 = genNewRow("Second virus scan result", scan2)
+        let newinfodivScan = genNewRow("First virus scan result", scans[0])
+        let newinfodivScan2 = genNewRow("Second virus scan result", scans[1])
         let newinfodivMime = genNewRow("Mimetype", mime)
         let newinfodivStatus = genNewRow("Status", status)
         
