@@ -120,10 +120,14 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
                     if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
                         pydio._dataModel.observe("selection_changed", e => { selectHandler(e) })
                     }
+                    console.log("adding the ting")
                     fileInfoPanel.firstElementChild.addEventListener("click", e => {
+                        console.log("click")
                         if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-up")) {
+                            console.log("up")
                             fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
                         } else if (fileInfoPanel.querySelector(".mdi").classList.contains("mdi-chevron-down")) {
+                            console.log("down")
                             addFileInfo(fileInfoPanel)
                         }
                     })
