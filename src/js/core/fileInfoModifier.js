@@ -44,11 +44,12 @@ const genNewRow = (label, value) => {
 };
 
 function addFileInfo(fileInfoPanel) {
+    // aggressive nullish coalescing to avoid errors since seigfried info is not always present
     var pid = getMetaItem("files")?.[0]?.matches?.[0]?.id ?? "File has not been characterised";
     var scans = ["usermeta-virus-scan-first", "usermeta-virus-scan-second"].map(item => getMetaItem(item) || 'File has not been scanned');
     var tag = getMetaItem("etag")
     var mime = getMetaItem("mime")
-    var status = getQuarantineStatus([...scans])
+    var status = getQuarantineStatus(...scans)
     setTimeout(function () {
         let newRows = document.createElement("div")
         newRows.style.marginTop = "-11px"
