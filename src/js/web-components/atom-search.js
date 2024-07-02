@@ -255,7 +255,7 @@ class AtoMSearchInterface extends HTMLElement {
               <path d="M9 6L15 12L9 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>  
-          Warning: Click to view essential information
+          Warning: Click to succ deez nutz view essential information
         </div>
         <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
           <div class="info">
