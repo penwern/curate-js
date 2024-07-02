@@ -325,4 +325,4 @@ class AtoMSearchInterface extends HTMLElement {
   }
 }
 
-customElements.define('atom-search-interface1', AtoMSearchInterface);
+customElements.define('atom-search-interface', AtoMSearchInterface);
