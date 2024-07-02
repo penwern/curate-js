@@ -7,7 +7,7 @@ const getMetaItem = (item) => {
 }
 
 const removeRows = () => {
-    document.querySelectorAll(".panelCard") // get all panelCards
+    Array.from(document.querySelectorAll(".panelCard")) // get all panelCards
         .find(c => c.textContent.includes("File Info")) // find fileInfoPanel
         ?.querySelector("#curateAdditionalInfo") // if fileInfoPanel exists, get #curateAdditionalInfo
         ?.remove(); // if curateAdditionalInfo exists, remove it
@@ -120,14 +120,10 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
                     if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
                         pydio._dataModel.observe("selection_changed", e => { selectHandler(e) })
                     }
-                    console.log("adding the ting")
                     fileInfoPanel.firstElementChild.addEventListener("click", e => {
-                        console.log("click: ", fileInfoPanel)
                         if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-up")) {
-                            console.log("up")
                             fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
                         } else if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-down")) {
-                            console.log("down")
                             addFileInfo(fileInfoPanel)
                         }
                     })

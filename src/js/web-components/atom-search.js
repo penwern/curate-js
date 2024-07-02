@@ -6,6 +6,8 @@ class AtoMSearchInterface extends HTMLElement {
     this.results = [];
     this.criterionIndex = 1;
     this.node = null;
+    this.error = null;
+    this.isLoading = false;
     this.render();
   }
   setNode(node) {
@@ -29,6 +31,10 @@ class AtoMSearchInterface extends HTMLElement {
   }
 
   async performSearch() {
+    this.isLoading = true;
+    this.error = null;
+    this.render();
+
     const params = new URLSearchParams();
     this.criteria.forEach((criterion, index) => {
       if (index > 0) {
@@ -46,13 +52,19 @@ class AtoMSearchInterface extends HTMLElement {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const results = await response.json();
-      console.log("retrieve results: ", results)
+      console.log("retrieve results: ", results);
       this.results = results.results;
     } catch (error) {
       console.error('Error performing search:', error);
+      this.error = `An error occurred while searching: ${error.message}`;
+    } finally {
+      this.isLoading = false;
+      this.render();
     }
-    this.render();
   }
 
   handleResultClick(slug) {
@@ -86,14 +98,19 @@ class AtoMSearchInterface extends HTMLElement {
   toggleAccordion(header) {
     header.classList.toggle('collapsed');
     const body = header.nextElementSibling;
+    const icon = header.querySelector('.chevron'); // Assuming the icon has class 'chevron'
+    
     if (body.classList.contains('show')) {
-      body.classList.remove('show');
-      localStorage.setItem('accordionState', 'true');
+        body.classList.remove('show');
+        icon.classList.remove('down'); // Rotate the icon to the default rightwards position
+        localStorage.setItem('accordionState', 'true');
     } else {
-      body.classList.add('show');
-      localStorage.setItem('accordionState', 'false');
+        body.classList.add('show');
+        icon.classList.add('down'); // Rotate the icon to face downwards
+        localStorage.setItem('accordionState', 'false');
     }
   }
+
 
   render() {
     this.shadowRoot.innerHTML = `
@@ -107,6 +124,12 @@ class AtoMSearchInterface extends HTMLElement {
           font-size: 24px;
           color: #333333;
           margin-bottom: 20px;
+        }
+        .chevron {
+          transition: transform 0.3s ease;
+        }
+        .chevron.down {
+            transform: rotate(90deg);
         }
         .criterion {
           display: flex;
@@ -167,37 +190,71 @@ class AtoMSearchInterface extends HTMLElement {
           text-align: left;
           max-height: 25em;
           overflow-y: scroll;
-      }
-      .info {
-          margin-bottom: 2em;
-      }
-      .accordion {
-        margin: 10px 0;
-      }
-      .accordion-header {
-        cursor: pointer;
-        padding: 10px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-      }
-      .accordion-body {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-top: none;
-        display: none;
-      }
-      .accordion-body.show {
-        display: block;
-      }
-      .accordion-header i {
-        margin-right: 10px;
-      }
+        }
+        .info {
+            margin-bottom: 2em;
+        }
+        .accordion {
+          margin: 10px 0;
+        }
+        .accordion-header {
+          cursor: pointer;
+          padding: 10px;
+          background-color: #f8f9fa;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+        }
+        .accordion-body {
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-top: none;
+          display: none;
+        }
+        .accordion-body.show {
+          display: block;
+        }
+        .accordion-header i {
+          margin-right: 10px;
+        }
+        .error-message {
+          background-color: #ffebee;
+          color: #c62828;
+          padding: 10px;
+          border-radius: 4px;
+          margin-bottom: 10px;
+        }
+
+        .loading {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 50px;
+        }
+
+        .loading::after {
+          content: "";
+          width: 30px;
+          height: 30px;
+          border: 5px solid #f3f3f3;
+          border-top: 5px solid #3498db;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
       </style>
       <div class="accordion">
         <div class="accordion-header collapsed" onclick="this.getRootNode().host.toggleAccordion(this)">
+          <div class="chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+              <path d="M9 6L15 12L9 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>  
           Warning: Click to view essential information
         </div>
         <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
@@ -247,14 +304,20 @@ class AtoMSearchInterface extends HTMLElement {
           <button type="button" class="button" onclick="this.getRootNode().host.addCriterion()">Add Another Criterion</button>
           <button type="button" class="button" onclick="this.getRootNode().host.performSearch()">Search</button>
 
+          ${this.isLoading ? '<div class="loading"></div>' : ''}
+        
+          ${this.error ? `<div class="error-message">${this.error}</div>` : ''}
+
           <div id="results" class="results">
-            ${this.results.length === 0 ? `<p>No results found.</p>` : this.results.map(result => `
-              <div class="result-item" data-slug="${result.slug}">
-                <h4>${result.title}</h4>
-                <p>${result.reference_code}</p>
-                <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
-              </div>
-            `).join('')}
+            ${this.results.length === 0 && !this.isLoading && !this.error ? 
+              `<p>No results found. Please try a different search.</p>` : 
+              this.results.map(result => `
+                <div class="result-item" data-slug="${result.slug}">
+                  <h4>${result.title}</h4>
+                  <p>${result.reference_code}</p>
+                  <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
+                </div>
+              `).join('')}
           </div>
         </div>
       </div>
