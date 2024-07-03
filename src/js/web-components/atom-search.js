@@ -22,19 +22,19 @@ class AtoMSearchInterface extends HTMLElement {
       const host = this.getRootNode().host;
       if (event.target.matches('.pagination-button')) {
         const page = event.target.getAttribute('data-page');
-        if (page) host.performSearch(parseInt(page));
-      } else if (event.target.matches('.accordion-header')) {
+        if (page) this.performSearch(parseInt(page));
+      } else if (event.target.matches('.accordion-header') || event.target.matches('chevron')) {
         this.toggleAccordion(event.target);
       } else if (event.target.matches('.remove-button')) {
         const id = event.target.getAttribute('data-id');
-        if (id) host.removeCriterion(parseInt(id));
+        if (id) this.removeCriterion(parseInt(id));
       } else if (event.target.matches('.button') && event.target.classList.contains('add')) {
-        host.addCriterion();
+        this.addCriterion();
       } else if (event.target.matches('.button') && event.target.classList.contains('search')) {
-        host.performSearch();
+        this.performSearch();
       } else if (event.target.matches('.result-item button')) {
         const slug = event.target.closest('.result-item').getAttribute('data-slug');
-        if (slug) host.handleResultClick(slug);
+        if (slug) this.handleResultClick(slug);
       }
     });
 
