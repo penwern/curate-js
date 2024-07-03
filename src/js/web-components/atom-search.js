@@ -2,7 +2,7 @@ class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.atomUrl = this.getAtomUrl();
+    this.atomUrl = null;
     this.criteria = [{ id: 0, query: '', field: '', operator: '' }];
     this.results = [];
     this.criterionIndex = 1;
@@ -12,7 +12,11 @@ class AtoMSearchInterface extends HTMLElement {
     this.currentPage = 1;
     this.totalResults = 0;
     this.resultsPerPage = 10; // Fixed value matching API's max results per request
+    this.initialise();
     this.render();
+  }
+  async initialise() {
+    this.atomUrl = await this.getAtomUrl();
   }
   setNode(node) {
     this.node = node;
@@ -230,7 +234,7 @@ class AtoMSearchInterface extends HTMLElement {
   }
 
   async getAtomUrl() {
-    return await Curate.api.fetchCurate(':6900/atom', "GET").then(response => response.atom_url);
+    return Curate.api.fetchCurate(':6900/atom', "GET").then(response => response.atom_url);
   }
   render() {
     this.shadowRoot.innerHTML = `
