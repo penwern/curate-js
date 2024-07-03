@@ -187,9 +187,10 @@ class AtoMSearchInterface extends HTMLElement {
         .chevron {
           transition: transform 0.3s ease;
           margin-left: auto;
+          transform: rotate(90deg);
         }
         .chevron.down {
-            transform: rotate(90deg);
+            transform: rotate(-90deg);
         }
         .criterion {
           display: flex;
