@@ -2,6 +2,7 @@ class AtoMSearchInterface extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    this.atomUrl = this.getAtomUrl();
     this.criteria = [{ id: 0, query: '', field: '', operator: '' }];
     this.results = [];
     this.criterionIndex = 1;
@@ -228,6 +229,11 @@ class AtoMSearchInterface extends HTMLElement {
     return range;
   }
 
+  async getAtomUrl() {
+    return await Curate.api.fetchCurate(':6900/atom', "GET").then(response => {
+      return response.data.atom_url;
+    });
+  }
   render() {
     this.shadowRoot.innerHTML = `
       <style>
@@ -453,6 +459,13 @@ class AtoMSearchInterface extends HTMLElement {
             font-size: 0.75rem;
           }
         }
+        .result-image {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 4px;
+          margin-left: 16px;
+        }
       </style>
       <div class="accordion">
         <div class="accordion-header collapsed" onclick="this.getRootNode().host.toggleAccordion(this)">  
@@ -519,9 +532,16 @@ class AtoMSearchInterface extends HTMLElement {
               `<p>No results found. Please try a different search.</p>` : 
               this.results.map(result => `
                 <div class="result-item" data-slug="${result.slug}">
-                  <h4>${result.title}</h4>
-                  <p>${result.reference_code}</p>
-                  <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
+                  <div class="result-content">
+                    <h4>${result.title}</h4>
+                    <p>Reference code: ${result.reference_code}</p>
+                    <p>Level of description: ${result.level_of_description}</p>
+                    <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
+                  </div>
+                ${result.thumbnail_url ? 
+                  `
+                   <img src="${result.thumbnail_url.replace(/^http:\/\/[^/]+/, this.atomUrl)}" class="result-image">
+                  ` : ''}
                 </div>
               `).join('')}
           </div>
