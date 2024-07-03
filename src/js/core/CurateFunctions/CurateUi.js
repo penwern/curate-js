@@ -10,8 +10,8 @@ const CurateUi = {
          * const myPopup = new Curate.ui.modals.curatePopup(props, callbacks);
          * 
          * @param {Object} props - An object containing popup parameters.
-         * @param {string} props.title - The title of the popup.
-         * @param {string} props.message - The main message of the popup.
+         * @param {string} [props.title] - The title of the popup.
+         * @param {string} [props.message] - The main message of the popup.
          * @param {string} [props.type] - The type of the popup ('warning', 'error', 'success', or 'info').
          * @param {Object} callbacks - An object containing callback functions for popup events.
          * @property {Function} callbacks.afterLoaded - Callback function that fires after the popup is spawned in the DOM.
@@ -52,12 +52,6 @@ const CurateUi = {
                 if (type) {
                     // Create the type-specific styles and icons
                     content.style.borderTop = `4px solid ${typeStyles[type].color}`;
-
-                    const iconElem = document.createElement('i');
-                    iconElem.classList.add('mdi', typeStyles[type].icon);
-                    iconElem.style.color = typeStyles[type].color;
-                    iconElem.style.fontSize = '24px';
-                    iconElem.style.marginRight = '10px';
                 }
                 
                 
@@ -65,8 +59,15 @@ const CurateUi = {
                 // Create the title element
                 const titleElem = document.createElement('div');
                 titleElem.classList.add('config-popup-title');
+                if (type) {
+                    const iconElem = document.createElement('i');
+                    iconElem.classList.add('mdi', typeStyles[type].icon);
+                    iconElem.style.color = typeStyles[type].color;
+                    iconElem.style.fontSize = '24px';
+                    iconElem.style.marginRight = '10px';
 
-                titleElem.appendChild(iconElem);
+                    titleElem.appendChild(iconElem);
+                }
                 const titleText = document.createTextNode(title);
                 titleElem.appendChild(titleText);
         
