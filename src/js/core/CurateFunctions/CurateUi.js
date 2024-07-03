@@ -102,9 +102,9 @@ const CurateUi = {
         
                 // Append elements to their respective parents
                 actionButtons.appendChild(closeButton);
-                content.appendChild(titleElem);
-                content.appendChild(mainContent);
-                content.appendChild(actionButtons);
+                contentDiv.appendChild(titleElem);
+                contentDiv.appendChild(mainContent);
+                contentDiv.appendChild(actionButtons);
                 container.appendChild(contentDiv);
         
                 // Append the container to the document body or any other desired parent element
