@@ -5,19 +5,21 @@ const permissionHandlers = {
             target: document,
             description: "enforce workspace upload permissions for standard users",
             handler: (e)=>{
-                if (!['quarantine', 'personal-files', 'common files'].includes(Curate.workspaces.getOpenWorkspace()) && pydio.user.idmUser.Roles.find(r=>r.Label = "Standard User")){
-                    e.stopImmediatePropagation()
-                    const content = `<div>
-                        <p>Please upload your content to the Quarantine workspace instead. This will ensure your content is correctly scanned for malware before being released into the system.</p>
-                        <p>You can also upload your content to the Personal and Common Files workspaces, which is scanned for malware once but will not be quarantined and cannot be released into the system.</p>
-                    </div>`;
-                    Curate.ui.modals.curatePopup({"title": "You do not have permission to upload to this workspace", "type": "warning", "content":content}).fire() 
-                }
+                pydio.user.getIdmUser().then(idmUser=>{
+                    if (!['quarantine', 'personal-files', 'common files'].includes(Curate.workspaces.getOpenWorkspace()) && idmUser.Roles.find(r=>r.Label = "Standard User")){
+                        e.stopImmediatePropagation()
+                        const content = `<div>
+                            <p>Please upload your content to the Quarantine workspace instead. This will ensure your content is correctly scanned for malware before being released into the system.</p>
+                            <p>You can also upload your content to the Personal and Common Files workspaces, which is scanned for malware once but will not be quarantined and cannot be released into the system.</p>
+                        </div>`;
+                        Curate.ui.modals.curatePopup({"title": "You do not have permission to upload to this workspace", "type": "warning", "content":content}).fire() 
+                    }
+                })
             }
         }  
     },
     move:{
-        
+
     }
 }
 
