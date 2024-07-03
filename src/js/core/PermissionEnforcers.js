@@ -7,19 +7,17 @@ const permissionHandlers = {
             handler: (e)=>{
                 if (!['quarantine', 'personal-files', 'common files'].includes(Curate.workspaces.getOpenWorkspace()) && pydio.user.idmUser.Roles.find(r=>r.Label = "Standard User")){
                     e.stopImmediatePropagation()
-                    Curate.ui.modals.curatePopup({"title": "You do not have permission to upload to this workspace"},{"afterLoaded":(container)=>{
-                        const content = document.createElement("div");
-                        content.innerHTML = `<div class="config-modal-content">
-                            <div class="config-popup-title">
-                                <p>Please upload your content to the Quarantine workspace instead.</p>
-                            </div>
-                        </div>`;
-                        
-                        container.querySelector(".config-main-options-container").appendChild(content);
-                    }}).fire() 
+                    const content = `<div>
+                        <p>Please upload your content to the Quarantine workspace instead. This will ensure your content is correctly scanned for malware before being released into the system.</p>
+                        <p>You can also upload your content to the Personal and Common Files workspaces, which is scanned for malware once but will not be quarantined and cannot be released into the system.</p>
+                    </div>`;
+                    Curate.ui.modals.curatePopup({"title": "You do not have permission to upload to this workspace", "type": "warning", "content":content}).fire() 
                 }
             }
         }  
+    },
+    move:{
+        
     }
 }
 

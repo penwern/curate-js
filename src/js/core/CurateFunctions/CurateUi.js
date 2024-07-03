@@ -23,6 +23,7 @@ const CurateUi = {
             const title = props.title;
             const message = props.message;
             const type = props.type;
+            const content = props.content;
             // Extracting callbacks or defaulting to empty objects
             const afterLoaded = callbacks && callbacks.afterLoaded ? callbacks.afterLoaded : function(){};
             const afterClosed = callbacks && callbacks.afterClosed ? callbacks.afterClosed : function(){};
@@ -47,15 +48,13 @@ const CurateUi = {
                 
         
                 // Create the content element
-                const content = document.createElement('div');
-                content.classList.add('config-modal-content');
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('config-modal-content');
                 if (type) {
                     // Create the type-specific styles and icons
-                    content.style.borderTop = `4px solid ${typeStyles[type].color}`;
+                    contentDiv.style.borderTop = `4px solid ${typeStyles[type].color}`;
                 }
                 
-                
-        
                 // Create the title element
                 const titleElem = document.createElement('div');
                 titleElem.classList.add('config-popup-title');
@@ -81,6 +80,12 @@ const CurateUi = {
                     messageElem.textContent = message;
                     mainContent.appendChild(messageElem);
                 }
+
+                if (content) {
+                    const contentElem = document.createElement("div");
+                    contentElem.innerHTML = content;
+                    mainContent.appendChild(contentElem);
+                }
         
                 // Create the action buttons container
                 const actionButtons = document.createElement('div');
@@ -100,7 +105,7 @@ const CurateUi = {
                 content.appendChild(titleElem);
                 content.appendChild(mainContent);
                 content.appendChild(actionButtons);
-                container.appendChild(content);
+                container.appendChild(contentDiv);
         
                 // Append the container to the document body or any other desired parent element
                 document.body.appendChild(container);
