@@ -542,6 +542,7 @@ class AtoMSearchInterface extends HTMLElement {
                     <h4>${result.title}</h4>
                     <p>Reference code: ${result.reference_code}</p>
                     <p>Level of description: ${result.level_of_description}</p>
+                    <p>URL: ${this.atomUrl}/${result.slug}</p>
                     <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
                   </div>
                 ${result.thumbnail_url ? 
