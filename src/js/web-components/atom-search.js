@@ -10,7 +10,7 @@ class AtoMSearchInterface extends HTMLElement {
     this.isLoading = false;
     this.currentPage = 1;
     this.totalResults = 0;
-    this.resultsPerPage = 9; // Fixed value matching API's max results per request
+    this.resultsPerPage = 10; // Fixed value matching API's max results per request
     this.render();
   }
   setNode(node) {
@@ -124,51 +124,101 @@ class AtoMSearchInterface extends HTMLElement {
     let paginationHTML = '';
 
     if (totalPages > 1) {
+      paginationHTML += '<div class="pagination-container">';
+      paginationHTML += '<div class="pagination-info">Showing results ' + 
+        ((this.currentPage - 1) * this.resultsPerPage + 1) + 
+        ' - ' + 
+        Math.min(this.currentPage * this.resultsPerPage, this.totalResults) + 
+        ' of ' + 
+        this.totalResults + 
+        '</div>';
       paginationHTML += '<div class="pagination">';
       
+      // First page button
+      paginationHTML += `
+        <button class="pagination-button first-page" 
+          ${this.currentPage === 1 ? 'disabled' : ''} 
+          onclick="this.getRootNode().host.performSearch(1)"
+          title="First Page">
+          &laquo;
+        </button>
+      `;
+
       // Previous button
       paginationHTML += `
-        <button class="pagination-button" 
+        <button class="pagination-button prev-page" 
           ${this.currentPage === 1 ? 'disabled' : ''} 
-          onclick="this.getRootNode().host.performSearch(${this.currentPage - 1})">
-          &laquo; Previous
+          onclick="this.getRootNode().host.performSearch(${this.currentPage - 1})"
+          title="Previous Page">
+          &lsaquo;
         </button>
       `;
 
       // Page numbers
-      for (let i = 1; i <= totalPages; i++) {
-        if (
-          i === 1 ||
-          i === totalPages ||
-          (i >= this.currentPage - 2 && i <= this.currentPage + 2)
-        ) {
+      const pageRange = this.getPageRange(this.currentPage, totalPages);
+      pageRange.forEach(i => {
+        if (i === null) {
+          paginationHTML += '<span class="pagination-ellipsis" title="More pages">...</span>';
+        } else {
           paginationHTML += `
             <button class="pagination-button ${i === this.currentPage ? 'active' : ''}" 
-              onclick="this.getRootNode().host.performSearch(${i})">
+              onclick="this.getRootNode().host.performSearch(${i})"
+              title="Page ${i}">
               ${i}
             </button>
           `;
-        } else if (
-          i === this.currentPage - 3 ||
-          i === this.currentPage + 3
-        ) {
-          paginationHTML += '<span class="pagination-ellipsis">...</span>';
         }
-      }
+      });
 
       // Next button
       paginationHTML += `
-        <button class="pagination-button" 
+        <button class="pagination-button next-page" 
           ${this.currentPage === totalPages ? 'disabled' : ''} 
-          onclick="this.getRootNode().host.performSearch(${this.currentPage + 1})">
-          Next &raquo;
+          onclick="this.getRootNode().host.performSearch(${this.currentPage + 1})"
+          title="Next Page">
+          &rsaquo;
+        </button>
+      `;
+
+      // Last page button
+      paginationHTML += `
+        <button class="pagination-button last-page" 
+          ${this.currentPage === totalPages ? 'disabled' : ''} 
+          onclick="this.getRootNode().host.performSearch(${totalPages})"
+          title="Last Page">
+          &raquo;
         </button>
       `;
 
       paginationHTML += '</div>';
+      paginationHTML += '</div>';
     }
 
     return paginationHTML;
+  }
+  getPageRange(currentPage, totalPages) {
+    let range = [];
+    const delta = 2;
+    const left = currentPage - delta;
+    const right = currentPage + delta + 1;
+    let l;
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= left && i < right)) {
+        range.push(i);
+      }
+    }
+
+    range = range.filter((i, index, array) => {
+      if (i === 1 || i === totalPages) return true;
+      if (array[index - 1] && array[index - 1] + 1 !== i) {
+        range.splice(index, 0, null);
+        return true;
+      }
+      return true;
+    });
+
+    return range;
   }
 
   render() {
@@ -307,6 +357,94 @@ class AtoMSearchInterface extends HTMLElement {
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        .pagination-container {
+          margin-top: 2em;
+          font-family: Arial, sans-serif;
+        }
+
+        .pagination-info {
+          text-align: center;
+          margin-bottom: 1em;
+          font-size: 0.9em;
+          color: #666;
+        }
+
+        .pagination {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.5em;
+        }
+
+        .pagination-button {
+          min-width: 36px;
+          height: 36px;
+          padding: 0 0.5em;
+          border: 1px solid #d1d5db;
+          background-color: #ffffff;
+          color: #374151;
+          font-size: 0.875rem;
+          font-weight: 500;
+          text-align: center;
+          cursor: pointer;
+          user-select: none;
+          border-radius: 0.375rem;
+          transition: all 0.2s ease-in-out;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+          background-color: #f3f4f6;
+          border-color: #9ca3af;
+        }
+
+        .pagination-button:focus {
+          outline: 2px solid #3b82f6;
+          outline-offset: 2px;
+        }
+
+        .pagination-button.active {
+          background-color: #3b82f6;
+          border-color: #3b82f6;
+          color: #ffffff;
+        }
+
+        .pagination-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .pagination-ellipsis {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 36px;
+          height: 36px;
+          font-size: 0.875rem;
+          color: #6b7280;
+        }
+
+        .first-page, .last-page {
+          font-size: 0.75rem;
+        }
+
+        .prev-page, .next-page {
+          font-size: 1.25rem;
+        }
+
+        @media (max-width: 640px) {
+          .pagination-button {
+            min-width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+          }
+
+          .pagination-ellipsis {
+            min-width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+          }
         }
       </style>
       <div class="accordion">
