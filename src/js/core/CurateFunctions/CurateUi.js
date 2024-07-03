@@ -112,8 +112,7 @@ const CurateUi = {
 
                 // Add keystroke event listener that stops propagation of key events to the main UI to prevent triggering quick actions
                 container.addEventListener("keyup", function (e) {
-                    console.log("preventing propagation")
-                    //e.stopPropagation();
+                    e.stopPropagation();
                 });
         
                 // Call afterLoaded callback with the created popup
