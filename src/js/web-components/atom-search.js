@@ -8,6 +8,9 @@ class AtoMSearchInterface extends HTMLElement {
     this.node = null;
     this.error = null;
     this.isLoading = false;
+    this.currentPage = 1;
+    this.totalResults = 0;
+    this.resultsPerPage = 9; // Fixed value matching API's max results per request
     this.render();
   }
   setNode(node) {
@@ -30,9 +33,10 @@ class AtoMSearchInterface extends HTMLElement {
     this.render();
   }
 
-  async performSearch() {
+  async performSearch(page = 1) {
     this.isLoading = true;
     this.error = null;
+    this.currentPage = page;
     this.render();
 
     const params = new URLSearchParams();
@@ -44,6 +48,9 @@ class AtoMSearchInterface extends HTMLElement {
       params.append(`sf${index}`, criterion.field);
     });
     params.append('topLod', 0);
+    params.append('skip', (page - 1) * this.resultsPerPage);
+    // No need to append 'limit' as it's fixed on the API side
+
     try {
       const url = `${window.location.protocol}//${window.location.hostname}:6900/atom/search`;
       const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
@@ -55,9 +62,10 @@ class AtoMSearchInterface extends HTMLElement {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const results = await response.json();
-      console.log("retrieve results: ", results);
-      this.results = results.results;
+      const data = await response.json();
+      console.log("Retrieved results:", data);
+      this.results = data.results;
+      this.totalResults = data.total;
     } catch (error) {
       console.error('Error performing search:', error);
       this.error = `An error occurred while searching: ${error.message}`;
@@ -111,6 +119,57 @@ class AtoMSearchInterface extends HTMLElement {
     }
   }
 
+  renderPagination() {
+    const totalPages = Math.ceil(this.totalResults / this.resultsPerPage);
+    let paginationHTML = '';
+
+    if (totalPages > 1) {
+      paginationHTML += '<div class="pagination">';
+      
+      // Previous button
+      paginationHTML += `
+        <button class="pagination-button" 
+          ${this.currentPage === 1 ? 'disabled' : ''} 
+          onclick="this.getRootNode().host.performSearch(${this.currentPage - 1})">
+          &laquo; Previous
+        </button>
+      `;
+
+      // Page numbers
+      for (let i = 1; i <= totalPages; i++) {
+        if (
+          i === 1 ||
+          i === totalPages ||
+          (i >= this.currentPage - 2 && i <= this.currentPage + 2)
+        ) {
+          paginationHTML += `
+            <button class="pagination-button ${i === this.currentPage ? 'active' : ''}" 
+              onclick="this.getRootNode().host.performSearch(${i})">
+              ${i}
+            </button>
+          `;
+        } else if (
+          i === this.currentPage - 3 ||
+          i === this.currentPage + 3
+        ) {
+          paginationHTML += '<span class="pagination-ellipsis">...</span>';
+        }
+      }
+
+      // Next button
+      paginationHTML += `
+        <button class="pagination-button" 
+          ${this.currentPage === totalPages ? 'disabled' : ''} 
+          onclick="this.getRootNode().host.performSearch(${this.currentPage + 1})">
+          Next &raquo;
+        </button>
+      `;
+
+      paginationHTML += '</div>';
+    }
+
+    return paginationHTML;
+  }
 
   render() {
     this.shadowRoot.innerHTML = `
@@ -127,6 +186,7 @@ class AtoMSearchInterface extends HTMLElement {
         }
         .chevron {
           transition: transform 0.3s ease;
+          margin-left: auto;
         }
         .chevron.down {
             transform: rotate(90deg);
@@ -319,6 +379,7 @@ class AtoMSearchInterface extends HTMLElement {
                 </div>
               `).join('')}
           </div>
+          ${this.renderPagination()}
         </div>
       </div>
     `;
