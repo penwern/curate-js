@@ -13,41 +13,6 @@ class AtoMSearchInterface extends HTMLElement {
     this.resultsPerPage = 10; // Fixed value matching API's max results per request
     this.render();
   }
-  connectedCallback() {
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-    this.shadowRoot.addEventListener('click', event => {
-      const host = this.getRootNode().host;
-      if (event.target.matches('.pagination-button')) {
-        const page = event.target.getAttribute('data-page');
-        if (page) this.performSearch(parseInt(page));
-      } else if (event.target.matches('.accordion-header') || event.target.matches('chevron')) {
-        this.toggleAccordion(event.target);
-      } else if (event.target.matches('.remove-button')) {
-        const id = event.target.getAttribute('data-id');
-        if (id) this.removeCriterion(parseInt(id));
-      } else if (event.target.matches('.button') && event.target.classList.contains('add')) {
-        this.addCriterion();
-      } else if (event.target.matches('.button') && event.target.classList.contains('search')) {
-        this.performSearch();
-      } else if (event.target.matches('.result-item button')) {
-        const slug = event.target.closest('.result-item').getAttribute('data-slug');
-        if (slug) this.handleResultClick(slug);
-      }
-      console.log(event.target);
-    });
-
-    this.shadowRoot.addEventListener('change', event => {
-      if (event.target.matches('.select') || event.target.matches('.input')) {
-        const criterionId = event.target.closest('.criterion').getAttribute('data-id');
-        const field = event.target.getAttribute('name');
-        const value = event.target.value;
-        this.handleInputChange(criterionId, field, value);
-      }
-    });
-  }
   setNode(node) {
     this.node = node;
     this.render();
@@ -64,8 +29,15 @@ class AtoMSearchInterface extends HTMLElement {
   }
 
   handleInputChange(id, field, value) {
-    this.criteria = this.criteria.map(criterion => criterion.id === id ? { ...criterion, [field]: value } : criterion);
-    this.render();
+    this.criteria = this.criteria.map(criterion => 
+      criterion.id === id ? { ...criterion, [field]: value } : criterion
+    );
+    // We don't need to re-render the entire component on input change
+    // Instead, we can update just the affected input's value
+    const inputElement = this.shadowRoot.querySelector(`[data-id="${id}"][data-field="${field}"]`);
+    if (inputElement) {
+      inputElement.value = value;
+    }
   }
 
   async performSearch(page = 1) {
@@ -483,12 +455,12 @@ class AtoMSearchInterface extends HTMLElement {
         }
       </style>
       <div class="accordion">
-        <div class="accordion-header collapsed">  
+        <div class="accordion-header collapsed" onclick="this.getRootNode().host.toggleAccordion(this)">  
           Warning: Click to view essential information
           <div class="chevron" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
-                <path d="M9 6L15 12L9 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 6L15 12L9 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
           </div>
         </div>
         <div class="accordion-body ${localStorage.getItem('accordionState') === 'true' ? '' : 'show'}">
@@ -507,14 +479,14 @@ class AtoMSearchInterface extends HTMLElement {
             ${this.criteria.map((criterion, index) => `
               <div class="criterion">
                 ${index > 0 ? `
-                  <select class="select" value="${criterion.operator}">
+                  <select class="select" value="${criterion.operator}" onchange="this.getRootNode().host.handleInputChange(${criterion.id}, 'operator', this.value)">
                     <option value="and" ${criterion.operator === 'and' ? 'selected' : ''}>and</option>
                     <option value="or" ${criterion.operator === 'or' ? 'selected' : ''}>or</option>
                     <option value="not" ${criterion.operator === 'not' ? 'selected' : ''}>not</option>
                   </select>
                 ` : ''}
-                <input type="text" class="input" value="${criterion.query}" placeholder="Search query">
-                <select class="select" value="${criterion.field}">
+                <input type="text" class="input" value="${criterion.query}" placeholder="Search query" onchange="this.getRootNode().host.handleInputChange(${criterion.id}, 'query', this.value)">
+                <select class="select" value="${criterion.field}" onchange="this.getRootNode().host.handleInputChange(${criterion.id}, 'field', this.value)">
                   <option value="">Any field</option>
                   <option value="title" ${criterion.field === 'title' ? 'selected' : ''}>Title</option>
                   <option value="archivalHistory" ${criterion.field === 'archivalHistory' ? 'selected' : ''}>Archival history</option>
@@ -531,12 +503,12 @@ class AtoMSearchInterface extends HTMLElement {
                   <option value="findingAidTranscript" ${criterion.field === 'findingAidTranscript' ? 'selected' : ''}>Finding aid text</option>
                   <option value="allExceptFindingAidTranscript" ${criterion.field === 'allExceptFindingAidTranscript' ? 'selected' : ''}>Any field except finding aid text</option>
                 </select>
-                <button type="button" class="remove-button" style="${criterion.id === 0 ? 'display:none;' : ''}">Remove</button>
+                <button type="button" class="remove-button" style="${criterion.id === 0 ? 'display:none;' : ''}" onclick="this.getRootNode().host.removeCriterion(${criterion.id})">Remove</button>
               </div>
             `).join('')}
           </div>
-          <button type="button" class="button">Add Another Criterion</button>
-          <button type="button" class="button">Search</button>
+          <button type="button" class="button" onclick="this.getRootNode().host.addCriterion()">Add Another Criterion</button>
+          <button type="button" class="button" onclick="this.getRootNode().host.performSearch()">Search</button>
 
           ${this.isLoading ? '<div class="loading"></div>' : ''}
         
@@ -549,7 +521,7 @@ class AtoMSearchInterface extends HTMLElement {
                 <div class="result-item" data-slug="${result.slug}">
                   <h4>${result.title}</h4>
                   <p>${result.reference_code}</p>
-                  <button type="button" class="button">Link to this result</button>
+                  <button type="button" class="button" onclick="this.getRootNode().host.handleResultClick('${result.slug}')">Link to this result</button>
                 </div>
               `).join('')}
           </div>
