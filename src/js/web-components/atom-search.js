@@ -24,7 +24,7 @@ class AtoMSearchInterface extends HTMLElement {
         const page = event.target.getAttribute('data-page');
         if (page) host.performSearch(parseInt(page));
       } else if (event.target.matches('.accordion-header')) {
-        host.toggleAccordion(event.target);
+        this.toggleAccordion(event.target);
       } else if (event.target.matches('.remove-button')) {
         const id = event.target.getAttribute('data-id');
         if (id) host.removeCriterion(parseInt(id));
