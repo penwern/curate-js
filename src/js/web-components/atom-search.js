@@ -296,11 +296,13 @@ class AtoMSearchInterface extends HTMLElement {
           margin-top: 20px;
         }
         .result-item {
-          padding: 10px;
+          padding: 1em;
           border: 1px solid #e0e0e0;
           border-radius: 4px;
           background-color: #f9f9f9;
           margin-bottom: 10px;
+          display: flex;
+          justify-content: space-between;
         }
         .glass {
           background: rgba(255, 255, 255, 0.2);
@@ -462,11 +464,13 @@ class AtoMSearchInterface extends HTMLElement {
           }
         }
         .result-image {
-          width: 100px;
-          height: 100px;
-          object-fit: cover;
+          width: 10em;
+          height: 10em;
           border-radius: 4px;
-          margin-left: 16px;
+          margin: auto;
+          margin-right: 0;
+          right: 2em;
+          position: relative;
         }
       </style>
       <div class="accordion">
