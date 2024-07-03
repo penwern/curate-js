@@ -36,6 +36,7 @@ class AtoMSearchInterface extends HTMLElement {
         const slug = event.target.closest('.result-item').getAttribute('data-slug');
         if (slug) this.handleResultClick(slug);
       }
+      console.log(event.target);
     });
 
     this.shadowRoot.addEventListener('change', event => {
