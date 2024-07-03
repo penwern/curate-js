@@ -22,7 +22,7 @@ const CurateUi = {
             // Extracting props
             const title = props.title;
             const message = props.message;
-            const type = props.type || 'info'; // Default to 'info' if not specified
+            const type = props.type;
             // Extracting callbacks or defaulting to empty objects
             const afterLoaded = callbacks && callbacks.afterLoaded ? callbacks.afterLoaded : function(){};
             const afterClosed = callbacks && callbacks.afterClosed ? callbacks.afterClosed : function(){};
@@ -49,20 +49,23 @@ const CurateUi = {
                 // Create the content element
                 const content = document.createElement('div');
                 content.classList.add('config-modal-content');
-                content.style.borderTop = `4px solid ${typeStyles[type].color}`;
-        
-                // Create the icon element
-                const iconElem = document.createElement('i');
-                iconElem.classList.add('mdi', typeStyles[type].icon);
-                iconElem.style.color = typeStyles[type].color;
-                iconElem.style.fontSize = '24px';
-                iconElem.style.marginRight = '10px';
+                if (type) {
+                    // Create the type-specific styles and icons
+                    content.style.borderTop = `4px solid ${typeStyles[type].color}`;
+
+                    const iconElem = document.createElement('i');
+                    iconElem.classList.add('mdi', typeStyles[type].icon);
+                    iconElem.style.color = typeStyles[type].color;
+                    iconElem.style.fontSize = '24px';
+                    iconElem.style.marginRight = '10px';
+                }
+                
+                
         
                 // Create the title element
                 const titleElem = document.createElement('div');
                 titleElem.classList.add('config-popup-title');
-                titleElem.style.display = 'flex';
-                titleElem.style.alignItems = 'center';
+
                 titleElem.appendChild(iconElem);
                 const titleText = document.createTextNode(title);
                 titleElem.appendChild(titleText);
