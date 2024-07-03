@@ -1,26 +1,39 @@
 const CurateUi = {
     modals: {
         /**
-         * Create a Curate popup. Add content in the afterLoaded callback. 
-         * clickAway, standard action buttons and base styling provided.
+         * Creates a Curate popup with standard action buttons and base styling. 
+         * The popup initialization and behavior are managed by the provided props and callbacks.
+         * The `afterLoaded` callback is triggered after the popup is rendered in the DOM, 
+         * and the `afterClosed` callback is triggered after the popup is removed from the DOM.
          * 
-         * afterClosed callback also provided.
+         * @usage 
+         * const myPopup = new Curate.ui.modals.curatePopup(props, callbacks);
          * 
-         * @usage const myPopup = new Curate.ui.modals.curatePopup(props, callbacks)
-         * @param {object} props An object of popup parameters
-         * @function fire() Initiates the popup in the DOM
-         * @param {Object} callbacks Functions hooked to new popup
-         * @property {function} callbacks.afterLoaded - Fires after the popup is spawned in the DOM
-         * @property {function} callbacks.afterClosed - Fires after the popup is removed from the DOM
-         * 
+         * @param {Object} props - An object containing popup parameters.
+         * @param {string} props.title - The title of the popup.
+         * @param {string} props.message - The main message of the popup.
+         * @param {string} [props.type] - The type of the popup ('warning', 'error', 'success', or 'info').
+         * @param {Object} callbacks - An object containing callback functions for popup events.
+         * @property {Function} callbacks.afterLoaded - Callback function that fires after the popup is spawned in the DOM.
+         * @property {Function} callbacks.afterClosed - Callback function that fires after the popup is removed from the DOM.
+         * @function fire - Initiates the popup in the DOM.
          */
         curatePopup : function(props, callbacks) {
             // Extracting props
-            var title = props.title;
-        
+            const title = props.title;
+            const message = props.message;
+            const type = props.type || 'info'; // Default to 'info' if not specified
             // Extracting callbacks or defaulting to empty objects
-            var afterLoaded = callbacks && callbacks.afterLoaded ? callbacks.afterLoaded : function(){};
-            var afterClosed = callbacks && callbacks.afterClosed ? callbacks.afterClosed : function(){};
+            const afterLoaded = callbacks && callbacks.afterLoaded ? callbacks.afterLoaded : function(){};
+            const afterClosed = callbacks && callbacks.afterClosed ? callbacks.afterClosed : function(){};
+        
+            // Define type-specific styles and icons
+            const typeStyles = {
+                warning: { color: '#FFA500', icon: 'mdi-alert' },
+                error: { color: '#FF0000', icon: 'mdi-alert-circle' },
+                success: { color: '#008000', icon: 'mdi-check-circle' },
+                info: { color: '#0000FF', icon: 'mdi-information' }
+            };
         
             // Define fire method
             function fire() {
@@ -34,25 +47,43 @@ const CurateUi = {
                 
         
                 // Create the content element
-                var content = document.createElement('div');
+                const content = document.createElement('div');
                 content.classList.add('config-modal-content');
+                content.style.borderTop = `4px solid ${typeStyles[type].color}`;
+        
+                // Create the icon element
+                const iconElem = document.createElement('i');
+                iconElem.classList.add('mdi', typeStyles[type].icon);
+                iconElem.style.color = typeStyles[type].color;
+                iconElem.style.fontSize = '24px';
+                iconElem.style.marginRight = '10px';
         
                 // Create the title element
-                var titleElem = document.createElement('div');
+                const titleElem = document.createElement('div');
                 titleElem.classList.add('config-popup-title');
-                titleElem.textContent = title;
+                titleElem.style.display = 'flex';
+                titleElem.style.alignItems = 'center';
+                titleElem.appendChild(iconElem);
+                const titleText = document.createTextNode(title);
+                titleElem.appendChild(titleText);
         
                 // Create the main body container
-                var mainContent = document.createElement("div");
+                const mainContent = document.createElement("div");
                 mainContent.classList.add("config-main-options-container");
                 mainContent.style.width = "100%";
+                if (message) {
+                    const messageElem = document.createElement("div");
+                    messageElem.classList.add("config-popup-message");
+                    messageElem.textContent = message;
+                    mainContent.appendChild(messageElem);
+                }
         
                 // Create the action buttons container
-                var actionButtons = document.createElement('div');
+                const actionButtons = document.createElement('div');
                 actionButtons.classList.add('action-buttons');
         
                 // Create the close button
-                var closeButton = document.createElement('button');
+                const closeButton = document.createElement('button');
                 closeButton.classList.add('config-modal-close-button');
                 closeButton.textContent = 'Close';
                 closeButton.addEventListener('click', e=>{
@@ -72,7 +103,7 @@ const CurateUi = {
 
                 // Add keystroke event listener that stops propagation of key events to the main UI to prevent triggering quick actions
                 container.addEventListener("keyup", function (e) {
-                    console.log("preventing propogation")
+                    console.log("preventing propagation")
                     e.stopPropagation();
                 });
         
