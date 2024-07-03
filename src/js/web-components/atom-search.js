@@ -230,9 +230,7 @@ class AtoMSearchInterface extends HTMLElement {
   }
 
   async getAtomUrl() {
-    return await Curate.api.fetchCurate(':6900/atom', "GET").then(response => {
-      return response.data.atom_url;
-    });
+    return await Curate.api.fetchCurate(':6900/atom', "GET").then(response => response.atom_url);
   }
   render() {
     this.shadowRoot.innerHTML = `
