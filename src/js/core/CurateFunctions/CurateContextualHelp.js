@@ -4,18 +4,21 @@
 let lastRightClickedElement = null;
 
 const CurateContextualHelp = {
-    lastRightClickedElement,
+    context:{
+        page: window.location.pathname,
+        lastRightClickedElement,
+        selection: pydio._dataModel._selectedNodes || null
+    }
 };
 
-// Function to handle the contextmenu event
 function handleRightClick(event) {
   // Update the lastRightClickedElement with the target of the right click
-  lastRightClickedElement = event.target;
-  console.log("Last right-clicked element:", lastRightClickedElement);
+  if (event.button === 2) {
+    lastRightClickedElement = event.target;
+  }
 }
 
 // Add the event listener to the document
-window.addEventListener("load", ()=>{console.log("donging");document.addEventListener("contextmenu", handleRightClick);document.addEventListener("click", ()=>console.log("clicked"));});
-
+window.addEventListener("load", ()=>document.addEventListener("mousedown", handleRightClick));
 
 export default CurateContextualHelp;
