@@ -15,6 +15,7 @@ function handleRightClick(event) {
 }
 
 // Add the event listener to the document
-document.addEventListener("contextmenu", handleRightClick);
+window.addEventListener("load", ()=>{console.log("donging");document.addEventListener("contextmenu", handleRightClick)})
+
 
 export default CurateContextualHelp;
