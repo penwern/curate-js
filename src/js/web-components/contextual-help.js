@@ -6,6 +6,7 @@ class ContextualHelp extends HTMLElement {
   
     connectedCallback() {
       this.render();
+      console.log('connected help');
       this.updateContent();
     }
   
