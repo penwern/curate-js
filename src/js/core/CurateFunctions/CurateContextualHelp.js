@@ -16,9 +16,9 @@ const CurateContextualHelp = {
 function handleRightClick(event) {
   // Update the lastRightClickedElement with the target of the right click
   if (event.button === 2) {
-    lastRightClickedElement = event.target;
-    page = window.location.pathname;
-    selection = pydio?._dataModel._selectedNodes || null;
+    CurateContextualHelp.context.lastRightClickedElement = event.target;
+    CurateContextualHelp.context.page = window.location.pathname;
+    CurateContextualHelp.context.selection = pydio?._dataModel._selectedNodes || null;
   }
 }
 
