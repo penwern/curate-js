@@ -6,12 +6,12 @@ class ConnectToAtom extends HTMLElement {
     this.atomUrl = '';
     this.username = '';
     this.password = '';
-    this.render();
     this.retrieveDetails();
+    this.render();
   }
 
-  retrieveDetails() {
-    Curate.api.fetchCurate(':6900/atom', 'GET')
+  async retrieveDetails() {
+    await Curate.api.fetchCurate(':6900/atom', 'GET')
       .then(response => {
         this.apiKey = response.apiKey;
         this.atomUrl = response.atomUrl;
@@ -181,19 +181,19 @@ class ConnectToAtom extends HTMLElement {
         <div class="details-display">
           <div class="detail-item">
             <span class="label">Current API Key:</span>
-            <span class="value" id="current-api-key">${localStorage.getItem('atom_api_key') || 'Not Set'}</span>
+            <span class="value" id="current-api-key">${this.apiKey || 'Not Set'}</span>
           </div>
           <div class="detail-item">
             <span class="label">Current Atom URL:</span>
-            <span class="value" id="current-atom-url">${localStorage.getItem('atom_url') || 'Not Set'}</span>
+            <span class="value" id="current-atom-url">${this.atomUrl || 'Not Set'}</span>
           </div>
           <div class="detail-item">
             <span class="label">Current Username:</span>
-            <span class="value" id="current-username">${localStorage.getItem('atom_username') || 'Not Set'}</span>
+            <span class="value" id="current-username">${this.username || 'Not Set'}</span>
           </div>
           <div class="detail-item">
             <span class="label">Current Password:</span>
-            <span class="value" id="current-password">${localStorage.getItem('atom_password') || 'Not Set'}</span>
+            <span class="value" id="current-password">${"*".repeat(this.password.length) || 'Not Set'}</span>
           </div>
         </div>
         <form id="details-form">
