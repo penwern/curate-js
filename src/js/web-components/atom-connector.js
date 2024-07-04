@@ -7,21 +7,20 @@ class ConnectToAtom extends HTMLElement {
     this.username = '';
     this.password = '';
     this.retrieveDetails();
-    this.render();
+    //this.render();
   }
 
   async retrieveDetails() {
-    await Curate.api.fetchCurate(':6900/atom', 'GET')
-      .then(response => {
-        this.apiKey = response.apiKey;
-        this.atomUrl = response.atomUrl;
-        this.username = response.username;
-        this.password = response.password;
-        this.render();
-      })
-      .catch(error => {
-        console.error('Error retrieving details from Atom:', error);
-      });
+    try {
+      const response = await Curate.api.fetchCurate(':6900/atom', 'GET');
+      this.apiKey = response.atom_api_key;
+      this.atomUrl = response.atom_url;
+      this.username = response.atom_username;
+      this.password = response.atom_password;
+      this.render(); // Call render after updating the properties
+    } catch (error) {
+      console.error('Error retrieving details from Atom:', error);
+    }
   }
 
   saveDetails(e) {
@@ -181,7 +180,7 @@ class ConnectToAtom extends HTMLElement {
         <div class="details-display">
           <div class="detail-item">
             <span class="label">Current API Key:</span>
-            <span class="value" id="current-api-key">${this.apiKey || 'Not Set'}</span>
+            <span class="value" id="current-api-key">${"*".repeat(this.apiKey?.length) || 'Not Set'}</span>
           </div>
           <div class="detail-item">
             <span class="label">Current Atom URL:</span>
@@ -193,7 +192,7 @@ class ConnectToAtom extends HTMLElement {
           </div>
           <div class="detail-item">
             <span class="label">Current Password:</span>
-            <span class="value" id="current-password">${"*".repeat(this.password.length) || 'Not Set'}</span>
+            <span class="value" id="current-password">${"*".repeat(this.password?.length) || 'Not Set'}</span>
           </div>
         </div>
         <form id="details-form">
@@ -206,12 +205,12 @@ class ConnectToAtom extends HTMLElement {
             <input class="input" type="url" id="atom-url" name="atom-url" placeholder="https://atom.penwern.co.uk/">
           </div>
           <div class="form-group">
-            <label class="label" for="username">Enter Username:</label>
+            <label class="label" autocomplete="new-username" for="username">Enter Username:</label>
             <input class="input" type="text" id="username" name="username" placeholder="Enter Username">
           </div>
           <div class="form-group">
             <label class="label" for="password">Enter Password:</label>
-            <input class="input" type="password" id="password" name="password" placeholder="Enter Password">
+            <input class="input" type="password" autocomplete="new-password" id="password" name="password" placeholder="Enter Password">
             <button type="button" class="toggle-password" id="toggle-password">Show</button>
           </div>
           <button class="save-btn" type="submit">Save</button>
