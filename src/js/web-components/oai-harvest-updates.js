@@ -132,7 +132,10 @@ class OAIHarvestStatus extends HTMLElement {
       const repoUrl = node._metadata.get("usermeta-import-oai-repo-url");
       const identifier = node._metadata.get("usermeta-import-oai-link-id");
       const metadataPrefix = node._metadata.get("usermeta-import-oai-metadata-prefix");
-  
+      if (!repoUrl || !identifier || !metadataPrefix) {
+        this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Repository, identifier, or metadata prefix not found`, 100);
+        return;
+      }
       this.updateProcessStatus(id, 'loading', `Harvesting ${identifier}`, `Repository: ${repoUrl}`, 0);
   
       try {
@@ -153,7 +156,7 @@ class OAIHarvestStatus extends HTMLElement {
   
         this.updateProcessStatus(id, 'success', `Harvested ${identifier}`, `Successfully processed data from ${repoUrl}${identifier}`, 100);
       } catch (error) {
-        this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Error: ${error.message}: ${error.data}`, 100);
+        this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Error: ${error.message}: ${error.data ? error.data : ''}`, 100);
       } finally {
         this.runningProcesses.delete(id);
       }
