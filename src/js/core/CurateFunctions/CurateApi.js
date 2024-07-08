@@ -143,6 +143,7 @@ const CurateApi = {
          * @returns {string} Data of the file
          */
         getFileData : async function(node,type="text") {
+            
             if (!node){
                 throw new Error("No node provided");
             }
@@ -177,8 +178,6 @@ const CurateApi = {
             if (!node){
                 throw new Error("No node provided");
             }
-            const body = createMetadata(node,metadata)
-            const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", body);
             const createMetadata = (node, metadata) => {
                 const outputObj = {
                     MetaDatas: [],
@@ -203,6 +202,9 @@ const CurateApi = {
                 }
                 return outputObj
             }
+            const body = createMetadata(node,metadata)
+            const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", body);
+
 
             return updateResponse
         }  

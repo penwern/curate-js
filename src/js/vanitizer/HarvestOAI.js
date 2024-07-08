@@ -50,7 +50,31 @@
             throw error;
         }
     }
-
+    const convertJson = inputJson => {
+        // Extract the schema and data from the input JSON
+        const schema = inputJson.schema;
+        const dataFields = inputJson.data;
+        
+        // Array to hold the new format based on the schema
+        let schemaArray = [];
+    
+        // Traverse each key-value pair in the `dataFields` object
+        for (const key in dataFields) {
+            // Check if the value is an array
+            if (Array.isArray(dataFields[key])) {
+                // Convert the array into a comma-separated string
+                let value = dataFields[key].join(", ");
+                // Append the object with field and value to the schemaArray
+                schemaArray.push({ field: key, value: value });
+            }
+        }
+    
+        // Construct the new JSON structure using the dynamic schema
+        let outputData = {};
+        outputData[schema] = schemaArray;
+    
+        return outputData;
+    };
     // Function to process all nodes concurrently
     async function processAllNodes() {
         const nodes = pydio._dataModel._selectedNodes;
