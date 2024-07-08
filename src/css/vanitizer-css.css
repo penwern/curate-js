@@ -438,7 +438,6 @@ line {
   justify-content: center;
   max-height: 85vh;
   background: var(--md-sys-color-surface-4);
-  width: 70%;
   max-width: 70%;
   padding: 1.5em !important;
   border-radius: 1.2em;

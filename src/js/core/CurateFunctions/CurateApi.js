@@ -143,7 +143,37 @@ const CurateApi = {
               console.error("Error fetching object:", error);
               throw error; 
             }
-        }
+        },
+        updateMetadata : async function(node,metadata){
+            const createMetadata = (node, metadata) => {
+                const outputObj = {
+                    MetaDatas: [],
+                    Operation: "PUT"
+                };
+            
+                for (const key in metadata) {
+                        metadata[key].forEach(item => {
+                            console.log(key, item)
+                            const namespace = `usermeta-${key}-${item.field}`;
+                            const metaData = {
+                                NodeUuid: node._metadata.get("uuid"),
+                                Namespace: namespace,
+                                JsonValue: JSON.stringify(item.value),
+                                Policies: [
+                                    { Action: "READ", Effect: "allow", Subject: "*" },
+                                    { Action: "WRITE", Effect: "allow", Subject: "*" }
+                                ]
+                            };
+                            outputObj.MetaDatas.push(metaData);
+                        });
+                    
+                }
+                return outputObj
+            }
+            const body = createMetadata(node,metadata)
+            const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", body);
+            return updateResponse
+        }  
     }
 };
 export default CurateApi;
