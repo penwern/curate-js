@@ -21,11 +21,7 @@ class OAIHarvestStatus extends HTMLElement {
         <style>
           :host {
             display: block;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
           }
           .status-container {
             display: grid;
@@ -33,7 +29,7 @@ class OAIHarvestStatus extends HTMLElement {
             gap: 20px;
           }
           .status-item {
-            background: white;
+            background: var(--md-sys-color-background);
             border-radius: 8px;
             padding: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -51,7 +47,6 @@ class OAIHarvestStatus extends HTMLElement {
           }
           .status-title {
             font-weight: bold;
-            color: #333;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -150,7 +145,7 @@ class OAIHarvestStatus extends HTMLElement {
         const updateMeta = this.convertJson(data);
         await Curate.api.files.updateMetadata(node, updateMeta);
   
-        this.updateProcessStatus(id, 'success', `Harvested ${identifier}`, `Successfully processed data from ${repoUrl}`, 100);
+        this.updateProcessStatus(id, 'success', `Harvested ${identifier}`, `Successfully processed data from ${repoUrl}${identifier}`, 100);
       } catch (error) {
         this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Error: ${error.message}`, 100);
       } finally {
