@@ -71,6 +71,11 @@ class OAIHarvestStatus extends HTMLElement {
             font-style: italic;
             color: #888;
           }
+          .node-title {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #555;
+          }
           .queued { background-color: #9e9e9e; }
           .loading { background-color: #ffd700; }
           .success { background-color: #4caf50; }
@@ -108,6 +113,7 @@ class OAIHarvestStatus extends HTMLElement {
         status: 'queued',
         title: `Queued: ${node._metadata.get("usermeta-import-oai-link-id")}`,
         details: `Repository: ${node._metadata.get("usermeta-import-oai-repo-url")}`,
+        nodeTitle: node._label
       };
       this.processQueue.push(processInfo);
       this.updateStatusCard(processInfo);
@@ -172,7 +178,7 @@ class OAIHarvestStatus extends HTMLElement {
         container.appendChild(statusItem);
       }
   
-      const { status, title, details, progress } = processInfo;
+      const { status, title, details, progress, nodeTitle } = processInfo;
   
       statusItem.innerHTML = `
         <div class="status-header">
@@ -180,6 +186,7 @@ class OAIHarvestStatus extends HTMLElement {
           <span class="status-indicator ${status} ${status === 'loading' ? 'pulsing' : ''}"></span>
         </div>
         <div class="status-details" title="${details}">${details}</div>
+        <div class="node-title" title="Node: ${nodeTitle}">Node: ${nodeTitle}</div>
         ${status === 'loading' ? `
           <div class="progress-bar">
             <div class="progress-bar-fill" style="width: ${progress || 0}%"></div>
