@@ -24,8 +24,8 @@ class OAIHarvestStatus extends HTMLElement {
             padding: 20px;
           }
           .status-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 20px;
           }
           .status-item {
@@ -34,6 +34,7 @@ class OAIHarvestStatus extends HTMLElement {
             padding: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            max-width:50vw;
           }
           .status-item:hover {
             transform: translateY(-5px);
@@ -62,9 +63,6 @@ class OAIHarvestStatus extends HTMLElement {
           .status-details {
             font-size: 0.9em;
             color: #666;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
           }
           .status-message {
             margin-top: 10px;
