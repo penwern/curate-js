@@ -194,7 +194,7 @@ class OAIHarvestStatus extends HTMLElement {
     }
   
     generateUniqueId(node) {
-      return `${node._metadata.get("usermeta-import-oai-repo-url")}-${node._metadata.get("usermeta-import-oai-link-id")}`;
+      return `${node._metadata.get("uuid")}-${node._metadata.get("usermeta-import-oai-link-id")}`;
     }
   
     convertJson(inputJson) {
