@@ -1,13 +1,19 @@
-// Define the web component
 class OAIHarvestStatus extends HTMLElement {
     constructor() {
       super();
       this.attachShadow({ mode: 'open' });
+      this.processQueue = [];
+      this.runningProcesses = new Map();
+      this.maxConcurrent = 5; // Maximum number of concurrent processes
     }
   
     connectedCallback() {
       this.render();
-      this.setupEventListeners();
+      this.processQueueInterval = setInterval(() => this.processQueuedItems(), 1000);
+    }
+  
+    disconnectedCallback() {
+      clearInterval(this.processQueueInterval);
     }
   
     render() {
@@ -46,22 +52,31 @@ class OAIHarvestStatus extends HTMLElement {
           .status-title {
             font-weight: bold;
             color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
           .status-indicator {
             width: 12px;
             height: 12px;
             border-radius: 50%;
             display: inline-block;
+            flex-shrink: 0;
+            margin-left: 10px;
           }
           .status-details {
             font-size: 0.9em;
             color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
           .status-message {
             margin-top: 10px;
             font-style: italic;
             color: #888;
           }
+          .queued { background-color: #9e9e9e; }
           .loading { background-color: #ffd700; }
           .success { background-color: #4caf50; }
           .error { background-color: #f44336; }
@@ -90,41 +105,117 @@ class OAIHarvestStatus extends HTMLElement {
       `;
     }
   
-    setupEventListeners() {
-      window.addEventListener('oai-harvest-update', (event) => {
-        console.log("received event from harvest-status");
-        this.updateStatus(event.detail);
-      });
+    addToQueue(node) {
+      const id = this.generateUniqueId(node);
+      const processInfo = {
+        id,
+        node,
+        status: 'queued',
+        title: `Queued: ${node._metadata.get("usermeta-import-oai-link-id")}`,
+        details: `Repository: ${node._metadata.get("usermeta-import-oai-repo-url")}`,
+      };
+      this.processQueue.push(processInfo);
+      this.updateStatusCard(processInfo);
     }
   
-    updateStatus(detail) {
+    async processQueuedItems() {
+      while (this.runningProcesses.size < this.maxConcurrent && this.processQueue.length > 0) {
+        const processInfo = this.processQueue.shift();
+        this.runningProcesses.set(processInfo.id, processInfo);
+        this.initiateHarvest(processInfo);
+      }
+    }
+  
+    async initiateHarvest(processInfo) {
+      const { node, id } = processInfo;
+      const repoUrl = node._metadata.get("usermeta-import-oai-repo-url");
+      const identifier = node._metadata.get("usermeta-import-oai-link-id");
+      const metadataPrefix = node._metadata.get("usermeta-import-oai-metadata-prefix");
+  
+      this.updateProcessStatus(id, 'loading', `Harvesting ${identifier}`, `Repository: ${repoUrl}`, 0);
+  
+      try {
+        const response = await fetch('http://127.0.0.1:5000/harvest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repo_url: repoUrl, identifier, metadata_prefix: metadataPrefix })
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error);
+        }
+  
+        const data = await response.json();
+        const updateMeta = this.convertJson(data);
+        await Curate.api.files.updateMetadata(node, updateMeta);
+  
+        this.updateProcessStatus(id, 'success', `Harvested ${identifier}`, `Successfully processed data from ${repoUrl}`, 100);
+      } catch (error) {
+        this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Error: ${error.message}`, 100);
+      } finally {
+        this.runningProcesses.delete(id);
+      }
+    }
+  
+    updateProcessStatus(id, status, title, details, progress) {
+      const processInfo = this.runningProcesses.get(id) || this.processQueue.find(p => p.id === id);
+      if (processInfo) {
+        Object.assign(processInfo, { status, title, details, progress });
+        this.updateStatusCard(processInfo);
+      }
+    }
+  
+    updateStatusCard(processInfo) {
       const container = this.shadowRoot.querySelector('.status-container');
-      let statusItem = container.querySelector(`[data-id="${detail.id}"]`);
+      let statusItem = container.querySelector(`[data-id="${processInfo.id}"]`);
       
       if (!statusItem) {
         statusItem = document.createElement('div');
         statusItem.classList.add('status-item');
-        statusItem.setAttribute('data-id', detail.id);
+        statusItem.setAttribute('data-id', processInfo.id);
         container.appendChild(statusItem);
       }
   
-      const statusClass = detail.status === 'loading' ? 'loading' : 
-                          detail.status === 'success' ? 'success' : 
-                          'error';
+      const { status, title, details, progress } = processInfo;
   
       statusItem.innerHTML = `
         <div class="status-header">
-          <span class="status-title">${detail.title}</span>
-          <span class="status-indicator ${statusClass} ${detail.status === 'loading' ? 'pulsing' : ''}"></span>
+          <span class="status-title" title="${title}">${title}</span>
+          <span class="status-indicator ${status} ${status === 'loading' ? 'pulsing' : ''}"></span>
         </div>
-        <div class="status-details">${detail.details}</div>
-        ${detail.message ? `<div class="status-message">${detail.message}</div>` : ''}
-        ${detail.status === 'loading' ? `
+        <div class="status-details" title="${details}">${details}</div>
+        ${status === 'loading' ? `
           <div class="progress-bar">
-            <div class="progress-bar-fill" style="width: ${detail.progress || 0}%"></div>
+            <div class="progress-bar-fill" style="width: ${progress || 0}%"></div>
           </div>
         ` : ''}
       `;
+    }
+  
+    generateUniqueId(node) {
+      return `${node._metadata.get("usermeta-import-oai-repo-url")}-${node._metadata.get("usermeta-import-oai-link-id")}`;
+    }
+  
+    convertJson(inputJson) {
+      const schema = inputJson.schema;
+      const dataFields = inputJson.data;
+      let schemaArray = [];
+  
+      for (const key in dataFields) {
+        if (Array.isArray(dataFields[key])) {
+          let value = dataFields[key].join(", ");
+          schemaArray.push({ field: key, value: value });
+        }
+      }
+  
+      let outputData = {};
+      outputData[schema] = schemaArray;
+      return outputData;
+    }
+  
+    processAllNodes(nodes) {
+      nodes.forEach(node => this.addToQueue(node));
     }
   }
   
