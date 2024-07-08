@@ -92,6 +92,7 @@ class OAIHarvestStatus extends HTMLElement {
   
     setupEventListeners() {
       window.addEventListener('oai-harvest-update', (event) => {
+        console.log("received event from harvest-status");
         this.updateStatus(event.detail);
       });
     }
