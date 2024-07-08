@@ -8,7 +8,10 @@ const CurateApi = {
      * @param {string} body string body to be used in the request
      * @returns {json} JSON body of successful Curate request
     */
-    fetchCurate : async function(endpoint, method, body) {
+    fetchCurate : async function(endpoint, method="POST", body) {
+        if (!endpoint){
+            throw new Error("No endpoint provided");
+        }
         try {
             const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
             const fetchProps = {
@@ -43,6 +46,11 @@ const CurateApi = {
             throw error;
         }
     },
+    /**
+     * File related Curate API functions
+     * @namespace CurateApi.files
+     * @memberof CurateApi
+     */
     files: {
         /**
          * Function to create one or more files in Curate and update their metadata at the same time.
@@ -76,6 +84,9 @@ const CurateApi = {
          *           });
          */
         createFiles : async function (nodes) {
+            if (!nodes){
+                throw new Error("No nodes provided");
+            }
             async function convertObject(inputObj, uuid) {
                 const outputObj = {
                     MetaDatas: [],
@@ -125,7 +136,16 @@ const CurateApi = {
                 const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", updatedObject);
             }
         },
+        /**
+         * Get the data of a file in Curate
+         * @param {object} node Node of the file to get data from
+         * @param {string} type Type of data to get, currently only "text" is supported
+         * @returns {string} Data of the file
+         */
         getFileData : async function(node,type="text") {
+            if (!node){
+                throw new Error("No node provided");
+            }
             try {
               const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
               const downloadUrl = await pydio.ApiClient.buildPresignedGetUrl(node);
@@ -144,7 +164,21 @@ const CurateApi = {
               throw error; 
             }
         },
+        /**
+         * Update the metadata of a file in Curate
+         * @param {object} node Node of the file to update
+         * @param {object} metadata Metadata to update
+         * @returns {object} Response from the Curate API
+         */
         updateMetadata : async function(node,metadata){
+            if (!metadata){
+                throw new Error("No metadata provided");
+            }
+            if (!node){
+                throw new Error("No node provided");
+            }
+            const body = createMetadata(node,metadata)
+            const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", body);
             const createMetadata = (node, metadata) => {
                 const outputObj = {
                     MetaDatas: [],
@@ -153,7 +187,6 @@ const CurateApi = {
             
                 for (const key in metadata) {
                         metadata[key].forEach(item => {
-                            console.log(key, item)
                             const namespace = `usermeta-${key}-${item.field}`;
                             const metaData = {
                                 NodeUuid: node._metadata.get("uuid"),
@@ -170,8 +203,7 @@ const CurateApi = {
                 }
                 return outputObj
             }
-            const body = createMetadata(node,metadata)
-            const updateResponse = await Curate.api.fetchCurate("/a/user-meta/update", "PUT", body);
+
             return updateResponse
         }  
     }
