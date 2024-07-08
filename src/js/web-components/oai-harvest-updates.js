@@ -144,7 +144,7 @@ class OAIHarvestStatus extends HTMLElement {
   
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error);
+          throw { message: errorData.error, data: errorData.data };
         }
   
         const data = await response.json();
@@ -153,7 +153,7 @@ class OAIHarvestStatus extends HTMLElement {
   
         this.updateProcessStatus(id, 'success', `Harvested ${identifier}`, `Successfully processed data from ${repoUrl}${identifier}`, 100);
       } catch (error) {
-        this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Error: ${error.message}`, 100);
+        this.updateProcessStatus(id, 'error', `Failed to harvest ${identifier}`, `Error: ${error.message}: ${error.data}`, 100);
       } finally {
         this.runningProcesses.delete(id);
       }
