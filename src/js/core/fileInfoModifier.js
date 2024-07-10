@@ -2,7 +2,7 @@ const getMetaItem = (item) => {
     try {
         return pydio._dataModel._selectedNodes[0]._metadata.get(item) || null;
     } catch (err) {
-        return "NA";
+        return null;
     }
 }
 
@@ -12,18 +12,25 @@ const removeRows = () => {
         ?.querySelector("#curateAdditionalInfo") // if fileInfoPanel exists, get #curateAdditionalInfo
         ?.remove(); // if curateAdditionalInfo exists, remove it
 }
+const daysSince = (scanDate) => Math.floor((new Date() - new Date(scanDate)) / 86400000);
 
-const getQuarantineStatus = (scan, scan2) => {
-    if (scan == 'File has not been scanned') {
-        return 'Risk'
+const getQuarantineStatus = (scan, scan2, scanTag, scanDate) => {
+    const openWs = Curate.workspaces.getOpenWorkspace()
+    if (!scanTag || scan == 'File has not been scanned') {
+        return 'This file has not been scanned and is at risk. Please move it into the Quarantine workspace to be scanned.'
     }
-    if (scan.toLowerCase().includes('passed') && scan2 == 'File has not been scanned') {
-        return 'Quarantined'
+    if (scanTag == 'Quarantined') {
+        return `File in quarantine, current period: ${daysSince(scanDate)} days.`
     }
-    if (scan.toLowerCase().includes('passed') && scan2.toLowerCase().includes('passed')) {
-        return 'Released'
+    if (scanTag == 'Passed') {
+        return `File has passed the ${openWs.replace('-', ' ')} scan.`
     }
-    return 'Risk, second scan will not be completed.'
+    if (scanTag == 'Released') {
+        return `File has been released from quarantine.`
+    }
+    if (scanTag == 'Risk') {
+        return `File has not completed its quarantine period and is at risk.`
+    }
 }
 
 const genNewRow = (label, value) => {
@@ -51,7 +58,10 @@ function addFileInfo(fileInfoPanel) {
     var scans = ["usermeta-virus-scan-first", "usermeta-virus-scan-second"].map(item => getMetaItem(item) || 'File has not been scanned');
     var tag = getMetaItem("etag")
     var mime = getMetaItem("mime")
-    var status = getQuarantineStatus(...scans)
+    const scanTag = getMetaItem("usermeta-virus-scan")
+    const firstScanDate = getMetaItem("usermeta-virus-scan-passed-date")
+    var status = getQuarantineStatus(...scans, scanTag,firstScanDate)
+    
     setTimeout(function () {
         let newRows = document.createElement("div")
         newRows.style.marginTop = "-11px"
