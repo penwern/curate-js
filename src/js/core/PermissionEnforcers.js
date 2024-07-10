@@ -6,7 +6,7 @@ const permissionHandlers = {
             description: "enforce workspace upload permissions for standard users",
             handler: (e)=>{
                 pydio.user.getIdmUser().then(idmUser=>{
-                    if (!['quarantine', 'personal-files', 'common files'].includes(Curate.workspaces.getOpenWorkspace()) && !idmUser.Roles.find(r=>r.Label = "Admin")){
+                    if (!['quarantine', 'personal-files', 'common files'].includes(Curate.workspaces.getOpenWorkspace()) && !idmUser.Roles.find(r=>r.Label = "Admin") && e.dataTransfer?.files.length > 0){
                         e.stopImmediatePropagation()
                         const content = `<div>
                             <p>Please upload your content to the Quarantine workspace instead. This will ensure your content is correctly scanned for malware before being released into the system.</p>
