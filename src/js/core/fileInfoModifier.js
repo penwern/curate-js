@@ -69,6 +69,21 @@ function addFileInfo(fileInfoPanel) {
         newRows.style.marginTop = "-11px"
         newRows.id = "curateAdditionalInfo"
         let newinfodivPronom = genNewRow("Pronom ID", pid)
+        if (pid !== "File has not been characterised") {
+            newinfodivPronom.style.cursor = "pointer"
+            newinfodivPronom.style.transition = "all 0.2s ease-in-out"
+            newinfodivPronom.addEventListener("mouseenter", e => {
+                newinfodivPronom.style.textDecoration = "underline"
+                newinfodivPronom.style.backgroundColor = "rgba(153, 153, 153, 0.2)"
+            })
+            newinfodivPronom.addEventListener("mouseleave", e => {
+                newinfodivPronom.style.textDecoration = "none"
+                newinfodivPronom.style.backgroundColor = "transparent"
+            })
+            newinfodivPronom.addEventListener("click", e => {
+                window.open(`https://www.nationalarchives.gov.uk/pronom/${pid}`)
+            })
+        }
         let newinfodivScan = genNewRow("First virus scan result", scans[0])
         let newinfodivScan2 = genNewRow("Second virus scan result", scans[1])
         let newinfodivMime = genNewRow("Mimetype", mime)
