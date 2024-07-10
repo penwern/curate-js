@@ -22,8 +22,10 @@ const getQuarantineStatus = (scan, scan2, scanTag, scanDate) => {
     if (scanTag == 'Quarantined') {
         return `File in quarantine, current period: ${daysSince(scanDate)} days.`
     }
-    if (scanTag == 'Passed') {
+    if (scanTag == 'Passed' && (openWs == 'personal-files' || openWs == 'common files')) {
         return `File has passed the ${openWs.replace('-', ' ')} scan.`
+    }else if (scanTag == 'Passed'){
+        return `File has passed an initial scan but will not be scanned again, please move it into the Quarantine workspace.`
     }
     if (scanTag == 'Released') {
         return `File has been released from quarantine.`
