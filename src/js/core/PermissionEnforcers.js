@@ -65,6 +65,7 @@ window.addEventListener("load",e=>{
 function attachAllEventHandlers(permissionEvents) {
     Object.entries(permissionEvents).forEach(([category, events]) => {
         Object.entries(events).forEach(([eventName, {event, target, handler}]) => {
+            console.log("attaching event handler", permissionEvents[category][eventName])
             try{
                 target.addEventListener(event, handler);
             }catch(err){
