@@ -20,12 +20,12 @@ const permissionHandlers = {
     },
     sharedSite:{
         enforceNoCustomActions:{
-            event: "load", 
+            event: "DOMContentLoaded", 
             target: document,
             description: "enforce no custom actions for shared sites",
             handler: (e)=>{
                 console.log("shared site enforce no custom actions")
-                if (window.location.pathname.includes("/public/")){
+                if (window.location.pathname.includes("/public/") && false == true){
                     const mutationObserver = new MutationObserver(mutations => {
                         mutations.forEach(mutation => {
                             if (mutation.type === "childList"){
