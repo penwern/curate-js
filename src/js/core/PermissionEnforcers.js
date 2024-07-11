@@ -24,6 +24,22 @@ const permissionHandlers = {
             target: document,
             description: "enforce no custom actions for shared sites",
             handler: (e)=>{
+                console.log("shared site enforce no custom actions")
+                if (window.location.pathname.includes("/public/")){
+                    const mutationObserver = new MutationObserver(mutations => {
+                        mutations.forEach(mutation => {
+                            if (mutation.type === "childList"){
+                                const moreButton = document.querySelector(".toolbars-button-menu.action-group_more_action");
+                                const darkModeButton = Array.from(document.querySelector("#main-toolbar").children).find(n=>n.type === "button" && n.querySelector('.action-local_toggle_theme'))
+                                const newButton = Array.from(document.querySelectorAll(".toolbars-button-menu")).find(n=>n.classList.length == 1)
+                                moreButton ? moreButton.remove() : null;
+                                darkModeButton ? darkModeButton.remove() : null;
+                                newButton ? newButton.remove() : null;
+                            }
+                        });
+                    });
+                    mutationObserver.observe(document.body, {childList: true});
+                }
                 if (window.location.pathname.includes("/public/")){
                     const moreButton = document.querySelector(".toolbars-button-menu.action-group_more_action");
                     const darkModeButton = Array.from(document.querySelector("#main-toolbar").children).find(n=>n.type === "button" && n.querySelector('.action-local_toggle_theme'))
