@@ -20,7 +20,7 @@ const permissionHandlers = {
     },
     sharedSite:{
         enforceNoCustomActions:{
-            event: "DOMContentLoaded", 
+            event: "readystatechange", 
             target: document,
             description: "enforce no custom actions for shared sites",
             handler: (e)=>{
@@ -57,7 +57,8 @@ const permissionHandlers = {
 }
 
 //main, onload attach all permission enforcing event handlers described above.
-window.addEventListener("load",e=>{
+document.addEventListener("DOMContentLoaded",e=>{
+
     attachAllEventHandlers(permissionHandlers)
 })
 
