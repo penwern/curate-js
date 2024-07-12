@@ -139,8 +139,9 @@ var selectedNode
 const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
-            let fileInfoPanel = null
+            
             for (const node of mutation.addedNodes) {
+                let fileInfoPanel = null
                 if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
                     fileInfoPanel = node
                 }else if (node instanceof HTMLElement && node.classList.contains("panelContent") && node.parentElement.classList.contains("panelCard") && node.parentElement.innerText.includes("File Info")) {
