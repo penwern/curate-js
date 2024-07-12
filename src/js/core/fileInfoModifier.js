@@ -137,7 +137,7 @@ const selectHandler = (e, fileInfoPanel) => {
 var selectedNode
 const processFileInfoPanel = (fileInfoPanel) => {
     if (fileInfoPanel) {
-        console.log("found fileInfoPanel: ", node)
+        console.log("found fileInfoPanel: ", fileInfoPanel)
         //found fileInfoPanel
 
         // Check if "selectHandler" is in the observers array
@@ -155,7 +155,8 @@ const processFileInfoPanel = (fileInfoPanel) => {
             fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
         })
         if (node.querySelector(".panelContent")) {
-            addFileInfo(node)
+            console.log("trying to add fileInfoPanel: ", node)
+            addFileInfo(fileInfoPanel)
         }
         return;
     }
