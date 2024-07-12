@@ -155,7 +155,7 @@ const processFileInfoPanel = (fileInfoPanel) => {
             fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
         })
         if (node.querySelector(".panelContent")) {
-            console.log("trying to add fileInfoPanel: ", node)
+            console.log("trying to add fileInfoPanel: ", fileInfoPanel)
             addFileInfo(fileInfoPanel)
         }
         return;
