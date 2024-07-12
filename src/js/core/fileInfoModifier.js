@@ -135,13 +135,20 @@ const selectHandler = (e, fileInfoPanel) => {
     }
 }
 var selectedNode
+
 const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
+            let fileInfoPanel = null
             for (const node of mutation.addedNodes) {
                 if (node instanceof HTMLElement && node.classList.contains("panelCard") && node.innerText.includes("File Info")) {
+                    fileInfoPanel = node
+                }else if (node instanceof HTMLElement && node.classList.contains("panelContent") && node.parentElement.classList.contains("panelCard") && node.parentElement.innerText.includes("File Info")) {
+                    fileInfoPanel = node.parentElement
+                }
+
+                if (fileInfoPanel) {
                     //found fileInfoPanel
-                    const fileInfoPanel = node
 
                     // Check if "selectHandler" is in the observers array
                     if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
@@ -149,10 +156,13 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
                     }
                     fileInfoPanel.firstElementChild.addEventListener("click", e => {
                         if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-up")) {
-                            fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
+                            //fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
                         } else if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-down")) {
-                            addFileInfo(fileInfoPanel)
+                            //addFileInfo(fileInfoPanel)
                         }
+                    })
+                    onElementRemoved(fileInfoPanel.querySelector(".panelContent"), () => {
+                        fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
                     })
                     if (node.querySelector(".panelContent")) {
                         addFileInfo(node)
@@ -163,4 +173,31 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
         }
     }
 });
+function onElementRemoved(element, callback) {
+    // Ensure the element exists and has a parent node to observe
+    if (!element || !element.parentElement) {
+      console.error('The element or its parent is not defined.');
+      return;
+    }
+  
+    // Create a MutationObserver to watch for changes in the parent element
+    const observer = new MutationObserver(mutations => {
+      for (let mutation of mutations) {
+        // Check each mutation record for removed nodes
+        if (mutation.removedNodes.length) {
+          for (let removedNode of mutation.removedNodes) {
+            // Check if the removed node is the target element or contains the target element
+            if (removedNode === element || removedNode.contains(element)) {
+              callback(); // Execute the callback function
+              observer.disconnect(); // Disconnect the observer to clean up resources
+              return; // Exit after handling the removal
+            }
+          }
+        }
+      }
+    });
+  
+    // Start observing the parent element for changes in its child elements
+    observer.observe(element.parentElement, { childList: true, subtree: true });
+  }
 fileInfoObserver.observe(document.documentElement, { childList: true, subtree: true });
