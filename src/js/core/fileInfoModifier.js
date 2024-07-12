@@ -148,6 +148,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
                 }
 
                 if (fileInfoPanel) {
+                    console.log("found fileInfoPanel: ", node)
                     //found fileInfoPanel
 
                     // Check if "selectHandler" is in the observers array
