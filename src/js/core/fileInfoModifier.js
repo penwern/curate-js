@@ -135,7 +135,31 @@ const selectHandler = (e, fileInfoPanel) => {
     }
 }
 var selectedNode
+const processFileInfoPanel = (fileInfoPanel) => {
+    if (fileInfoPanel) {
+        console.log("found fileInfoPanel: ", node)
+        //found fileInfoPanel
 
+        // Check if "selectHandler" is in the observers array
+        if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
+            pydio._dataModel.observe("selection_changed", e => { selectHandler(e) })
+        }
+        fileInfoPanel.firstElementChild.addEventListener("click", e => {
+            if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-up")) {
+                //fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
+            } else if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-down")) {
+                //addFileInfo(fileInfoPanel)
+            }
+        })
+        onElementRemoved(fileInfoPanel.querySelector(".panelContent"), () => {
+            fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
+        })
+        if (node.querySelector(".panelContent")) {
+            addFileInfo(node)
+        }
+        return;
+    }
+}
 const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
@@ -146,31 +170,7 @@ const fileInfoObserver = new MutationObserver((mutationsList, observer) => {
                 }else if (node instanceof HTMLElement && node.classList.contains("panelContent") && node.parentElement.classList.contains("panelCard") && node.parentElement.innerText.includes("File Info")) {
                     processFileInfoPanel(node.parentElement)
                 }
-                const processFileInfoPanel = (fileInfoPanel) => {
-                    if (fileInfoPanel) {
-                        console.log("found fileInfoPanel: ", node)
-                        //found fileInfoPanel
-
-                        // Check if "selectHandler" is in the observers array
-                        if (!pydio._dataModel._observers.selection_changed.includes(selectHandler)) {
-                            pydio._dataModel.observe("selection_changed", e => { selectHandler(e) })
-                        }
-                        fileInfoPanel.firstElementChild.addEventListener("click", e => {
-                            if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-up")) {
-                                //fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
-                            } else if (fileInfoPanel.querySelector('[class*="mdi-chevron-"]').classList.contains("mdi-chevron-down")) {
-                                //addFileInfo(fileInfoPanel)
-                            }
-                        })
-                        onElementRemoved(fileInfoPanel.querySelector(".panelContent"), () => {
-                            fileInfoPanel.querySelector("#curateAdditionalInfo").remove()
-                        })
-                        if (node.querySelector(".panelContent")) {
-                            addFileInfo(node)
-                        }
-                        return;
-                    }
-                }
+                
             }
         }
     }
