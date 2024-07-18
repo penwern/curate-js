@@ -59,6 +59,9 @@ function addFileInfo(fileInfoPanel) {
     var pid = getMetaItem("files")?.[0]?.matches?.[0]?.id ?? "File has not been characterised";
     var scans = ["usermeta-virus-scan-first", "usermeta-virus-scan-second"].map(item => getMetaItem(item) || 'File has not been scanned');
     var tag = getMetaItem("etag")
+    if (tag.endsWith('-1')) {
+        tag = "Local hash "+getMetaItem("x-cells-hash")
+    }
     var mime = getMetaItem("mime")
     const scanTag = getMetaItem("usermeta-virus-scan")
     const firstScanDate = getMetaItem("usermeta-virus-scan-passed-date")
