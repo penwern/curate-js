@@ -95,6 +95,7 @@ function addFileInfo(fileInfoPanel) {
         fileInfoPanel.querySelector(".panelContent").childNodes.forEach(row => {
             if (row.innerText.includes('ETag')) {
                 row.firstChild.innerText = 'Checksum'
+                row.querySelector(".infoPanelValue").innerText = tag
             }
         })
         
