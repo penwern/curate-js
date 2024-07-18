@@ -6,6 +6,7 @@ import '../js/core/OAIHarvestClient.js';
 import '../js/core/publicAccessModifier.js';
 import '../js/core/tourModifier.js';
 import '../js/core/ChecksumValidation.js';
+import '../js/core/PassOaiToChildren.js';
 import '../js/web-components/atom-search.js';
 import '../js/web-components/atom-connector.js';
 import '../js/web-components/dip-slug-resolver.js';

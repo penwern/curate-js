@@ -681,7 +681,7 @@ line {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-.config-modal-close-button{
+.config-modal-close-button {
   width: 50%;
   background-color: var(--md-sys-color-surface-variant);
   padding: 0.5em;
@@ -691,6 +691,28 @@ line {
 }
 .config-modal-close-button:hover{
   background-color: var(--md-sys-color-outline);
+}
+.config-modal-ok-button {
+  width: 30%;
+  background-color: var(--md-sys-color-surface-variant);
+  padding: 0.5em;
+  border-radius: 0.5em;
+  border: none;
+  transition: all 0.3s ease;
+}
+.config-modal-ok-button:hover{
+  background-color: rgb(74, 185, 87);
+}
+.config-modal-cancel-button {
+  width: 30%;
+  background-color: var(--md-sys-color-surface-variant);
+  padding: 0.5em;
+  border-radius: 0.5em;
+  border: none;
+  transition: all 0.3s ease;
+}
+.config-modal-cancel-button:hover{
+  background-color: rgb(185, 74, 74);
 }
 .config-save-button{
   display:none;
