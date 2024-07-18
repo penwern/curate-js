@@ -60,7 +60,7 @@ function addFileInfo(fileInfoPanel) {
     var scans = ["usermeta-virus-scan-first", "usermeta-virus-scan-second"].map(item => getMetaItem(item) || 'File has not been scanned');
     var tag = pydio._dataModel._selectedNodes[0]._metadata.get("etag")
     if (tag.endsWith('-1')) {
-        tag = "Local hash "+pydio._dataModel._selectedNodes[0]._metadata.get("x-cells-hash")
+        tag = "Local hash"
     }
     var mime = getMetaItem("mime")
     const scanTag = getMetaItem("usermeta-virus-scan")
