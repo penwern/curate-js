@@ -58,9 +58,9 @@ function addFileInfo(fileInfoPanel) {
     // aggressive nullish coalescing to avoid errors since seigfried info is not always present
     var pid = getMetaItem("files")?.[0]?.matches?.[0]?.id ?? "File has not been characterised";
     var scans = ["usermeta-virus-scan-first", "usermeta-virus-scan-second"].map(item => getMetaItem(item) || 'File has not been scanned');
-    var tag = getMetaItem("etag")
+    var tag = pydio._dataModel._selectedNodes[0]._metadata.get("etag")
     if (tag.endsWith('-1')) {
-        tag = "Local hash "+getMetaItem("x-cells-hash")
+        tag = "Local hash "+pydio._dataModel._selectedNodes[0]._metadata.get("x-cells-hash")
     }
     var mime = getMetaItem("mime")
     const scanTag = getMetaItem("usermeta-virus-scan")
