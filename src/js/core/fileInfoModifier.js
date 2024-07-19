@@ -16,10 +16,10 @@ const daysSince = (scanDate) => Math.floor((new Date() - new Date(scanDate)) / 8
 
 const getQuarantineStatus = (scan, scan2, scanTag, scanDate) => {
     const openWs = Curate.workspaces.getOpenWorkspace()
-    if ((!scanTag || scan == 'File has not been scanned') && openWs == 'quarantine') {
+    if ((!scanTag || scan == 'File has not been scanned') && openWs == 'quarantine' && scanTag !== 'Scan Limit Exceeded') {
         return 'This file has not been scanned and is at risk.'
     }
-    if ((!scanTag || scan == 'File has not been scanned') && openWs !== 'quarantine') {
+    if ((!scanTag || scan == 'File has not been scanned') && openWs !== 'quarantine' && scanTag !== 'Scan Limit Exceeded') {
         return 'This file has not been scanned and is at risk. Please move it into the Quarantine workspace to be scanned.'
     }
     if (scanTag == 'Quarantined') {

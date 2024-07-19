@@ -125,7 +125,7 @@ document.addEventListener('change', function(event) {
     if (event.target.type === 'checkbox') {
         // Logging the checkbox's id (or name if id is not available) and its new checked state
         const siblingText = event.target.nextElementSibling?.textContent.includes("Enable OAI-PMH Harvesting")
-        const selectedNodes = pydio._dataModel._selectedNodes[0]
+        const selectedNode = pydio._dataModel._selectedNodes[0]
         const isFolder = !selectedNode._isLeaf
         if (siblingText && isFolder){
             Curate.ui.modals.curatePopup({"title": "Send Update to Children", buttonType: "okCancel"}, {"afterLoaded":c=>{
