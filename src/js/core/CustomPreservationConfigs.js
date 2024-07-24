@@ -1,7 +1,23 @@
   async function submitPreservationRequest(configId) {
-        const token = PydioApi.getRestClient().authentications.oauth2.accessToken
+        const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         const url = `${window.location.protocol}//${window.location.hostname}/a/scheduler/hooks/a3m-transfer`;
-        const paths = pydio._dataModel._selectedNodes.map(n => Curate.workspaces.getOpenWorkspace() + n._path);
+        const paths = pydio._dataModel._selectedNodes.map(n => ({
+            path: Curate.workspaces.getOpenWorkspace() + n._path,
+            slug: n._metadata.get("usermeta-atom-linked-description") || ""
+        }));
+        const config = JSON.parse(sessionStorage.getItem("preservationConfigs")).find(obj => obj.id == configId)
+        console.log("here's tha config boiiiiii", config)
+        if (config["dip_enabled"] == 1) {
+            const dipWithoutSlugs = pydio._dataModel._selectedNodes.filter(n=>!n._metadata.get("usermeta-atom-linked-description"))
+            if (dipWithoutSlugs?.length > 0) {
+                const resolveDips = Curate.ui.modals.curatePopup({title:"Search for an AtoM Description"}, {"afterLoaded":c=>{
+                    const s = document.createElement("dip-slug-resolver")
+                    c.querySelector(".config-main-options-container").appendChild(s)
+                    s.setNodes(dipWithoutSlugs)
+                }})
+                resolveDips.fire()
+            }
+        }
         const bodyData = JSON.stringify({ "Paths": paths, "JobParameters": { "ConfigId": configId.toString() } })
         const headers = {
             "accept": "application/json",
@@ -37,9 +53,10 @@
             });
 
     }
-    function getPreservationConfigs() {
+    async function getPreservationConfigs() {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/get_data`;
-        return fetch(url)
+        const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+        return fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -400,22 +417,6 @@
         document.body.appendChild(modalContainer);
         // Display the modal
         modalContainer.style.display = 'flex';
-        setTimeout(() => {
-            // Add document click listener to close modal when clicked off
-            document.addEventListener("click", e => {
-                if (e.target == modalContent || modalContent.contains(e.target)) {
-                    return
-                }
-                modalContainer.remove()
-            })
-            // Add document listener to close modal when escape key is pressed
-            document.addEventListener("keyup", e => {
-                if (e.keyCode !== 27) {
-                    return
-                }
-                modalContainer.remove()
-            })
-        }, 200)
 
     }
     function createConfigsBox(target, configs) {
@@ -745,13 +746,15 @@
             })
         }
     }
-    function deletePreservationConfig(id) {
+    async function deletePreservationConfig(id) {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/delete_data/${id}`;
+        const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         })
             .then(response => {
@@ -770,13 +773,15 @@
                 }
             })
     }
-    function setPreservationConfig(config) {
+    async function setPreservationConfig(config) {
         const url = `${window.location.protocol}//${window.location.hostname}:6900/set_data`;
+        const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(config)
         })
@@ -849,7 +854,26 @@
     ];
 
     window.addEventListener("load", e => {
-        getPreservationConfigs()
+        (async function() {
+            const waitForGlobalVariable = (varName, interval = 50) => {
+              return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                  if (window[varName] !== undefined) {
+                    clearInterval(checkInterval);
+                    resolve(window[varName]);
+                  }
+                }, interval);
+              });
+            };
+          
+            try {
+              const glob = await waitForGlobalVariable('PydioApi');
+              getPreservationConfigs()
+            } catch (error) {
+              console.error('An error occurred:', error);
+            }
+          })();
+        
         setTimeout(() => {
             document.addEventListener("mousedown", e => {
                 if (document.querySelector('.context-menu [role="menu"]') && document.querySelector('.context-menu [role="menu"]').contains(e.target)) {
