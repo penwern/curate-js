@@ -37,7 +37,7 @@ window.addEventListener("load", () => {
                             const p = this._targetNode._path;
                             const pathSuffix = p.endsWith('/') ? '' : '/';
                             const parentLabelPart = this._parent._label ? `${this._parent._label}/` : '';
-                            const filename = `quarantine${p}${pathSuffix}${parentLabelPart}${this._label}`;
+                            const filename = `${Curate.workspaces.getOpenWorkspace()}${p}${pathSuffix}${parentLabelPart}${this._label}`;
                             fetchCurateStats(filename, checksumData.hash, 0);
                         }, delay);
                     }).catch(error => {

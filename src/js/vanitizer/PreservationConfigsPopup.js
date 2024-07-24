@@ -88,13 +88,16 @@ function createCuratePopup(title, inputs) {
         const curConfig = {}
         const matchingObj = curConfigs.find(obj => obj.name == saveName);
         if (matchingObj) {
-            curConfig["id"] = matchingObj.id;
+            curConfig["id"] = matchingObj.id; // we're editing an already saved config
         } else {
             curConfig["user"] = pydio.user.id //created user is this one
         }
         inputIds.forEach(id => {
             const input = document.querySelector("#" + id)
             if (!input) {
+                return
+            }
+            if (input.type == "submit") { //do not add "go to atom config" button
                 return
             }
             if (input.disabled) {
@@ -118,7 +121,10 @@ function createCuratePopup(title, inputs) {
                 }
             }
         })
-        setPreservationConfig(curConfig)
+        if (matchingObj){ //edit existing config
+            editPreservationConfig(curConfig)
+        }else{
+            setPreservationConfig(curConfig) //save new config
             .then(r => {
                 if (r) {
                     const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
@@ -135,6 +141,8 @@ function createCuratePopup(title, inputs) {
                         })
                 }
             })
+        }
+
     })
     optionsContainer.appendChild(saveConfig)
     mainOptionsContainer.appendChild(optionsContainer)
@@ -180,27 +188,17 @@ function createCuratePopup(title, inputs) {
     document.body.appendChild(modalContainer);
     // Display the modal
     modalContainer.style.display = 'flex';
-    setTimeout(() => {
-        // Add document click listener to close modal when clicked off
-        document.addEventListener("click", e => {
-            if (e.target == modalContent || modalContent.contains(e.target)) {
-                return
-            }
-            modalContainer.remove()
-        })
-        // Add document listener to close modal when escape key is pressed
-        document.addEventListener("keyup", e => {
-            if (e.keyCode !== 27) {
-                return
-            }
-            modalContainer.remove()
-        })
-    }, 200)
 
 }
-function getPreservationConfigs() {
-    const url = `${window.location.origin}:6900/get_data`;
-    return fetch(url)
+async function getPreservationConfigs() {
+    const url = `${window.location.origin}:6900/preservation`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+    return fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -215,19 +213,46 @@ function getPreservationConfigs() {
             console.error('Fetch error:', error);
         });
 }
-function setPreservationConfig(config) {
-    const url = `${window.location.origin}:6900/set_data`;
+async function editPreservationConfig(config) {
+    const url = `${window.location.origin}:6900/preservation/${config.id}`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(config)
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error while updating config, Status: ${response.status}`);
+            }else if (response.status == 200) {
+                //save configs to session
+                console.info("config saved successfully")
+                return response.json();
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+async function setPreservationConfig(config) {
+    const url = `${window.location.origin}:6900/preservation`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+    return fetch(url, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(config)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error while creating config, Status: ${response.status}`);
             } else if (response.status == 200) {
                 //save configs to session
                 console.info("config saved successfully")
@@ -238,13 +263,15 @@ function setPreservationConfig(config) {
             console.error('Fetch error:', error);
         });
 }
-function deletePreservationConfig(id) {
-    const url = `${window.location.origin}:6900/delete_data/${id}`;
+async function deletePreservationConfig(id) {
+    const url = `${window.location.origin}:6900/preservation/${id}`;
+    const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "DELETE",
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     })
         .then(response => {
@@ -544,6 +571,18 @@ function createInput(input, target) {
         sliderContainer.appendChild(slider);
         inputContainer.appendChild(label)
         inputContainer.appendChild(sliderContainer);
+    }else if(input.type == "button"){
+        const label = document.createElement('label');
+        label.textContent = input.label;
+        label.classList.add('config-text-label');
+        label.style.visibility = "hidden";
+        const button = document.createElement('button');
+        button.id = input.name
+        button.classList.add('config-button');
+        button.textContent = input.text;
+        button.onclick = input.onclick;
+        inputContainer.appendChild(label);
+        inputContainer.appendChild(button);
     }
 
     if (input.suboptions) {
@@ -602,6 +641,21 @@ const inputs = [
     { label: "Image Normalisation Format", name: "image_normalization_tiff",type: "dropdown", options:["TIFF", "JPEG2000"] },
   ]},
 ]},
+{ category: "Dissemination", inputs: [
+    { label: "Create Dissemination Package", name: "dip_enabled", type:"toggle", suboptions: [
+        { label: "Dissemination Information", name: "dip_info", type:"info", text:"Create dissemination packages from AIPs generated by this config. Created DIPs will automatically be connected to the linked description of the source data. For this option to work, you must configure a connected AtoM instance."},
+        { label: "Go to AtoM Configuration", name: "atom_config", type:"button", text:"Go to AtoM Configuration", onclick:e => {
+            const p = Curate.ui.modals.curatePopup({"title": "Connect to Your AtoM Instance"},{
+                "afterLoaded":(c)=>{
+                    const t = document.createElement("connect-to-atom")
+                    c.querySelector(".config-main-options-container").appendChild(t)
+                }
+            })
+            p.fire()
+        }},
+    ]
+    }]
+},
 { category: "Packaging and Compression", inputs: [
   { label: "AIP Packaging Type", name: "process_type", type:"dropdown", options:["standard", "eark"] },
   { label: "Compress AIPs", name: "compress_aip",type:"toggle", suboptions:[
