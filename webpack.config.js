@@ -23,7 +23,7 @@ module.exports = {
         test: /\.js$/,
         include: [
           path.resolve(__dirname, 'src/js/core'),
-          //path.resolve(__dirname, 'src/js/external'),
+          path.resolve(__dirname, 'src/js/external'),
           path.resolve(__dirname, 'src/js/workers'),
           path.resolve(__dirname, 'src/js/templates'),
           path.resolve(__dirname, 'src/js/web-components'),
