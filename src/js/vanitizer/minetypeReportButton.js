@@ -340,33 +340,33 @@ loadspinner.style.position = 'relative'
 loadspinner.style.top = '-73px'
 loadspinner.style.left = '-20px'
 waitForElm("#displaycanv").then((elm) => {
-		  var ctx = document.querySelector("#displaycanv").getContext("2d");
+  var ctx = document.querySelector("#displaycanv").getContext("2d");
   lbs = [1]
   dats = [1]
-		window.MimeChart = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: lbs,
-        datasets: [{
-          backgroundColor: colourArray,
-          data: dats
-        }]
+  window.MimeChart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: lbs,
+      datasets: [{
+        backgroundColor: colourArray,
+        data: dats
+      }]
+    },
+    options: {
+      layout: {
+          padding: {
+              bottom: 15
+          }
       },
-      options: {
-      	layout: {
-            padding: {
-                bottom: 15
-            }
-        },
-      	hoverOffset: 20,
-        title: {
-          display: true,
-          text: ""
-        }
+      hoverOffset: 20,
+      title: {
+        display: true,
+        text: ""
       }
-      })
+    }
+  })
 
-    loadc()
+  loadc()
 });
 
 uniquetypes = []
