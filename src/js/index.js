@@ -15,8 +15,7 @@ import '../js/web-components/oai-harvest-updates.js';
 //import './deprecated/UploadChecksumGenerator.js';
 import '../js/core/PermissionEnforcers.js'
 import '../js/external/ExternalScripts.js';
-import '@iconify/iconify'
-import 'chart.js';
-import Swal from 'sweetalert2';
-import Papa from 'papaparse';
-import he from 'he';
+//import 'chart.js';
+//import Swal from 'sweetalert2';
+//import Papa from 'papaparse';
+//import he from 'he';
