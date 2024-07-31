@@ -23,6 +23,6 @@ function handleRightClick(event) {
 }
 
 // Add the event listener to the document
-window.addEventListener("load", ()=>document.addEventListener("mousedown", handleRightClick));
+document.addEventListener("dynamicScriptLoaded", ()=>document.addEventListener("mousedown", handleRightClick));
 
 export default CurateContextualHelp;
