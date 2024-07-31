@@ -1,6 +1,6 @@
 import CurateWorkerManager from './WorkerManager.js';
 
-window.addEventListener("load", () => {
+document.addEventListener("dynamicScriptLoaded", () => {
     (async () => {
         // Wait until UploaderModel is defined
         while (typeof UploaderModel === 'undefined') {

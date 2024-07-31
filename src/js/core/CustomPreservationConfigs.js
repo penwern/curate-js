@@ -853,7 +853,7 @@
         }
     ];
 
-    window.addEventListener("load", e => {
+    document.addEventListener("dynamicScriptLoaded", e => {
         (async function() {
             const waitForGlobalVariable = (varName, interval = 50) => {
               return new Promise((resolve) => {
