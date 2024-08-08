@@ -10,6 +10,10 @@
 .ajxp_node_collection:has(span.metadata_chunk.metadata_chunk_standard.metadata_chunk_bytesize) .mdi-folder::before {
   content: "\F0254" !important;
 }
+/**hide additional ingest dropdown**/
+.action-branding_custom_12{
+  display: none !important;
+}
 /**icon for linked AtoM tag**/
 .metadata_chunk.metadata_chunk_other.metadata_chunk_usermeta-atom-linked-description::before {
   content: "\F0337" " Linked Description:"; /* Unicode for the desired icon and custom text */
@@ -719,7 +723,7 @@ line {
   background: var(--customerColourPrimary);
   width: 102%;
   border: none;
-  height: 10%;
+  height: 3em !important;
   transition: all 0.3s ease;
 }
 .config-save-button:hover{

@@ -86,7 +86,7 @@ function createCuratePopup(title, inputs) {
                 }));
         });
         const curConfig = {}
-        const matchingObj = curConfigs.find(obj => obj.name == saveName);
+        const matchingObj = curConfigs?.find(obj => obj.name == saveName);
         if (matchingObj) {
             curConfig["id"] = matchingObj.id; // we're editing an already saved config
         } else {
@@ -161,6 +161,7 @@ function createCuratePopup(title, inputs) {
     //create and add the saved configs area
     const savedConfigsContainer = document.createElement('div')
     savedConfigsContainer.classList.add('config-options-container')
+    savedConfigsContainer.id = "savedConfigsContainer"
     savedConfigsContainer.style = "display:flex;align-items:center;justify-content:flex-start;flex-direction:column;"
     //create and add title to saved configs area
     const savedTitle = document.createElement('div')
@@ -169,7 +170,7 @@ function createCuratePopup(title, inputs) {
     savedTitle.textContent = "Saved Configs"
     savedConfigsContainer.appendChild(savedTitle)
     const savedConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-    createConfigsBox(savedScrollContainer, savedConfigs)
+    createConfigsBox(savedScrollContainer, savedConfigsContainer, savedConfigs)
     savedConfigsContainer.appendChild(savedScrollContainer)
     mainOptionsContainer.appendChild(savedConfigsContainer);
     // Append modal container to the body
@@ -191,7 +192,7 @@ function createCuratePopup(title, inputs) {
 
 }
 async function getPreservationConfigs() {
-    const url = `${window.location.origin}:6900/preservation`;
+    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: 'GET',
@@ -214,7 +215,7 @@ async function getPreservationConfigs() {
         });
 }
 async function editPreservationConfig(config) {
-    const url = `${window.location.origin}:6900/preservation/${config.id}`;
+    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation/${config.id}`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
@@ -236,10 +237,11 @@ async function editPreservationConfig(config) {
         })
         .catch(error => {
             console.error('Fetch error:', error);
+            Curate.ui.modals.curatePopup({"title": "Error", "type": "error","content": "There was an error saving your modified configuration. Please try again, or contact support if the problem persists."}).fire()
         });
     }
 async function setPreservationConfig(config) {
-    const url = `${window.location.origin}:6900/preservation`;
+    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
@@ -250,21 +252,22 @@ async function setPreservationConfig(config) {
         },
         body: JSON.stringify(config)
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error while creating config, Status: ${response.status}`);
-            } else if (response.status == 200) {
-                //save configs to session
-                console.info("config saved successfully")
-                return response.json();
-            }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-        });
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error while creating config, Status: ${response.status}`);
+        } else if (response.status == 200) {
+            //save configs to session
+            console.info("config saved successfully")
+            return response.json();
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        Curate.ui.modals.curatePopup({"title": "Error", "type": "error","content": "There was an error saving your configuration. Please try again, or contact support if the problem persists."}).fire()
+    });
 }
 async function deletePreservationConfig(id) {
-    const url = `${window.location.origin}:6900/preservation/${id}`;
+    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation/${id}`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "DELETE",
@@ -274,24 +277,28 @@ async function deletePreservationConfig(id) {
             'Authorization': `Bearer ${token}`
         }
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Check if the delete was successful based on the response data or status
-            if (data) {
-                getPreservationConfigs()
-                return data; // Return the response data
-            } else {
-                throw new Error('Delete operation failed.');
-            }
-        })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Check if the delete was successful based on the response data or status
+        if (data) {
+            getPreservationConfigs()
+            return data; // Return the response data
+        } else {
+            throw new Error('Delete operation failed.');
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+        Curate.ui.modals.curatePopup({"title": "Error", "type": "error","content": "There was an error deleting your configuration. Please try again, or contact support if the problem persists."}).fire()
+    });
 }
-function createConfigsBox(target, configs) {
-    configs.forEach(config => {
+function createConfigsBox(target, container, configs) {
+    configs?.forEach(config => {
         const configItem = document.createElement('div')
         configItem.id = "config-" + config.id
         configItem.classList.add('saved-config-item')
@@ -464,14 +471,29 @@ function createConfigsBox(target, configs) {
         target.appendChild(configItem)
     })
     const savedItems = target.querySelectorAll(".saved-config-item")
-    savedItems.forEach((el, index) => el.style.animationDelay = `${(index * 0.55) / savedItems.length}s`);
-    savedItems.forEach((el, index, array) => {
+    savedItems?.forEach((el, index) => el.style.animationDelay = `${(index * 0.55) / savedItems.length}s`);
+    savedItems?.forEach((el, index, array) => {
         const delay = 0.05 * (index + 1);
         const duration = 1.0 - delay;
         el.style.animationDelay = `${delay}s`;
         el.style.animationDuration = `${duration}s`;
     });
+    if (!configs || configs?.length == 0) {
 
+        const noConfigs = document.createElement("div")
+        noConfigs.textContent = "No Saved Preservation Configs Found"
+        noConfigs.style.margin = "3em";
+        noConfigs.style.width = "80%";
+        noConfigs.style.height = "10%";
+        noConfigs.style.textAlign = "center";
+        noConfigs.style.display = "flex";
+        noConfigs.style.color = "white";
+        noConfigs.style.background = "var(--md-sys-color-outline-variant-50)";
+        noConfigs.style.justifyContent = "center";
+        noConfigs.style.alignItems = "center";
+        noConfigs.style.borderRadius = "1.5em";
+        container.appendChild(noConfigs)
+    }
 
 }
 function createInput(input, target) {
@@ -630,7 +652,7 @@ function createInput(input, target) {
     }
 }
 
-// Example usage:
+
 const inputs = [
 { category: "Details", inputs: [
   { label: "Config Name", name: "name", type: "text" },
@@ -641,7 +663,8 @@ const inputs = [
     { label: "Image Normalisation Format", name: "image_normalization_tiff",type: "dropdown", options:["TIFF", "JPEG2000"] },
   ]},
 ]},
-{ category: "Dissemination", inputs: [
+// I am removing this for now because we are not using it, instead we are inferring DIP requirement from presence of an AtoM link on an object. I think we will need to go back to this later to enable reingest.
+/**{ category: "Dissemination", inputs: [
     { label: "Create Dissemination Package", name: "dip_enabled", type:"toggle", suboptions: [
         { label: "Dissemination Information", name: "dip_info", type:"info", text:"Create dissemination packages from AIPs generated by this config. Created DIPs will automatically be connected to the linked description of the source data. For this option to work, you must configure a connected AtoM instance."},
         { label: "Go to AtoM Configuration", name: "atom_config", type:"button", text:"Go to AtoM Configuration", onclick:e => {
@@ -655,7 +678,7 @@ const inputs = [
         }},
     ]
     }]
-},
+},**/
 { category: "Packaging and Compression", inputs: [
   { label: "AIP Packaging Type", name: "process_type", type:"dropdown", options:["standard", "eark"] },
   { label: "Compress AIPs", name: "compress_aip",type:"toggle", suboptions:[

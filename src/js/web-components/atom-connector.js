@@ -12,7 +12,7 @@ class ConnectToAtom extends HTMLElement {
 
   async retrieveDetails() {
     try {
-      const response = await Curate.api.fetchCurate(':6900/atom', 'GET');
+      const response = await Curate.api.fetchCurate('/api/atom', 'GET');
       this.apiKey = response.atom_api_key;
       this.atomUrl = response.atom_url;
       this.username = response.atom_username;
@@ -25,7 +25,7 @@ class ConnectToAtom extends HTMLElement {
 
   saveDetails(e) {
     e.preventDefault();
-    Curate.api.fetchCurate('/atom/config', 'PUT', {
+    Curate.api.fetchCurate('/api/atom', 'POST', {
       apiKey: this.apiKey,
       atomUrl: this.atomUrl,
       username: this.username,
