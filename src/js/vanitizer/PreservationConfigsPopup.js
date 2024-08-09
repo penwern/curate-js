@@ -85,12 +85,12 @@ function createCuratePopup(title, inputs) {
                     return [];
                 }));
         });
-        const curConfig = {}
+        const curConfig = {
+            user: pydio.user.id
+        }
         const matchingObj = curConfigs?.find(obj => obj.name == saveName);
         if (matchingObj) {
             curConfig["id"] = matchingObj.id; // we're editing an already saved config
-        } else {
-            curConfig["user"] = pydio.user.id //created user is this one
         }
         inputIds.forEach(id => {
             const input = document.querySelector("#" + id)
@@ -122,22 +122,41 @@ function createCuratePopup(title, inputs) {
             }
         })
         if (matchingObj){ //edit existing config
-            editPreservationConfig(curConfig)
-        }else{
-            setPreservationConfig(curConfig) //save new config
-            .then(r => {
+            editPreservationConfig(curConfig).then(r => {
+                console.log(r)
                 if (r) {
                     const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
                     getPreservationConfigs()
                         .then(r => {
                             const newConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+                            console.log(newConfigs)
                             if (curConfig.id) {
                                 document.querySelector("#config-" + curConfig.id).remove()
-                                createConfigsBox(savedScrollContainer, [newConfigs.find(obj => obj.id === curConfig.id)])
+                                createConfigsBox(savedScrollContainer, savedConfigsContainer,[newConfigs.find(obj => obj.id === curConfig.id)])
                             } else {
                                 const newObject = newConfigs.find(newObj => !curConfigs.some(curObj => curObj.id === newObj.id));
-                                createConfigsBox(savedScrollContainer, [newObject])
+                                createConfigsBox(savedScrollContainer, savedConfigsContainer,[newObject])
                             }
+                        })
+                saveConfig.style.display = "none"
+                }
+            })
+        }else{
+            console.log("saving new config")
+            setPreservationConfig(curConfig) //save new config
+            .then(r => {
+                console.log(r)
+                if (r) {
+                    console.log("saved new config")
+                    const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+                    getPreservationConfigs()
+                        .then(r => {
+                            const newConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
+                            console.log(newConfigs)
+                            
+                            const newObject = newConfigs.find(newObj => !curConfigs.some(curObj => curObj.id === newObj.id));
+                            createConfigsBox(savedScrollContainer,savedConfigsContainer, [newObject])
+                            
                         })
                 }
             })
@@ -255,7 +274,7 @@ async function setPreservationConfig(config) {
     .then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error while creating config, Status: ${response.status}`);
-        } else if (response.status == 200) {
+        } else {
             //save configs to session
             console.info("config saved successfully")
             return response.json();
@@ -298,6 +317,7 @@ async function deletePreservationConfig(id) {
     });
 }
 function createConfigsBox(target, container, configs) {
+    console.log(configs)
     configs?.forEach(config => {
         const configItem = document.createElement('div')
         configItem.id = "config-" + config.id
@@ -360,25 +380,7 @@ function createConfigsBox(target, container, configs) {
         configDescription.appendChild(descriptionText)
 
 
-        const configCreatedDate = document.createElement('div')
-        const createdLabel = document.createElement('label')
-        createdLabel.for = "config-created-date-" + config.id
-        createdLabel.textContent = "Created: "
-        const createdText = document.createElement('span')
-        createdText.id = "config-created-date-" + config.id
-        createdText.textContent = config.created
-        configCreatedDate.appendChild(createdLabel)
-        configCreatedDate.appendChild(createdText)
-
-        const configModified = document.createElement('div')
-        const modifiedLabel = document.createElement('label')
-        modifiedLabel.for = "config-modified-date-" + config.id
-        modifiedLabel.textContent = "Modified: "
-        const modifiedText = document.createElement('span')
-        modifiedText.id = "config-modified-date-" + config.id
-        modifiedText.textContent = config.modified
-        configModified.appendChild(modifiedLabel)
-        configModified.appendChild(modifiedText)
+       
 
         const configUser = document.createElement('div')
         const userLabel = document.createElement('label')
@@ -391,8 +393,7 @@ function createConfigsBox(target, container, configs) {
         configUser.appendChild(userText)
 
         configDetails.appendChild(configDescription)
-        configDetails.appendChild(configCreatedDate)
-        configDetails.appendChild(configModified)
+
         configDetails.appendChild(configUser)
 
         configInfo.appendChild(configLabel)

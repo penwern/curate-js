@@ -652,6 +652,7 @@ line {
   margin-top: 1em !important;
   margin-bottom: 1em !important;
   overflow-y: scroll;
+  max-height: 69vh;
 }
 /* Styling for each configuration item */
 .saved-config-item {

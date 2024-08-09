@@ -26,8 +26,8 @@ class ConnectToAtom extends HTMLElement {
   saveDetails(e) {
     e.preventDefault();
     Curate.api.fetchCurate('/api/atom', 'POST', {
-      apiKey: this.apiKey,
-      atomUrl: this.atomUrl,
+      api_key: this.apiKey,
+      atom_url: this.atomUrl,
       username: this.username,
       password: this.password
     })

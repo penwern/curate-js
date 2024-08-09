@@ -419,6 +419,7 @@
     }
     
     function createConfigsBox(target, container, configs) {
+        console.log(configs)
         configs?.forEach(config => {
             const configItem = document.createElement('div')
             configItem.id = "config-" + config.id
@@ -481,25 +482,7 @@
             configDescription.appendChild(descriptionText)
     
     
-            const configCreatedDate = document.createElement('div')
-            const createdLabel = document.createElement('label')
-            createdLabel.for = "config-created-date-" + config.id
-            createdLabel.textContent = "Created: "
-            const createdText = document.createElement('span')
-            createdText.id = "config-created-date-" + config.id
-            createdText.textContent = config.created
-            configCreatedDate.appendChild(createdLabel)
-            configCreatedDate.appendChild(createdText)
-    
-            const configModified = document.createElement('div')
-            const modifiedLabel = document.createElement('label')
-            modifiedLabel.for = "config-modified-date-" + config.id
-            modifiedLabel.textContent = "Modified: "
-            const modifiedText = document.createElement('span')
-            modifiedText.id = "config-modified-date-" + config.id
-            modifiedText.textContent = config.modified
-            configModified.appendChild(modifiedLabel)
-            configModified.appendChild(modifiedText)
+           
     
             const configUser = document.createElement('div')
             const userLabel = document.createElement('label')
@@ -512,8 +495,7 @@
             configUser.appendChild(userText)
     
             configDetails.appendChild(configDescription)
-            configDetails.appendChild(configCreatedDate)
-            configDetails.appendChild(configModified)
+    
             configDetails.appendChild(configUser)
     
             configInfo.appendChild(configLabel)
@@ -807,7 +789,7 @@
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
-            } else if (response.status == 200) {
+            } else {
                 //save configs to session
                 console.info("config saved successfully")
                 return response.json();
