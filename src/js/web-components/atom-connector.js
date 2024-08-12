@@ -7,7 +7,7 @@ class ConnectToAtom extends HTMLElement {
     this.username = '';
     this.password = '';
     this.retrieveDetails();
-    //this.render();
+    this.render();
   }
 
   async retrieveDetails() {
