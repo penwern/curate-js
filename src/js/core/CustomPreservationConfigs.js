@@ -1,6 +1,6 @@
   async function submitPreservationRequest(configId) {
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
-        const url = `${window.location.protocol}//${window.location.hostname}/a/scheduler/hooks/a3m-transfer`;
+        const url = `${window.location.origin}/a/scheduler/hooks/a3m-transfer`;
         const paths = pydio._dataModel._selectedNodes.map(n => ({
             path: Curate.workspaces.getOpenWorkspace() + n._path,
             slug: n._metadata.get("usermeta-atom-linked-description") || ""
@@ -43,7 +43,7 @@
     // Retrieves saved preservation configs from the server at route GET /api/preservation
     // Stores the configs in sessionStorage under the key "preservationConfigs"
     async function getPreservationConfigs() {
-        const url = `${window.location.protocol}//${window.location.hostname}/api/preservation`;
+        const url = `${window.location.origin}/api/preservation`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {headers: {"Authorization": `Bearer ${token}`}, method: "GET"})
             .then(response => {
@@ -743,7 +743,7 @@
         }
     }
     async function deletePreservationConfig(id) {
-        const url = `${window.location.protocol}//${window.location.hostname}/preservation/${id}`;
+        const url = `${window.location.origin}/preservation/${id}`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "DELETE",
@@ -775,7 +775,7 @@
     }
     // Saves the given preservation config to the server at route POST /preservation
     async function setPreservationConfig(config) {
-        const url = `${window.location.protocol}//${window.location.hostname}/preservation`;
+        const url = `${window.location.origin}/preservation`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "POST",
@@ -805,7 +805,7 @@
         return input.replaceAll(" ", "_");
     }
     async function editPreservationConfig(config) {
-        const url = `${window.location.protocol}//${window.location.hostname}/api/preservation/${config.id}`;
+        const url = `${window.location.origin}/api/preservation/${config.id}`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "POST",

@@ -211,7 +211,7 @@ function createCuratePopup(title, inputs) {
 
 }
 async function getPreservationConfigs() {
-    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation`;
+    const url = `${window.location.origin}/api/preservation`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: 'GET',
@@ -234,7 +234,7 @@ async function getPreservationConfigs() {
         });
 }
 async function editPreservationConfig(config) {
-    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation/${config.id}`;
+    const url = `${window.location.origin}/api/preservation/${config.id}`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
@@ -260,7 +260,7 @@ async function editPreservationConfig(config) {
         });
     }
 async function setPreservationConfig(config) {
-    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation`;
+    const url = `${window.location.origin}/api/preservation`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "POST",
@@ -286,7 +286,7 @@ async function setPreservationConfig(config) {
     });
 }
 async function deletePreservationConfig(id) {
-    const url = `${window.location.protocol}//${window.location.hostname}/api/preservation/${id}`;
+    const url = `${window.location.origin}/api/preservation/${id}`;
     const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
     return fetch(url, {
         method: "DELETE",

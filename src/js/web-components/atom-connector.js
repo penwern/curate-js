@@ -26,10 +26,10 @@ class ConnectToAtom extends HTMLElement {
   saveDetails(e) {
     e.preventDefault();
     Curate.api.fetchCurate('/api/atom', 'POST', {
-      api_key: this.apiKey,
+      atom_api_key: this.apiKey,
       atom_url: this.atomUrl,
-      username: this.username,
-      password: this.password
+      atom_username: this.username,
+      atom_password: this.password
     })
       .then(response => {
         console.log('Saved Atom details:', response);
