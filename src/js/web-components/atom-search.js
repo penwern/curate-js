@@ -316,7 +316,7 @@ class AtoMSearchInterface extends HTMLElement {
           min-width: 60vw;
           margin-bottom: 2em;
           text-align: left;
-          max-height: 25em;
+          max-height: 35em;
           overflow-y: scroll;
         }
         .info {
