@@ -4,15 +4,25 @@ class CurateWorkerManager {
     constructor() {
         this.taskQueue = [];
         this.isProcessing = false;
+        this.worker = null;
         this.initWorker();
     }
 
     initWorker() {
-        this.worker = new HashWorker();
-        this.setupWorkerHandlers();
+        try {
+            this.worker = new HashWorker();
+            this.setupWorkerHandlers();
+        } catch (error) {
+            console.error('Failed to initialize worker:', error);
+        }
     }
 
     setupWorkerHandlers() {
+        if (!this.worker) {
+            console.error('Worker not initialized');
+            return;
+        }
+
         this.worker.onmessage = event => {
             if (event.data.status === "complete" && this.currentResolve) {
                 this.currentResolve({
@@ -42,7 +52,7 @@ class CurateWorkerManager {
     }
 
     processNextTask() {
-        if (this.taskQueue.length > 0) {
+        if (this.taskQueue.length > 0 && this.worker) {
             const task = this.taskQueue.shift();
             this.currentResolve = task.resolve;
             this.currentReject = task.reject;
