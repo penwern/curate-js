@@ -1,28 +1,15 @@
+import HashWorker from '../workers/hashWorker.worker.js';
+
 class CurateWorkerManager {
     constructor() {
-        this.workerScriptUrl = new URL('../workers/hashWorker.js', import.meta.url);
         this.taskQueue = [];
         this.isProcessing = false;
         this.initWorker();
     }
 
     initWorker() {
-        fetch(this.workerScriptUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load worker script.');
-                }
-                return response.text();
-            })
-            .then(scriptContent => {
-                const blob = new Blob([scriptContent], { type: 'application/javascript' });
-                const blobURL = URL.createObjectURL(blob);
-                this.worker = new Worker(blobURL);
-                this.setupWorkerHandlers();
-            })
-            .catch(error => {
-                console.error('Worker initialization failed:', error);
-            });
+        this.worker = new HashWorker();
+        this.setupWorkerHandlers();
     }
 
     setupWorkerHandlers() {
@@ -67,4 +54,5 @@ class CurateWorkerManager {
         }
     }
 }
+
 export default CurateWorkerManager;
