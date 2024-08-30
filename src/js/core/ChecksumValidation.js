@@ -1,6 +1,7 @@
 import CurateWorkerManager from './WorkerManager.js';
 
 window.addEventListener("load", () => {
+    console.log('Loading CurateChecksumValidation.js');
     (async () => {
         // Wait until UploaderModel is defined
         while (typeof UploaderModel === 'undefined') {
@@ -8,6 +9,7 @@ window.addEventListener("load", () => {
         }
 
         const workerManager = new CurateWorkerManager();
+        console.log('WorkerManager initialized');
 
         // Save the original uploadPresigned method to call it later
         const originalUploadPresigned = UploaderModel.UploadItem.prototype.uploadPresigned;
