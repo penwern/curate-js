@@ -6,6 +6,7 @@
   },
   "private": true,
   "dependencies": {
+    "@air-apps/air-js": "^1.1.5",
     "@iconify/iconify": "^3.1.1",
     "chart.js": "^3.7.0",
     "he": "^1.2.0",
