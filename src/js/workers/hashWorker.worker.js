@@ -1,4 +1,4 @@
-importScripts("https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js")
+import SparkMD5 from "spark-md5";
 
 const incrementalMD5 = file => new Promise((resolve, reject) => {
   var loaded = 0;
