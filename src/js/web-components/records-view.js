@@ -34,5 +34,3 @@ const RecordsView = AirComponent("records-view", props => {
         </div>
     `;
 })
-
-console.log("goober 1")
