@@ -1,5 +1,5 @@
 import { AirComponent, html, state, createQuery } from "@air-apps/air-js";
-
+console.log("heheheheheheheeheheheh")
 const rf = async (nodePaths, limit, offset) => {
     const response = fetch(`/api/a/tree/stats`, {
         method: 'POST',
