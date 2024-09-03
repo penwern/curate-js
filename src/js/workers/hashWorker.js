@@ -47,7 +47,6 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
 });
 
 self.onmessage = async function(event) {
-    console.log("message")
   if (event.data.file && (event.data.msg == "begin hash")) {
       const gmd5 = await incrementalMD5(event.data.file);
       postMessage({ status: "complete", hash: gmd5 });

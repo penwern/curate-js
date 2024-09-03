@@ -1,20 +1,31 @@
-import HashWorker from '../workers/hashWorker.worker.js';
 
 class CurateWorkerManager {
     constructor() {
         this.taskQueue = [];
         this.isProcessing = false;
         this.worker = null;
+        this.workerScriptUrl = new URL('../workers/hashWorker.js', import.meta.url);
         this.initWorker();
+
     }
 
     initWorker() {
-        try {
-            this.worker = new HashWorker();
-            this.setupWorkerHandlers();
-        } catch (error) {
-            console.error('Failed to initialize worker:', error);
-        }
+        fetch(this.workerScriptUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load worker script.');
+                }
+                return response.text();
+            })
+            .then(scriptContent => {
+                const blob = new Blob([scriptContent], { type: 'application/javascript' });
+                const blobURL = URL.createObjectURL(blob);
+                this.worker = new Worker(blobURL);
+                this.setupWorkerHandlers();
+            })
+            .catch(error => {
+                console.error('Worker initialization failed:', error);
+            });
     }
 
     setupWorkerHandlers() {
