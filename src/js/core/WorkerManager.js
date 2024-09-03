@@ -10,70 +10,8 @@ class CurateWorkerManager {
             this.worker.terminate();
         }
         
-        // Create a blob URL for the worker script
-        const workerScript = `
-            importScripts('https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js');
-
-            import SparkMD5 from 'spark-md5';
-
-            const incrementalMD5 = file => new Promise((resolve, reject) => {
-            var loaded = 0;
-            var startTime = performance.now();
-            var tSize = file.size;
-            const fileReader = new FileReader();
-            const spark = new SparkMD5.ArrayBuffer();
-            const chunkSize = 2097152; // Read in chunks of 2MB
-            const chunks = Math.ceil(file.size / chunkSize);
-            let currentChunk = 0;
-            console.log("start")
-            fileReader.onload = event => {
-                console.log("loaded")
-                spark.append(event.target.result); // Append array buffer
-                ++currentChunk;
-                if (currentChunk < chunks) {
-                    loadNext();
-                } else {
-                    resolve(spark.end()); // Compute hash
-                }
-            };
-
-            fileReader.addEventListener("progress", event => {
-                loaded += event.loaded;
-                let pE = Math.round((loaded / tSize) * 100);
-                let rS = pE + "%";
-                // console.log(rS)
-            });
-
-            fileReader.addEventListener("loadend", event => {
-                if (event.total > 0) {
-                    var endTime = performance.now();
-                }
-            });
-
-            fileReader.onerror = () => reject(fileReader.error);
-
-            const loadNext = () => {
-                const start = currentChunk * chunkSize;
-                const end = start + chunkSize >= file.size ? file.size : start + chunkSize;
-                fileReader.readAsArrayBuffer(file.slice(start, end));
-            };
-
-            loadNext();
-            });
-
-            self.onmessage = async function(event) {
-            if (event.data.file && (event.data.msg == "begin hash")) {
-                const gmd5 = await incrementalMD5(event.data.file);
-                postMessage({ status: "complete", hash: gmd5 });
-                // when finished, close the worker
-                self.close();
-            }
-            };
-        `;
-
-        const blob = new Blob([workerScript], { type: 'application/javascript' });
-        const workerUrl = URL.createObjectURL(blob);
-
+        // Load the worker from jsDelivr
+        const workerUrl = 'https://penwern.github.io/curate-dev-js/dist/4.4.1/hashWorker.worker_4.4.1.worker.js';
         this.worker = new Worker(workerUrl);
         this.setupWorkerHandlers();
     }
