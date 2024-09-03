@@ -19,7 +19,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|mjs)$/,
+        test: /\.js$/,
         include: [
           path.resolve(__dirname, 'src/js/core'),
           path.resolve(__dirname, 'src/js/external'),
@@ -30,9 +30,6 @@ module.exports = {
         use: 'babel-loader'
       }
     ]
-  },
-  resolve: {
-    extensions: ['.js', '.mjs']
   },
   optimization: {
     minimize: true,
@@ -52,5 +49,8 @@ module.exports = {
         },
       },
     },
+  },
+  experiments: {
+    outputModule: true,
   }
 };

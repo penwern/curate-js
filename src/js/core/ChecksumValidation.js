@@ -1,4 +1,4 @@
-import CurateWorkerManager from './WorkerManager.mjs';
+import CurateWorkerManager from './WorkerManager.js';
 
 window.addEventListener("load", () => {
     console.log('Loading CurateChecksumValidation.js');
