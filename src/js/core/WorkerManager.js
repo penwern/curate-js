@@ -1,5 +1,3 @@
-import HashWorker from '../workers/hashWorker.worker.js';
-
 class CurateWorkerManager {
     constructor() {
         this.taskQueue = [];
@@ -11,7 +9,7 @@ class CurateWorkerManager {
         if (this.worker) {
             this.worker.terminate();
         }
-        this.worker = new HashWorker();
+        this.worker = new Worker(new URL('../workers/hashWorker.worker.js', import.meta.url), { type: 'module' });
         this.setupWorkerHandlers();
     }
 

@@ -2,21 +2,19 @@ const path = require('path');
 const webpack = require('webpack');
 const packageJson = require('./package.json');
 const TerserPlugin = require('terser-webpack-plugin');
-//const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: './src/js/index.js',
   output: {
     filename: `[name]_${packageJson.version}.js`,
-    path: path.resolve(__dirname, `dist/${packageJson.version}`),  // Version-specific output directory
+    path: path.resolve(__dirname, `dist/${packageJson.version}`),
     chunkFilename: '[name].[chunkhash].js',
-    globalObject: 'this'
+    globalObject: 'self'
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.VERSION': JSON.stringify(packageJson.version),
     }),
-    //new BundleAnalyzerPlugin(),  // Include the bundle analyzer plugin
   ],
   module: {
     rules: [
@@ -30,13 +28,6 @@ module.exports = {
           path.resolve(__dirname, 'src/js/web-components'),
         ],
         use: 'babel-loader'
-      },
-      {
-        test: /\.worker\.js$/,
-        include: [
-          path.resolve(__dirname, 'src/js/workers'),
-        ],
-        use: { loader: 'worker-loader' }
       }
     ]
   },
@@ -45,7 +36,7 @@ module.exports = {
     minimizer: [new TerserPlugin()],
     splitChunks: {
       chunks: 'all',
-      maxSize: 200000,  // Split chunks larger than 200KB
+      maxSize: 200000,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
@@ -59,4 +50,7 @@ module.exports = {
       },
     },
   },
+  experiments: {
+    outputModule: true,
+  }
 };
