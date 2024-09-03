@@ -1,4 +1,4 @@
-importScripts("https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js")
+import SparkMD5 from 'spark-md5';
 
 const incrementalMD5 = file => new Promise((resolve, reject) => {
   var loaded = 0;
@@ -31,7 +31,7 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
   fileReader.addEventListener("loadend", event => {
       if (event.total > 0) {
           var endTime = performance.now();
-          // console.log(Took ${endTime - startTime} milliseconds)
+          // console.log(`Took ${endTime - startTime} milliseconds`)
       }
   });
 
@@ -40,7 +40,7 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
   const loadNext = () => {
       const start = currentChunk * chunkSize;
       const end = start + chunkSize >= file.size ? file.size : start + chunkSize;
-      fileReader.readAsArrayBuffer(File.prototype.slice.call(file, start, end));
+      fileReader.readAsArrayBuffer(file.slice(start, end));
   };
 
   loadNext();
