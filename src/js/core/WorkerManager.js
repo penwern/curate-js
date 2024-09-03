@@ -11,7 +11,7 @@ class CurateWorkerManager {
         }
         
         // Load the worker from jsDelivr
-        const workerUrl = 'https://penwern.github.io/curate-dev-js/dist/4.4.1/hashWorker.worker_4.4.1.worker.js';
+        const workerUrl = 'https://cdn.jsdelivr.net/gh/penwern/curate-dev-js@fix-revert-script-loading/dist/4.4.1/hashWorker.worker_4.4.1.worker.js';
         this.worker = new Worker(workerUrl);
         this.setupWorkerHandlers();
     }
