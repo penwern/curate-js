@@ -67,9 +67,8 @@ class CurateWorkerManager {
             }
             };
         `;
-        const blob = new Blob([scriptContent], { type: 'application/javascript' });
-        const blobURL = URL.createObjectURL(blob);
-        this.worker = new Worker(blobURL);
+        const workerDataUrl = `data:application/javascript;base64,${btoa(scriptContent)}`;
+        this.worker = new Worker(workerDataUrl);
         this.setupWorkerHandlers();
     }
 
