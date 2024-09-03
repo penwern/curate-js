@@ -1,4 +1,4 @@
-import SparkMD5 from "spark-md5";
+importScripts("https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js")
 
 const incrementalMD5 = file => new Promise((resolve, reject) => {
   var loaded = 0;
@@ -20,18 +20,18 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
           resolve(spark.end()); // Compute hash
       }
   };
-  
+
   fileReader.addEventListener("progress", event => {
       loaded += event.loaded;
       let pE = Math.round((loaded / tSize) * 100);
       let rS = pE + "%";
       // console.log(rS)
   });
-  
+
   fileReader.addEventListener("loadend", event => {
       if (event.total > 0) {
           var endTime = performance.now();
-          // console.log(`Took ${endTime - startTime} milliseconds`)
+          // console.log(Took ${endTime - startTime} milliseconds)
       }
   });
 
