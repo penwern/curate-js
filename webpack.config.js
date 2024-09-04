@@ -30,7 +30,8 @@ module.exports = {
           path.resolve(__dirname, 'src/js/web-components'),
         ],
         use: 'babel-loader'
-      }
+      },
+
     ]
   },
   optimization: {
