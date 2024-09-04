@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const packageJson = require('./package.json');
 const TerserPlugin = require('terser-webpack-plugin');
-//const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: './src/js/index.js',
@@ -16,7 +16,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.VERSION': JSON.stringify(packageJson.version),
     }),
-    //new BundleAnalyzerPlugin(),  // Include the bundle analyzer plugin
+    new BundleAnalyzerPlugin(),  // Include the bundle analyzer plugin
   ],
   module: {
     rules: [
@@ -31,13 +31,6 @@ module.exports = {
         ],
         use: 'babel-loader'
       },
-      {
-        test: /\.worker\.js$/,
-        include: [
-          path.resolve(__dirname, 'src/js/workers'),
-        ],
-        use: { loader: 'worker-loader' }
-      }
     ]
   },
   optimization: {

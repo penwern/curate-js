@@ -1,4 +1,4 @@
-//import SparkMD5 from 'spark-md5';
+import SparkMD5 from 'spark-md5';
 
 class CurateWorkerManager {
     constructor() {
