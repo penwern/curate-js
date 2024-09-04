@@ -1,8 +1,10 @@
+//import SparkMD5 from 'spark-md5';
+
 class CurateWorkerManager {
     constructor() {
         this.taskQueue = [];
         this.isProcessing = false;
-        this.SparkMD5 = null;
+        this.SparkMD5 = this.SparkMD5 || SparkMD5;
         console.log('CurateManager constructed');
     }
 

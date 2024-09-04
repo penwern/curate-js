@@ -20,3 +20,4 @@ import '../js/external/ExternalScripts.js';
 //import Swal from 'sweetalert2';
 //import Papa from 'papaparse';
 //import he from 'he';
+import SparkMD5 from 'spark-md5';
