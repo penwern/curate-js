@@ -4,9 +4,26 @@ class CurateWorkerManager {
     constructor() {
         this.taskQueue = [];
         this.isProcessing = false;
+        this.SparkMD5 = null;
+        console.log('CurateManager constructed');
     }
 
-    generateChecksum(file) {
+    async init() {
+        if (!this.SparkMD5) {
+            try {
+                const SparkMD5Module = await import(/* webpackChunkName: "spark-md5" */ 'spark-md5');
+                this.SparkMD5 = SparkMD5Module.default || SparkMD5Module;
+                console.log('SparkMD5 loaded successfully');
+            } catch (error) {
+                console.error('Failed to load SparkMD5:', error);
+                throw error;
+            }
+        }
+    }
+
+    async generateChecksum(file) {
+        console.log('generateChecksum called with file:', file.name);
+        await this.init();
         return new Promise((resolve, reject) => {
             this.taskQueue.push({ file, resolve, reject });
             if (!this.isProcessing) {

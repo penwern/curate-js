@@ -2,13 +2,13 @@ const path = require('path');
 const webpack = require('webpack');
 const packageJson = require('./package.json');
 const TerserPlugin = require('terser-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: './src/js/index.js',
   output: {
     filename: `[name]_${packageJson.version}.js`,
-    path: path.resolve(__dirname, `dist/${packageJson.version}`),  // Version-specific output directory
+    path: path.resolve(__dirname, `dist/${packageJson.version}`),
     chunkFilename: '[name].[chunkhash].js',
     globalObject: 'this'
   },
@@ -16,7 +16,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.VERSION': JSON.stringify(packageJson.version),
     }),
-    new BundleAnalyzerPlugin(),  // Include the bundle analyzer plugin
+    // new BundleAnalyzerPlugin(),
   ],
   module: {
     rules: [
@@ -38,18 +38,25 @@ module.exports = {
     minimizer: [new TerserPlugin()],
     splitChunks: {
       chunks: 'all',
-      maxSize: 200000,  // Split chunks larger than 200KB
+      maxSize: 200000,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
           chunks: 'all',
+          priority: -10
         },
         default: {
           minChunks: 2,
+          priority: -20,
           reuseExistingChunk: true,
         },
       },
     },
   },
+  resolve: {
+    alias: {
+      'spark-md5': path.resolve(__dirname, 'node_modules/spark-md5/spark-md5.js')
+    }
+  }
 };
