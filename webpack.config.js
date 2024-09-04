@@ -30,13 +30,6 @@ module.exports = {
           path.resolve(__dirname, 'src/js/web-components'),
         ],
         use: 'babel-loader'
-      },
-      {
-        test: /\.worker\.js$/,
-        include: [
-          path.resolve(__dirname, 'src/js/workers'),
-        ],
-        use: { loader: 'worker-loader' }
       }
     ]
   },
