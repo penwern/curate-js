@@ -1,5 +1,3 @@
-import SparkMD5 from 'spark-md5';
-
 class CurateWorkerManager {
     constructor() {
         this.taskQueue = [];
@@ -11,7 +9,7 @@ class CurateWorkerManager {
     async init() {
         if (!this.SparkMD5) {
             try {
-                const SparkMD5Module = await import(/* webpackChunkName: "spark-md5" */ 'spark-md5');
+                //const SparkMD5Module = await import(/* webpackChunkName: "spark-md5" */ 'spark-md5');
                 this.SparkMD5 = SparkMD5Module.default || SparkMD5Module;
                 console.log('SparkMD5 loaded successfully');
             } catch (error) {
