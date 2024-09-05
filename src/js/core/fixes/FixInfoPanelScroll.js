@@ -9,28 +9,28 @@
  * This seems to override the issue and you can scroll the full panel, and it does not change your position in the panel 
  * unless you are changing the selection to something with more or fewer cards in the panel.
  */
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
     // wait for "pydio" object to be defined
-    const waitForPydio = new Promise(resolve => {
-        if (window.pydio) {
-            resolve();
-        } else {
-            setTimeout(() => {
-                waitForPydio.then(resolve);
-            }, 200);
-        }
-    });
+    const waitForPydio = () => { 
+        return new Promise((resolve, reject) => { 
+            (function checkPydio() {
+                if (typeof pydio !== 'undefined') {
+                    resolve();
+                } else {
+                    setTimeout(checkPydio, 100); // Check again in 100ms
+                }
+            })();
+        });
+    }
 
-    waitForPydio.then(() => {
-        
-        pydio._dataModel.observe("selection_changed", function(event) {
-            setTimeout(() => {
-                const infoScrollContainer = document.querySelector("#info_panel > div")
+    waitForPydio().then(() => {
+        pydio._dataModel.observe("selection_changed", function(event) { // Observe the selection change event
+            setTimeout(() => { // Wait for the info panel to be rendered
+                const infoScrollContainer = document.querySelector("#info_panel > div") // Get the info panel container
                 if (infoScrollContainer) {
                     infoScrollContainer.scrollTo({
                         top: 0,    // Vertical scroll position in pixels
                         left: 0,     // Horizontal scroll position in pixels
-                        behavior: 'smooth' // Optional: 'auto' (default) or 'smooth' for smooth scrolling
                     });
                 }
             }, 50);
@@ -38,4 +38,3 @@ window.addEventListener('DOMContentLoaded', function() {
 
     });
 });
-                
