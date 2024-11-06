@@ -12,6 +12,7 @@ import '../js/web-components/atom-connector.js';
 import '../js/web-components/dip-slug-resolver.js';
 import '../js/web-components/contextual-help.js';
 import '../js/web-components/oai-harvest-updates.js';
+import '../js/core/fixes/FixInfoPanelScroll.js';
 //import './deprecated/UploadChecksumGenerator.js';
 import '../js/core/PermissionEnforcers.js'
 import '../js/external/ExternalScripts.js';

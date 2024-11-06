@@ -10,6 +10,7 @@ module.exports = {
     filename: `[name]_${packageJson.version}.js`,
     path: path.resolve(__dirname, `dist/${packageJson.version}`),  // Version-specific output directory
     chunkFilename: '[name].[chunkhash].js',
+    globalObject: 'this'
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -29,6 +30,13 @@ module.exports = {
           path.resolve(__dirname, 'src/js/web-components'),
         ],
         use: 'babel-loader'
+      },
+      {
+        test: /\.worker\.js$/,
+        include: [
+          path.resolve(__dirname, 'src/js/workers'),
+        ],
+        use: { loader: 'worker-loader' }
       }
     ]
   },

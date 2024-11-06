@@ -1,4 +1,4 @@
-importScripts("https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js")
+import SparkMD5 from 'spark-md5';
 
 const incrementalMD5 = file => new Promise((resolve, reject) => {
   var loaded = 0;
@@ -9,8 +9,9 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
   const chunkSize = 2097152; // Read in chunks of 2MB
   const chunks = Math.ceil(file.size / chunkSize);
   let currentChunk = 0;
-
+  console.log("start")
   fileReader.onload = event => {
+    console.log("loaded")
       spark.append(event.target.result); // Append array buffer
       ++currentChunk;
       if (currentChunk < chunks) {
@@ -19,14 +20,14 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
           resolve(spark.end()); // Compute hash
       }
   };
-  
+
   fileReader.addEventListener("progress", event => {
       loaded += event.loaded;
       let pE = Math.round((loaded / tSize) * 100);
       let rS = pE + "%";
       // console.log(rS)
   });
-  
+
   fileReader.addEventListener("loadend", event => {
       if (event.total > 0) {
           var endTime = performance.now();
@@ -39,7 +40,7 @@ const incrementalMD5 = file => new Promise((resolve, reject) => {
   const loadNext = () => {
       const start = currentChunk * chunkSize;
       const end = start + chunkSize >= file.size ? file.size : start + chunkSize;
-      fileReader.readAsArrayBuffer(File.prototype.slice.call(file, start, end));
+      fileReader.readAsArrayBuffer(file.slice(start, end));
   };
 
   loadNext();
@@ -49,6 +50,7 @@ self.onmessage = async function(event) {
   if (event.data.file && (event.data.msg == "begin hash")) {
       const gmd5 = await incrementalMD5(event.data.file);
       postMessage({ status: "complete", hash: gmd5 });
-      // Removed self.close() to keep the worker alive
+      // when finished, close the worker
+      self.close();
   }
 };
