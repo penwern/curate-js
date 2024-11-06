@@ -5,6 +5,7 @@ const elementsToFind = [
 ];
 
 function modifyConsole() {
+  console.log("console modifier");
   if (!pydio.user.isAdmin) {
     pydio.observe("context_changed", (e) => {
       if (e._label === "Settings") {
@@ -31,7 +32,7 @@ function modifyConsole() {
       }
     });
   }
-  document.removeEventListener("load", modifyConsole);
+  window.removeEventListener("load", modifyConsole);
 }
 
-document.addEventListener("load", modifyConsole);
+window.addEventListener("load", modifyConsole);
