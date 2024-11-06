@@ -7,7 +7,7 @@ const elementsToFind = [
 function modifyConsole() {
   console.log("console modifier");
   // wait for pydio to be loaded
-  if (!pydio) {
+  if (!pydio?.user) {
     console.log("pydio not loaded yet");
     setTimeout(modifyConsole, 100);
     return;
