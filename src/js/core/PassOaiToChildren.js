@@ -121,7 +121,8 @@ const updateMetaObject = (uuids, enabled) => {
 const splitArray = (arr, size) => Array.from({length: Math.ceil(arr.length / size)}, (_, i) => arr.slice(i * size, i * size + size));
 document.addEventListener('change', function(event) {
     // Checking if the event target is a checkbox
-    if (pydio._dataModel._selectedNodes.length > 1) return
+    if (pydio._dataModel._selectedNodes.length !== 1) return
+    if (!event.target.nextElementSibling?.textContent.includes("Enable OAI Harvesting")) return
     if (event.target.type === 'checkbox') {
         // Logging the checkbox's id (or name if id is not available) and its new checked state
         const siblingText = event.target.nextElementSibling?.textContent.includes("Enable OAI-PMH Harvesting")

@@ -1,30 +1,21 @@
 class CurateWorkerManager {
     constructor() {
-        this.workerScriptUrl = new URL('../workers/hashWorker.js', import.meta.url);
         this.taskQueue = [];
         this.isProcessing = false;
-        this.initWorker();
+        this.worker = null;
     }
 
     initWorker() {
-        fetch(this.workerScriptUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load worker script.');
-                }
-                return response.text();
-            })
-            .then(scriptContent => {
-                const blob = new Blob([scriptContent], { type: 'application/javascript' });
-                const blobURL = URL.createObjectURL(blob);
-                this.worker = new Worker(blobURL);
-                this.setupWorkerHandlers();
-            })
-            .catch(error => {
-                console.error('Worker initialization failed:', error);
-            });
+        if (this.worker) {
+            this.worker.terminate();
+        }
+        
+        // Load the worker from jsDelivr
+        const workerUrl = '/workers/hashWorker.js';
+        this.worker = new Worker(workerUrl);
+        console.log('Worker initialized: ', this.worker);
+        this.setupWorkerHandlers();
     }
-
     setupWorkerHandlers() {
         this.worker.onmessage = event => {
             if (event.data.status === "complete" && this.currentResolve) {
@@ -56,6 +47,9 @@ class CurateWorkerManager {
 
     processNextTask() {
         if (this.taskQueue.length > 0) {
+            if (!this.worker) {
+                this.initWorker();
+            }
             const task = this.taskQueue.shift();
             this.currentResolve = task.resolve;
             this.currentReject = task.reject;
@@ -64,7 +58,12 @@ class CurateWorkerManager {
             this.worker.postMessage({ file: task.file, msg: "begin hash" });
         } else {
             this.isProcessing = false;
+            if (this.worker) {
+                this.worker.terminate();
+                this.worker = null;
+            }
         }
     }
 }
+
 export default CurateWorkerManager;
