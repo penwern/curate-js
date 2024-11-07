@@ -5,13 +5,32 @@ const elementsToFind = [
 ];
 
 function modifyConsole() {
-  console.log("console modifier");
-  // wait for pydio to be loaded
+  // Check if we're on the login page
+  const isLoginPage = window.location.pathname.includes("/login");
+
+  // If we're on login page, wait for navigation away from login
+  if (isLoginPage) {
+    const navigationObserver = new MutationObserver(() => {
+      if (!window.location.pathname.includes("/login")) {
+        navigationObserver.disconnect();
+        // Once we've navigated away from login, reinitialize the modifier
+        modifyConsole();
+      }
+    });
+
+    navigationObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+    return;
+  }
+
+  // Regular pydio check
   if (!pydio?.user) {
-    console.log("pydio not loaded yet");
     setTimeout(modifyConsole, 100);
     return;
   }
+
   if (!pydio.user.isAdmin) {
     pydio.observe("context_changed", (e) => {
       if (e._label === "Settings") {
