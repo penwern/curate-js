@@ -9,6 +9,7 @@ import "../js/core/ChecksumValidation.js";
 import "../js/core/PassOaiToChildren.js";
 import "../js/core/consoleModifier.js";
 import "../js/core/messageModifier.js";
+import "../js/core/fixes/FixInfoPanelScroll.js";
 import "../js/web-components/atom-search.js";
 import "../js/web-components/atom-connector.js";
 import "../js/web-components/dip-slug-resolver.js";
