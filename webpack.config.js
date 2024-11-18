@@ -3,12 +3,11 @@ const webpack = require("webpack");
 const fs = require("fs-extra"); // You'll need fs-extra to copy files
 const packageJson = require("./package.json");
 const TerserPlugin = require("terser-webpack-plugin");
-//const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   entry: "./src/js/index.js",
   output: {
-    filename: "[name]_" + packageJson.version + ".js", // Include version in the filename
+    filename: "[name]_" + packageJson.version + ".js", // Versioned filenames
     path: path.resolve(__dirname, "dist", packageJson.version), // Version-specific output directory
     chunkFilename: "[name].[chunkhash].js",
     globalObject: "this",
@@ -17,7 +16,6 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.VERSION": JSON.stringify(packageJson.version),
     }),
-    //new BundleAnalyzerPlugin(),  // Include the bundle analyzer plugin
 
     // Custom plugin to handle the creation of the @latest folder
     {
@@ -35,15 +33,33 @@ module.exports = {
             // Make sure the @latest folder exists
             fs.emptyDirSync(latestDir); // Remove old contents if any
 
-            // Copy the current versioned build to @latest
-            fs.copy(versionDir, latestDir, { overwrite: true }, (err) => {
+            // Copy versioned files to @latest folder without version numbers
+            fs.readdir(versionDir, (err, files) => {
               if (err) {
-                console.error("Error copying to @latest folder:", err);
-              } else {
-                console.log(
-                  `Successfully updated @latest folder with version ${packageJson.version}`
-                );
+                console.error("Error reading versioned files:", err);
+                return callback();
               }
+
+              files.forEach((file) => {
+                const sourcePath = path.resolve(versionDir, file);
+                const targetPath = path.resolve(
+                  latestDir,
+                  file.replace(`_${packageJson.version}.js`, ".js")
+                );
+
+                // Copy each file to the @latest folder with the correct filename
+                fs.copy(sourcePath, targetPath, (copyErr) => {
+                  if (copyErr) {
+                    console.error(
+                      `Error copying file to @latest: ${file}`,
+                      copyErr
+                    );
+                  } else {
+                    console.log(`Successfully copied ${file} to @latest`);
+                  }
+                });
+              });
+
               callback(); // Don't forget to call callback to signal Webpack we're done
             });
           }
