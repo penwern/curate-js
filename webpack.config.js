@@ -7,9 +7,11 @@ const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
   entry: "./src/js/index.js",
   output: {
-    filename: "[name]_" + packageJson.version + ".js", // Versioned filenames
+    // Main entry file will have the version number
+    filename: "[name]_" + packageJson.version + ".js",
+    // Other chunk files will be handled by chunkFilename
+    chunkFilename: "[name].[chunkhash].js", // Keep chunk hash for cache busting
     path: path.resolve(__dirname, "dist", packageJson.version), // Version-specific output directory
-    chunkFilename: "[name].[chunkhash].js",
     globalObject: "this",
   },
   plugins: [
@@ -91,7 +93,7 @@ module.exports = {
     minimize: true,
     minimizer: [new TerserPlugin()],
     splitChunks: {
-      chunks: "all",
+      chunks: "all", // Split all chunks (vendor, async, etc.)
       maxSize: 200000, // Split chunks larger than 200KB
       cacheGroups: {
         vendors: {
