@@ -1,10 +1,9 @@
-name: Webpack Build
+name: Webpack Build and Deploy to GitHub Pages
 
-# Trigger the workflow on push to main (or your default branch)
 on:
   push:
     branches:
-      - main # You can change this to your default branch (e.g., master)
+      - main # This triggers the workflow when changes are pushed to main
 
 jobs:
   build:
@@ -12,31 +11,34 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # Check out the repository so we can work with it
+        uses: actions/checkout@v3 # Check out the repository to work with it
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16" # Set the Node.js version (adjust as needed)
+          node-version: "16" # Adjust Node.js version if needed
 
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
-          path: ~/.npm # Cache the npm modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }} # Cache key based on package-lock
+          path: ~/.npm # Caching npm modules to speed up installs
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-modules-  # Fallback cache key if no exact match found
+            ${{ runner.os }}-node-modules-
 
       - name: Install dependencies
         run: |
-          npm install  # Install dependencies (this will be faster if cache hits)
+          npm install  # Install dependencies
 
       - name: Build with Webpack
         run: |
-          npm run build  # Run your Webpack build (assuming it's defined in your package.json)
+          npm run build  # Run Webpack to create the build
 
-      - name: Upload Build Artifacts (Optional)
-        uses: actions/upload-artifact@v3
+      - name: Deploy to GitHub Pages (gh-pages)
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: webpack-build
-          path: ./dist # Path to your build output (e.g., the dist folder)
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Authentication using the GitHub token
+          publish_dir: ./dist # Path to the build directory (dist)
+          publish_branch: gh-pages # Deploy to the gh-pages branch
+          user_name: "github-actions" # Default username for GitHub Actions
+          user_email: "github-actions@github.com" # Default email for GitHub Actions
