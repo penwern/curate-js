@@ -56,6 +56,7 @@ const calculateMultipartChecksum = (file, partSize) =>
 // Main worker handler
 self.onmessage = async function (event) {
   if (event.data.file && event.data.msg == "begin hash") {
+    console.log("ello chum!");
     const file = event.data.file;
     const multipartThreshold = PydioApi.getMultipartPartSize(); // Get the current multipart chunk size
 
