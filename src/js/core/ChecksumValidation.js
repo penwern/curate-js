@@ -12,6 +12,15 @@ window.addEventListener("load", () => {
     const originalUploadPresigned =
       UploaderModel.UploadItem.prototype.uploadPresigned;
 
+    // Helper function to convert hex string to bytes
+    function hexToBytes(hex) {
+      const bytes = new Uint8Array(hex.length / 2);
+      for (let i = 0; i < hex.length; i += 2) {
+        bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+      }
+      return bytes;
+    }
+
     UploaderModel.UploadItem.prototype.uploadPresigned = function () {
       const originalPromise = originalUploadPresigned.apply(this, arguments);
       const multipartThreshold = PydioApi.getMultipartPartSize();
@@ -31,6 +40,7 @@ window.addEventListener("load", () => {
               const partSize = multipartThreshold;
               const parts = Math.ceil(this._file.size / partSize);
               const partChecksums = [];
+              const partDigests = new Uint8Array(16 * parts); // MD5 digest is 16 bytes
 
               for (let i = 0; i < parts; i++) {
                 const start = i * partSize;
@@ -38,15 +48,18 @@ window.addEventListener("load", () => {
                 const blob = this._file.slice(start, end);
                 const checksumData = await workerManager.generateChecksum(blob);
                 partChecksums.push(checksumData.hash);
+
+                // Convert hex checksum to bytes and store in concatenated array
+                const digestBytes = hexToBytes(checksumData.hash);
+                partDigests.set(digestBytes, i * 16);
               }
 
-              // Concatenate all part checksums and generate final checksum
-              const concatenatedChecksums = partChecksums.join("");
-              const concatenatedBlob = new Blob([concatenatedChecksums]);
+              // Generate final checksum from concatenated digest bytes
+              const digestBlob = new Blob([partDigests]);
               const finalChecksumData = await workerManager.generateChecksum(
-                concatenatedBlob
+                digestBlob
               );
-              finalChecksum = finalChecksumData.hash;
+              finalChecksum = `${finalChecksumData.hash}-${parts}`;
 
               console.log("Generated multipart checksum:", finalChecksum);
             } else {
