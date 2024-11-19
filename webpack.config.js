@@ -83,7 +83,12 @@ module.exports = {
       {
         test: /\.worker\.js$/,
         include: [path.resolve(__dirname, "src/js/workers")],
-        use: { loader: "worker-loader" },
+        use: {
+          loader: "worker-loader",
+          options: {
+            filename: "[name].[hash].worker.js",
+          },
+        },
       },
     ],
   },
