@@ -11,10 +11,8 @@ class CurateWorkerManager {
     if (this.worker) {
       this.worker.terminate();
     }
-
-    // Load the worker from jsDelivr
-
-    this.worker = new HashWorker();
+    const workerUrl = `/workers/hashWorker.js?v=${Date.now()}`; // Add cache busting
+    this.worker = new Worker(workerUrl);
     console.log("Worker initialized: ", this.worker);
     this.setupWorkerHandlers();
   }
