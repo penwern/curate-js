@@ -1,23 +1,10 @@
   async function submitPreservationRequest(configId) {
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
-        const url = `${window.location.protocol}//${window.location.hostname}/a/scheduler/hooks/a3m-transfer`;
+        const url = `${window.location.origin}/a/scheduler/hooks/a3m-transfer`;
         const paths = pydio._dataModel._selectedNodes.map(n => ({
             path: Curate.workspaces.getOpenWorkspace() + n._path,
             slug: n._metadata.get("usermeta-atom-linked-description") || ""
         }));
-        const config = JSON.parse(sessionStorage.getItem("preservationConfigs")).find(obj => obj.id == configId)
-        console.log("here's tha config boiiiiii", config)
-        if (config["dip_enabled"] == 1) {
-            const dipWithoutSlugs = pydio._dataModel._selectedNodes.filter(n=>!n._metadata.get("usermeta-atom-linked-description"))
-            if (dipWithoutSlugs?.length > 0) {
-                const resolveDips = Curate.ui.modals.curatePopup({title:"Search for an AtoM Description"}, {"afterLoaded":c=>{
-                    const s = document.createElement("dip-slug-resolver")
-                    c.querySelector(".config-main-options-container").appendChild(s)
-                    s.setNodes(dipWithoutSlugs)
-                }})
-                resolveDips.fire()
-            }
-        }
         const bodyData = JSON.stringify({ "Paths": paths, "JobParameters": { "ConfigId": configId.toString() } })
         const headers = {
             "accept": "application/json",
@@ -53,10 +40,12 @@
             });
 
     }
+    // Retrieves saved preservation configs from the server at route GET /api/preservation
+    // Stores the configs in sessionStorage under the key "preservationConfigs"
     async function getPreservationConfigs() {
-        const url = `${window.location.protocol}//${window.location.hostname}:6900/get_data`;
+        const url = `${window.location.origin}/api/preservation`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
-        return fetch(url, {headers: {"Authorization": `Bearer ${token}`}})
+        return fetch(url, {headers: {"Authorization": `Bearer ${token}`}, method: "GET"})
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -248,7 +237,7 @@
         const titleElement = document.createElement('div');
         titleElement.textContent = title;
         titleElement.classList.add('config-popup-title');
-
+    
         // Add title to modal content
         modalContent.appendChild(titleElement);
         //  add main controls container
@@ -286,8 +275,8 @@
                 input.dispatchEvent(new CustomEvent('change', { bubbles: true }))
                 input.dispatchEvent(new CustomEvent('input', { bubbles: true }))
             })
-
-
+    
+    
         })
         modalScrollContainer.appendChild(clearButton)
         const optionsContainer = document.createElement('div')
@@ -300,7 +289,7 @@
         modifyTitle.style = "padding-bottom: 1em !important"
         optionsContainer.appendChild(modifyTitle)
         optionsContainer.appendChild(modalScrollContainer)
-
+    
         const savedScrollContainer = document.createElement('div')
         savedScrollContainer.classList.add('config-modal-scroll-container')
         //create and append save button to config options area
@@ -311,7 +300,7 @@
             //validate save
             const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
             const saveName = optionsContainer.querySelector("#name").value
-
+    
             // Flatten the input labels
             const inputIds = inputs.flatMap(category => {
                 return category.inputs.map(input => input.name)
@@ -323,15 +312,18 @@
                     }));
             });
             const curConfig = {}
-            const matchingObj = curConfigs.find(obj => obj.name == saveName);
+            const matchingObj = curConfigs?.find(obj => obj.name == saveName);
             if (matchingObj) {
-                curConfig["id"] = matchingObj.id;
+                curConfig["id"] = matchingObj.id; // we're editing an already saved config
             } else {
                 curConfig["user"] = pydio.user.id //created user is this one
             }
             inputIds.forEach(id => {
                 const input = document.querySelector("#" + id)
                 if (!input) {
+                    return
+                }
+                if (input.type == "submit") { //do not add "go to atom config" button
                     return
                 }
                 if (input.disabled) {
@@ -355,7 +347,10 @@
                     }
                 }
             })
-            setPreservationConfig(curConfig)
+            if (matchingObj){ //edit existing config
+                editPreservationConfig(curConfig)
+            }else{
+                setPreservationConfig(curConfig) //save new config
                 .then(r => {
                     if (r) {
                         const curConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
@@ -372,6 +367,8 @@
                             })
                     }
                 })
+            }
+    
         })
         optionsContainer.appendChild(saveConfig)
         mainOptionsContainer.appendChild(optionsContainer)
@@ -390,6 +387,7 @@
         //create and add the saved configs area
         const savedConfigsContainer = document.createElement('div')
         savedConfigsContainer.classList.add('config-options-container')
+        savedConfigsContainer.id = "savedConfigsContainer"
         savedConfigsContainer.style = "display:flex;align-items:center;justify-content:flex-start;flex-direction:column;"
         //create and add title to saved configs area
         const savedTitle = document.createElement('div')
@@ -398,7 +396,7 @@
         savedTitle.textContent = "Saved Configs"
         savedConfigsContainer.appendChild(savedTitle)
         const savedConfigs = JSON.parse(sessionStorage.getItem("preservationConfigs"))
-        createConfigsBox(savedScrollContainer, savedConfigs)
+        createConfigsBox(savedScrollContainer, savedConfigsContainer, savedConfigs)
         savedConfigsContainer.appendChild(savedScrollContainer)
         mainOptionsContainer.appendChild(savedConfigsContainer);
         // Append modal container to the body
@@ -417,10 +415,12 @@
         document.body.appendChild(modalContainer);
         // Display the modal
         modalContainer.style.display = 'flex';
-
+    
     }
-    function createConfigsBox(target, configs) {
-        configs.forEach(config => {
+    
+    function createConfigsBox(target, container, configs) {
+        console.log(configs)
+        configs?.forEach(config => {
             const configItem = document.createElement('div')
             configItem.id = "config-" + config.id
             configItem.classList.add('saved-config-item')
@@ -442,7 +442,7 @@
                         // Construct the input field ID using the object property key
                         var inputFieldId = '#' + prop; // Assuming the input IDs have a "#" prefix
                         var inputField = document.querySelector(inputFieldId);
-
+    
                         // Check if an input field with the corresponding ID exists
                         if (inputField) {
                             if (inputField.type == "checkbox") {
@@ -470,7 +470,7 @@
             configLabel.style.marginBottom = "0"
             const configDetails = document.createElement('label')
             configDetails.classList.add('config-text-label')
-
+    
             const configDescription = document.createElement('div')
             const descriptionLabel = document.createElement('label')
             descriptionLabel.for = "config-description-" + config.id
@@ -480,28 +480,10 @@
             descriptionText.id = "config-description-" + config.id
             configDescription.appendChild(descriptionLabel)
             configDescription.appendChild(descriptionText)
-
-
-            const configCreatedDate = document.createElement('div')
-            const createdLabel = document.createElement('label')
-            createdLabel.for = "config-created-date-" + config.id
-            createdLabel.textContent = "Created: "
-            const createdText = document.createElement('span')
-            createdText.id = "config-created-date-" + config.id
-            createdText.textContent = config.created
-            configCreatedDate.appendChild(createdLabel)
-            configCreatedDate.appendChild(createdText)
-
-            const configModified = document.createElement('div')
-            const modifiedLabel = document.createElement('label')
-            modifiedLabel.for = "config-modified-date-" + config.id
-            modifiedLabel.textContent = "Modified: "
-            const modifiedText = document.createElement('span')
-            modifiedText.id = "config-modified-date-" + config.id
-            modifiedText.textContent = config.modified
-            configModified.appendChild(modifiedLabel)
-            configModified.appendChild(modifiedText)
-
+    
+    
+           
+    
             const configUser = document.createElement('div')
             const userLabel = document.createElement('label')
             userLabel.id = "config-user-" + config.id
@@ -511,12 +493,11 @@
             userText.textContent = config.user
             configUser.appendChild(userLabel)
             configUser.appendChild(userText)
-
+    
             configDetails.appendChild(configDescription)
-            configDetails.appendChild(configCreatedDate)
-            configDetails.appendChild(configModified)
+    
             configDetails.appendChild(configUser)
-
+    
             configInfo.appendChild(configLabel)
             configInfo.appendChild(configDetails)
             const configDelete = document.createElement('button')
@@ -593,15 +574,30 @@
             target.appendChild(configItem)
         })
         const savedItems = target.querySelectorAll(".saved-config-item")
-        savedItems.forEach((el, index) => el.style.animationDelay = `${(index * 0.55) / savedItems.length}s`);
-        savedItems.forEach((el, index, array) => {
+        savedItems?.forEach((el, index) => el.style.animationDelay = `${(index * 0.55) / savedItems.length}s`);
+        savedItems?.forEach((el, index, array) => {
             const delay = 0.05 * (index + 1);
             const duration = 1.0 - delay;
             el.style.animationDelay = `${delay}s`;
             el.style.animationDuration = `${duration}s`;
         });
-
-
+        if (!configs || configs?.length == 0) {
+    
+            const noConfigs = document.createElement("div")
+            noConfigs.textContent = "No Saved Preservation Configs Found"
+            noConfigs.style.margin = "3em";
+            noConfigs.style.width = "80%";
+            noConfigs.style.height = "10%";
+            noConfigs.style.textAlign = "center";
+            noConfigs.style.display = "flex";
+            noConfigs.style.color = "white";
+            noConfigs.style.background = "var(--md-sys-color-outline-variant-50)";
+            noConfigs.style.justifyContent = "center";
+            noConfigs.style.alignItems = "center";
+            noConfigs.style.borderRadius = "1.5em";
+            container.appendChild(noConfigs)
+        }
+    
     }
     function createInput(input, target) {
         const inputContainer = document.createElement('div');
@@ -747,7 +743,7 @@
         }
     }
     async function deletePreservationConfig(id) {
-        const url = `${window.location.protocol}//${window.location.hostname}:6900/delete_data/${id}`;
+        const url = `${window.location.origin}/preservation/${id}`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "DELETE",
@@ -757,24 +753,59 @@
                 'Authorization': `Bearer ${token}`
             }
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Check if the delete was successful based on the response data or status
-                if (data) {
-                    getPreservationConfigs()
-                    return data; // Return the response data
-                } else {
-                    throw new Error('Delete operation failed.');
-                }
-            })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Check if the delete was successful based on the response data or status
+            if (data) {
+                getPreservationConfigs()
+                return data; // Return the response data
+            } else {
+                throw new Error('Delete operation failed.');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            Curate.ui.modals.curatePopup({"title": "Error", "type": "error","content": "There was an error deleting your configuration. Please try again, or contact support if the problem persists."}).fire()
+        });
     }
+    // Saves the given preservation config to the server at route POST /preservation
     async function setPreservationConfig(config) {
-        const url = `${window.location.protocol}//${window.location.hostname}:6900/set_data`;
+        const url = `${window.location.origin}/preservation`;
+        const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(config)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            } else {
+                //save configs to session
+                console.info("config saved successfully")
+                return response.json();
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            Curate.ui.modals.curatePopup({"title": "Error", "type": "error","content": "There was an error saving your configuration. Please try again, or contact support if the problem persists."}).fire()
+        });
+    }
+    function flattenAndReplaceSpaces(input) {
+        if (!input || typeof input !== "string") return "";
+        return input.replaceAll(" ", "_");
+    }
+    async function editPreservationConfig(config) {
+        const url = `${window.location.origin}/api/preservation/${config.id}`;
         const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
         return fetch(url, {
             method: "POST",
@@ -787,8 +818,8 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                } else if (response.status == 200) {
+                    throw new Error(`HTTP error while updating config, Status: ${response.status}`);
+                }else if (response.status == 200) {
                     //save configs to session
                     console.info("config saved successfully")
                     return response.json();
@@ -796,64 +827,62 @@
             })
             .catch(error => {
                 console.error('Fetch error:', error);
+                Curate.ui.modals.curatePopup({"title": "Error", "type": "error","content": "There was an error saving your modified configuration. Please try again, or contact support if the problem persists."}).fire()
             });
-    }
-    function flattenAndReplaceSpaces(input) {
-        if (!input || typeof input !== "string") return "";
-        return input.replaceAll(" ", "_");
-    }
-    // Example usage:
-    const inputs = [
-        {
-            category: "Details", inputs: [
-                { label: "Config Name", name: "name", type: "text" },
-                { label: "Config Description", name: "description", type: "text" }
-            ]
-        },
-        {
-            category: "Normalisation", inputs: [
-                {
-                    label: "Normalise Objects", name: "normalize", type: "toggle", suboptions: [
-                        { label: "Image Normalisation Format", name: "image_normalization_tiff", type: "dropdown", options: ["TIFF", "JPEG2000"] },
-                    ]
-                },
-            ]
-        },
-        {
-            category: "Packaging and Compression", inputs: [
-                { label: "AIP Packaging Type", name: "process_type", type: "dropdown", options: ["standard", "eark"] },
-                {
-                    label: "Compress AIPs", name: "compress_aip", type: "toggle", suboptions: [
-                        { label: "Warning", name: "compression_warning", type: "info", text: "Compressing AIPs will make their contents unsearchable and prevent descriptive metadata from being reassociated with output objects. You can compress your AIPs for distribution or deep-storage while conserving the uncompressed AIP by right-clicking an AIP in a workspace." },
-                        {
-                            label: "Compression Algorithm", name: "compression_algorithm", type: "dropdown", options: [
-                                "tar",
-                                "tar_bzip2",
-                                "tar_gzip",
-                                "s7_copy ",
-                                "s7_bzip2",
-                                "s7_lzma",
-                            ]
-                        },
-                        { label: "Compression Level", name: "compression_level", type: "slider", min: 1, range: 9, step: 1 },
-                    ]
-                },
-            ]
-        },
-        {
-            category: "Transfer Options", inputs: [
-                { label: "Generate Transfer Structure Report", name: "gen_transfer_struct_report", type: "toggle" },
-                { label: "Document Empty Directories", name: "document_empty_directories", type: "toggle" },
-                {
-                    label: "Extract Packages", name: "extract_packages", type: "toggle", suboptions: [
-                        { label: "Delete Packages After Extraction", name: "delete_packages_after_extraction", type: "toggle" }
-                    ]
-                }
-            ]
         }
-    ];
 
-    document.addEventListener("dynamicScriptLoaded", e => {
+    // inputs for preservation config fields
+    const inputs = [
+        { category: "Details", inputs: [
+          { label: "Config Name", name: "name", type: "text" },
+          { label: "Config Description", name: "description", type: "text" }
+        ]},
+        { category: "Normalisation", inputs: [
+          { label: "Normalise Objects", name: "normalize",type: "toggle", suboptions:[
+            { label: "Image Normalisation Format", name: "image_normalization_tiff",type: "dropdown", options:["TIFF", "JPEG2000"] },
+          ]},
+        ]},
+        { category: "Dissemination", inputs: [
+            { label: "Create Dissemination Package", name: "dip_enabled", type:"toggle", suboptions: [
+                { label: "Dissemination Information", name: "dip_info", type:"info", text:"Create dissemination packages from AIPs generated by this config. Created DIPs will automatically be connected to the linked description of the source data. For this option to work, you must configure a connected AtoM instance."},
+                { label: "Go to AtoM Configuration", name: "atom_config", type:"button", text:"Go to AtoM Configuration", onclick:e => {
+                    const p = Curate.ui.modals.curatePopup({"title": "Connect to Your AtoM Instance"},{
+                        "afterLoaded":(c)=>{
+                            const t = document.createElement("connect-to-atom")
+                            c.querySelector(".config-main-options-container").appendChild(t)
+                        }
+                    })
+                    p.fire()
+                }},
+            ]
+            }]
+        },
+        { category: "Packaging and Compression", inputs: [
+          { label: "AIP Packaging Type", name: "process_type", type:"dropdown", options:["standard", "eark"] },
+          { label: "Compress AIPs", name: "compress_aip",type:"toggle", suboptions:[
+            { label: "Warning", name: "compression_warning", type:"info", text:"Compressing AIPs will make their contents unsearchable and prevent descriptive metadata from being reassociated with output objects. You can compress your AIPs for distribution or deep-storage while conserving the uncompressed AIP by right-clicking an AIP in a workspace."},
+            { label:"Compression Algorithm", name: "compression_algorithm",type:"dropdown", options:[
+              "tar",
+              "tar_bzip2",
+              "tar_gzip",
+              "s7_copy ",
+              "s7_bzip2",
+              "s7_lzma",
+            ] 
+            },
+            { label:"Compression Level", name: "compression_level",type:"slider", min:1,range:9, step:1},  
+          ]},
+        ]},
+        { category: "Transfer Options", inputs: [
+          { label:"Generate Transfer Structure Report", name: "gen_transfer_struct_report", type:"toggle"},
+          { label:"Document Empty Directories", name: "document_empty_directories", type:"toggle"},
+          { label:"Extract Packages", name: "extract_packages", type:"toggle", suboptions:[
+            { label:"Delete Packages After Extraction", name: "delete_packages_after_extraction", type:"toggle"}
+          ]}
+        ]}   
+        ];
+
+    window.addEventListener("load", e => {
         (async function() {
             const waitForGlobalVariable = (varName, interval = 50) => {
               return new Promise((resolve) => {

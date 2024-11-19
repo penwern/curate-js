@@ -8,7 +8,11 @@
 }
 /**changes folder icon for folders with file content**/
 .ajxp_node_collection:has(span.metadata_chunk.metadata_chunk_standard.metadata_chunk_bytesize) .mdi-folder::before {
-  content: "\F0254" !important;
+  content: "\F24F" !important;
+}
+/**hide additional ingest dropdown**/
+.action-branding_custom_12{
+  display: none !important;
 }
 /**icon for linked AtoM tag**/
 .metadata_chunk.metadata_chunk_other.metadata_chunk_usermeta-atom-linked-description::before {
@@ -648,6 +652,7 @@ line {
   margin-top: 1em !important;
   margin-bottom: 1em !important;
   overflow-y: scroll;
+  max-height: 69vh;
 }
 /* Styling for each configuration item */
 .saved-config-item {
@@ -719,7 +724,7 @@ line {
   background: var(--customerColourPrimary);
   width: 102%;
   border: none;
-  height: 10%;
+  height: 3em !important;
   transition: all 0.3s ease;
 }
 .config-save-button:hover{

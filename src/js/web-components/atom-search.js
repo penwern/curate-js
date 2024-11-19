@@ -64,7 +64,7 @@ class AtoMSearchInterface extends HTMLElement {
     // No need to append 'limit' as it's fixed on the API side
 
     try {
-      const url = `${window.location.protocol}//${window.location.hostname}:6900/atom/search`;
+      const url = `${window.location.protocol}//${window.location.hostname}/api/atom/search`;
       const token = await PydioApi._PydioRestClient.getOrUpdateJwt();
       const response = await fetch(`${url}?${params.toString()}`, {
         headers: {
@@ -316,7 +316,7 @@ class AtoMSearchInterface extends HTMLElement {
           min-width: 60vw;
           margin-bottom: 2em;
           text-align: left;
-          max-height: 25em;
+          max-height: 35em;
           overflow-y: scroll;
         }
         .info {
