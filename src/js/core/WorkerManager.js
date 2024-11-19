@@ -1,3 +1,5 @@
+import HashWorker from "../workers/hashWorker.worker.js";
+
 class CurateWorkerManager {
   constructor() {
     this.taskQueue = [];
@@ -11,8 +13,8 @@ class CurateWorkerManager {
     }
 
     // Load the worker from jsDelivr
-    const workerUrl = "/workers/hashWorker.js";
-    this.worker = new Worker(workerUrl);
+
+    this.worker = new HashWorker();
     console.log("Worker initialized: ", this.worker);
     this.setupWorkerHandlers();
   }
