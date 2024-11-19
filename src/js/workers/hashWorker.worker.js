@@ -67,14 +67,14 @@ self.onmessage = async function (event) {
           file,
           multipartThreshold
         );
-        postMessage({ status: "complete", hash: finalChecksum });
+        postMessage({ status: "complete1", hash: finalChecksum });
       } catch (error) {
         postMessage({ status: "error", message: error.message });
       }
     } else {
       // Use the original checksum process for small files (no multipart)
       const gmd5 = await incrementalMD5(file);
-      postMessage({ status: "complete", hash: gmd5 });
+      postMessage({ status: "complete2", hash: gmd5 });
     }
     self.close();
   }
