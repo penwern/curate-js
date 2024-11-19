@@ -11,7 +11,7 @@ class CurateWorkerManager {
     if (this.worker) {
       this.worker.terminate();
     }
-    const workerUrl = `/workers/hashWorker.js?v=${Date.now()}`; // Add cache busting
+    const workerUrl = `/workers/hashWorker.worker.js?v=${Date.now()}`; // Add cache busting
     this.worker = new Worker(workerUrl);
     console.log("Worker initialized: ", this.worker);
     this.setupWorkerHandlers();
