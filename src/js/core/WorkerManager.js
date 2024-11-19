@@ -18,7 +18,6 @@ class CurateWorkerManager {
   }
   setupWorkerHandlers() {
     this.worker.onmessage = (event) => {
-      console.log("goober: ", event.data);
       if (event.data.status === "complete" && this.currentResolve) {
         this.currentResolve({
           file: this.currentFile,
