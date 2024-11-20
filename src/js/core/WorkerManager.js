@@ -42,18 +42,26 @@ class CurateWorkerManager {
     return new Promise((resolve, reject) => {
       const task = { file, resolve, reject };
       this.taskQueue.push(task);
-      this.ensureWorkers();
-    });
-  }
 
-  ensureWorkers() {
-    // Create workers up to pool size if there are pending tasks
-    if (this.taskQueue.length > 0) {
-      while (this.workers.size < this.poolSize) {
+      // Only create a new worker if we have more tasks than workers
+      // and we haven't reached the pool size limit
+      if (
+        this.taskQueue.length > this.workers.size &&
+        this.workers.size < this.poolSize
+      ) {
         const workerId = this.initWorker();
         this.processNextTask(workerId, this.workers.get(workerId));
       }
-    }
+      // If we have available workers, find one and process the task
+      else if (this.workers.size > 0) {
+        for (const [workerId, worker] of this.workers) {
+          if (!this.currentTasks.has(workerId)) {
+            this.processNextTask(workerId, worker);
+            break;
+          }
+        }
+      }
+    });
   }
 
   processNextTask(workerId, worker) {
@@ -74,7 +82,6 @@ class CurateWorkerManager {
     this.workers.clear();
   }
 
-  // Optional: Method to manually cleanup if needed
   terminate() {
     this.cleanupWorkers();
     this.taskQueue = [];
