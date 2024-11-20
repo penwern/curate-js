@@ -2,67 +2,98 @@ import CurateWorkerManager from "./WorkerManager.js";
 
 window.addEventListener("load", () => {
   (async () => {
-    // Wait until UploaderModel is defined
     while (typeof UploaderModel === "undefined") {
-      await new Promise((resolve) => setTimeout(resolve, 100)); // Wait for 100ms before checking again
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     const workerManager = new CurateWorkerManager();
     console.log("WorkerManager initialized");
 
-    // Save the original uploadPresigned method to call it later
     const originalUploadPresigned =
       UploaderModel.UploadItem.prototype.uploadPresigned;
 
-    // Override the uploadPresigned method
-    UploaderModel.UploadItem.prototype.uploadPresigned = function () {
-      // Execute the original method
-      const originalPromise = originalUploadPresigned.apply(this, arguments);
+    // Helper function to convert hex string to bytes
+    function hexToBytes(hex) {
+      const bytes = new Uint8Array(hex.length / 2);
+      for (let i = 0; i < hex.length; i += 2) {
+        bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+      }
+      return bytes;
+    }
 
-      // Attach an event listener to monitor when the upload status changes to complete
-      const observer = (status) => {
-        console.log(status);
+    UploaderModel.UploadItem.prototype.uploadPresigned = function () {
+      const originalPromise = originalUploadPresigned.apply(this, arguments);
+      const multipartThreshold = PydioApi.getMultipartPartSize();
+
+      const observer = async (status) => {
         if (status === "loaded") {
-          // Remove the status observer to prevent memory leaks
           this._observers.status.forEach((obs, index) => {
             if (obs === observer) this._observers.status.splice(index, 1);
           });
-          console.log("Attempting to generate checksum for: ", this._file);
-          // Start checksum generation
-          workerManager
-            .generateChecksum(this._file)
-            .then((checksumData) => {
-              console.log("Generated checksum data:", checksumData);
-              // Fetch stats after a delay
-              const delay = Math.min(
-                5000,
-                Math.max(500, this._file.size * 0.01)
+
+          try {
+            let finalChecksum;
+            if (this._file.size > multipartThreshold) {
+              console.log(
+                "File exceeds multipart threshold, generating part checksums"
               );
-              setTimeout(() => {
-                const p = this._targetNode._path;
-                const pathSuffix = p.endsWith("/") ? "" : "/";
-                const parentLabelPart = this._parent._label
-                  ? `${this._parent._label}/`
-                  : "";
-                const filename = `${Curate.workspaces.getOpenWorkspace()}${p}${pathSuffix}${parentLabelPart}${
-                  this._label
-                }`;
-                fetchCurateStats(filename, checksumData.hash, 0);
-              }, delay);
-            })
-            .catch((error) => {
-              console.error("Checksum generation failed:", error);
-            });
+              const partSize = multipartThreshold;
+              const parts = Math.ceil(this._file.size / partSize);
+              const partChecksums = [];
+              const partDigests = new Uint8Array(16 * parts); // MD5 digest is 16 bytes
+
+              for (let i = 0; i < parts; i++) {
+                const start = i * partSize;
+                const end = Math.min(start + partSize, this._file.size);
+                const blob = this._file.slice(start, end);
+                const checksumData = await workerManager.generateChecksum(blob);
+                partChecksums.push(checksumData.hash);
+
+                // Convert hex checksum to bytes and store in concatenated array
+                const digestBytes = hexToBytes(checksumData.hash);
+                partDigests.set(digestBytes, i * 16);
+              }
+
+              // Generate final checksum from concatenated digest bytes
+              const digestBlob = new Blob([partDigests]);
+              const finalChecksumData = await workerManager.generateChecksum(
+                digestBlob
+              );
+              finalChecksum = `${finalChecksumData.hash}-${parts}`;
+
+              console.log("Generated multipart checksum:", finalChecksum);
+            } else {
+              console.log(
+                "File below multipart threshold, generating single checksum"
+              );
+              const checksumData = await workerManager.generateChecksum(
+                this._file
+              );
+              finalChecksum = checksumData.hash;
+            }
+
+            const delay = Math.min(5000, Math.max(500, this._file.size * 0.01));
+            setTimeout(() => {
+              const p = this._targetNode._path;
+              const pathSuffix = p.endsWith("/") ? "" : "/";
+              const parentLabelPart = this._parent._label
+                ? `${this._parent._label}/`
+                : "";
+              const filename = `${Curate.workspaces.getOpenWorkspace()}${p}${pathSuffix}${parentLabelPart}${
+                this._label
+              }`;
+              fetchCurateStats(filename, finalChecksum, 0);
+            }, delay);
+          } catch (error) {
+            console.error("Checksum generation failed:", error);
+          }
         }
       };
 
-      // Subscribe to the status updates
       this._observers.status.push(observer);
-
       return originalPromise;
     };
 
-    // Function to fetch stats from Curate API
     function fetchCurateStats(filePath, expectedChecksum, retryCount) {
       Curate.api
         .fetchCurate("/a/tree/stats", "POST", {
@@ -81,14 +112,13 @@ window.addEventListener("load", () => {
         });
     }
 
-    // Function to validate the checksum
     function validateChecksum(node, expectedChecksum, filePath, retryCount) {
-      const maxRetries = 3; // Set maximum retries to 3
+      const maxRetries = 3;
       if (node.Etag === "temporary" && retryCount < maxRetries) {
         console.log("Checksum temporary. Retrying...");
         setTimeout(() => {
           fetchCurateStats(filePath, expectedChecksum, retryCount + 1);
-        }, 2000); // Retry after 2 seconds
+        }, 2000);
       } else if (node.Etag === expectedChecksum) {
         console.log("Checksum validation passed.");
         updateMetaField(
