@@ -93,9 +93,10 @@ window.addEventListener("load", () => {
             // Delay scales slightly with file size but capped between 0.5s and 5s.
             const delay = Math.min(5000, Math.max(500, this._file.size * 0.01));
             setTimeout(() => {
-              const workspace = Curate.workspaces.getOpenWorkspace();
-              const targetPath = this._targetNode._path;
-              const relativeFilePath = this._file.webkitRelativePath;
+              const workspace = Curate.workspaces.getOpenWorkspace(); // e.g., "quarantine/"
+              const targetPath = this._targetNode._path; // e.g., "/" or "/3D Models/NOR box/"
+              const relativeFilePath = this._file.webkitRelativePath; // e.g., "NOR box/file.stl" OR "" for single upload
+              const actualFileName = this._file.name; // e.g., "new_upload.txt"
 
               // Normalize workspace path (ensure it ends with /)
               const normWorkspace = workspace.endsWith("/")
@@ -108,19 +109,27 @@ window.addEventListener("load", () => {
                 normTarget = targetPath.replace(/^\/+|\/+$/g, ""); // Remove slashes from ends
               }
 
-              // Normalize relative file path (remove leading slash if any)
-              const normRelative = relativeFilePath.startsWith("/")
-                ? relativeFilePath.substring(1)
-                : relativeFilePath;
+              // Determine the final path component:
+              //    - Use the relative path if it exists (for folder uploads).
+              //    - Otherwise, use the actual filename (for single file uploads).
+              let fileComponent = "";
+              if (relativeFilePath) {
+                // Use relative path, removing any leading slash
+                fileComponent = relativeFilePath.startsWith("/")
+                  ? relativeFilePath.substring(1)
+                  : relativeFilePath;
+              } else {
+                // Use the actual filename
+                fileComponent = actualFileName;
+              }
 
               // Combine parts
               let filename = normWorkspace;
               if (normTarget) {
-                filename += normTarget + "/"; // Add target folder if it exists
+                filename += normTarget + "/"; // Add target folder path if it exists
               }
-              filename += normRelative; // Add the relative file path
+              filename += fileComponent; // Add the file path or name
 
-              // Clean up any potential double slashes ( belt-and-suspenders)
               filename = filename.replace(/\/+/g, "/");
 
               // Initiate the checksum validation process.
@@ -223,7 +232,6 @@ window.addEventListener("load", () => {
       };
       // Use the Curate API helper to send the update request.
       // Intentionally not awaiting or chaining .then/.catch here - fire and forget.
-      // Consider adding error handling if confirmation of meta update is needed.
       Curate.api.fetchCurate(url, "PUT", metadatas);
       console.log(
         `Attempted to update metadata '${namespace}' for UUID ${uuid}`
