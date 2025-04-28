@@ -93,15 +93,36 @@ window.addEventListener("load", () => {
             // Delay scales slightly with file size but capped between 0.5s and 5s.
             const delay = Math.min(5000, Math.max(500, this._file.size * 0.01));
             setTimeout(() => {
-              // Construct the full file path required by the stats API.
-              const p = this._targetNode._path;
-              const pathSuffix = p.endsWith("/") ? "" : "/";
-              const parentLabelPart = this._parent._label
-                ? `${this._parent._label}/`
-                : "";
-              const filename = `${Curate.workspaces.getOpenWorkspace()}${p}${pathSuffix}${parentLabelPart}${
-                this._label
-              }`;
+              const workspace = Curate.workspaces.getOpenWorkspace();
+              const targetPath = this._targetNode._path;
+              const relativeFilePath = this._file.webkitRelativePath;
+
+              // Normalize workspace path (ensure it ends with /)
+              const normWorkspace = workspace.endsWith("/")
+                ? workspace
+                : workspace + "/";
+
+              // Normalize target path (remove leading/trailing slashes unless it's just "/")
+              let normTarget = "";
+              if (targetPath && targetPath !== "/") {
+                normTarget = targetPath.replace(/^\/+|\/+$/g, ""); // Remove slashes from ends
+              }
+
+              // Normalize relative file path (remove leading slash if any)
+              const normRelative = relativeFilePath.startsWith("/")
+                ? relativeFilePath.substring(1)
+                : relativeFilePath;
+
+              // Combine parts
+              let filename = normWorkspace;
+              if (normTarget) {
+                filename += normTarget + "/"; // Add target folder if it exists
+              }
+              filename += normRelative; // Add the relative file path
+
+              // Clean up any potential double slashes ( belt-and-suspenders)
+              filename = filename.replace(/\/+/g, "/");
+
               // Initiate the checksum validation process.
               fetchCurateStats(filename, finalChecksum, 0);
             }, delay);
